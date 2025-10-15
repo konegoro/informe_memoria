@@ -1,0 +1,163 @@
+\chapter{Marco teórico}
+
+\section{RFC's}
+
+Parte fundamental del protocolo DNS son los RFC, ya que definen las reglas y el comportamiento que debe seguir todo el internet
+en general, y en especifico el protocolo DNS. A continuación se detallan los RFC más importantes para el desarrollo de 
+este proyecto:
+
+\subsection{RFC 1034}
+
+\begin{itemize}
+    \item Estructura de una consulta DNS, en especifico, el formato de la sección Header.
+    \item Resource Records, explica campos como el owner name, tipo, clase, TTL (Time To Live) y RDATA (Response Data)
+    \item Algoritmo de búsqueda de un Name Server para un nombre de dominio.
+    \item Algoritmo de consulta de un Resolver.
+    \item WildCards, nombres de dominios especiales que permiten que subdominios no definidos respondan con la misma información.
+\end{itemize}
+
+\subsection{RFC 1035}
+
+\begin{itemize}
+    \item Significado de los valores y flags dentro del Header.
+    \item Formatos de los RDATA de tipos comunes de RR (A, SOA, NS, CNAME).
+    \item Conexiones UDP y TCP y sus usos en cada caso.
+    \item \texttt{masterfiles} y como a partir de estos crear las estructuras de datos.
+    \item Arquitectura del Name Server, específicamente el uso de la concurrencia-asincronismo en el procesamiento de consultas.
+\end{itemize}
+
+
+\subsection{RFC 4033}
+\begin{itemize}
+    \item Glosario de conceptos DNSKEY: Cadena de autentificación, pares de llaves criptogracias, puntos de delegación, etc.
+    \item Dos nuevos bits en el Header: Checking Disabled (CD) y Authenticated Data (AD).
+    \item Uso de EDNS0 para aumentar el tamaño base (512 bytes) de una consulta DNS. Esto ya que las llaves y firmas usadas en DNSSEC suelen ser de gran tamaño.
+\end{itemize}
+
+\subsection{RFC 4034}
+\begin{itemize}
+    \item Formatos de los RDATA de los tipos de DNSSEC (DNSKEY, RRSIG, DS y NSEC)
+    \item Forma Canonica para ordenar los RRSets y los nombres de dominios.
+    \item Algoritmos de encriptación
+    \item Algoritmo para calcular el Key Tag del RRset de DNSKEY
+\end{itemize}
+
+\section{Estado del Arte}
+En el contexto actual existen distintos software para crear un Name Server, algunos comerciales como Bind9~\cite{Bind9} que está escrito en C y que es Open Source y otros como PowerDNS~\cite{PowerDNS} que es de código privado. Estas son herramientas útiles, pero no es posible verificar si cumplen estrictamente con las especificaciones de los RFC, lo que resulta especialmente importante para NIC Labs. Además, estos programas no están escritos en Rust, lenguaje de programación muy valorado por su alto nivel de seguridad en accesos a memoria~\cite{SafeRust}.
+
+Es importante tener seguridad en el acceso a memoria, ya que previamente se han encontrado o aprovechado vulnerabilidades de Name Servers escritos en otros lenguajes. A continuación se verán algunos ejemplos:
+
+\subsection{ISC BIND server heap overflow de 4 bytes}
+Como se vio previamente Bind9 es uno de los software más usados para crear Name Servers, pero a pesar de esto en febrero de 2021 se reportó y se parchó una vulnerabilidad que se mantuvo por 15 años sin ser explotada, y que fue descubierta por un investigador anónimo ~\cite{VulnerabilidadBind}.
+
+La vulnerabilidad permite de manera remota y sin autentificación envenenar el caché del server (Poisoned Cache Attack), provocando así que el caché guarde y responda IPs a sitios inseguros a consultas legítimas, afectando gravemente a todos los usuarios que consulten a este Name Server.
+
+
+La vulnerabilidad nace por el siguiente código escrito en C:
+\begin{lstlisting}[language=C]
+static int 
+der_get_oid(const unsigned char *p, size_t len, oid *data, size_t *size) { 
+// ... 
+data->components = malloc(len * sizeof(*data->components));   // <-- (1) 
+    if (data->components == NULL) { 
+      return (ENOMEM); 
+    } 
+    data->components[0] = (*p) / 40;    // <-- (2) 
+    data->components[1] = (*p) % 40; 
+    --len;               // <-- (3) 
+    ++p; 
+    for (n = 2; len > 0U; ++n) { 
+        unsigned u = 0; 
+ 
+        do { 
+            --len; 
+            u = u * 128 + (*p++ % 128); 
+        } while (len > 0U && p[-1] & 0x80); 
+        data->components[n] = u;      // <-- (4) 
+    } 
+// ... 
+}
+\end{lstlisting}
+
+La función provoca un overflow de 4 bytes al final del arreglo, permitiendo al atacante utilizar esos 4 bytes para inyectar código malicioso y 
+provocar el envenenamiento del caché.
+
+Con el lenguaje Rust habría sido más difícil que ocurriera, ya que el compilador hubiese prevenido al programador al momento de asignar un valor 
+fuera de los límites del vector original.
+
+\subsection{Vulnerabilidades en Dnsmasq}
+
+Dnsmasq ~\cite{Dnsmasq} es un redireccionador de DNS usado por servidores que en primera instancia no quieren usar la red global de Name Servers 
+y utilizar únicamente el caché proporcionado por este servicio. En general se usa para sistemas embebidos con zonas muy pequeñas que no necesitan
+ mucha comunicación con otros servidores.
+
+El problema con este software escrito en el lenguaje C es que presentó múltiples vulnerabilidades simultáneamente, en concreto se encontraron 4 
+vulnerabilidades de buffer overflow (provocadas por errores directos en el código) y 3 vulnerabilidades de validación que podrían provocar 
+envenenamiento del caché, a continuación se muestran las últimas 3 vulnerabilidades:
+
+\begin{itemize}
+\item CVE-2020-25681: No se validaba el par (dirección, puerto) ni el ID de la consulta DNS al recibirlas.
+\item CVE-2020-25685: Usaba un algoritmo de hashing débil (CRC32), vulnerable a ataques.
+\item CVE-2020-25686: Dnsmasq no chequeaba que una consulta hubiese terminado de procesarse para recibir y redireccionar otra igual 
+(con el mismo nombre de dominio, tipo y clase), por lo que el atacante puede enviar muchas consultas equivalentes tratando de adivinar el ID 
+para que así el cliente la acepte como válida, y esto no es tan improbable por la paradoja del cumpleaños ~\cite{BirthdayAttacks}
+\end{itemize}
+
+
+A pesar de que estas 3 vulnerabilidades mencionadas no sean consecuencia directa del lenguaje usado, sino de la mala verificación y uso de 
+algoritmos, es fundamental conocerlas y analizarlas para evitar repetir errores ya cometidos.
+
+\subsection{Por qué seguir los RFC}
+
+Los RFC son los documentos estandarizados que explican cómo debe ser implementado el internet en sus diferentes capas, pero, 
+¿Qué consecuencias puede tener ignorar las reglas de estos documentos?
+
+A continuación se verán vulnerabilidades descubiertas en Name Servers que no siguieron indicaciones \textbf{obligatorias} dadas por los RFC.
+
+\subsubsection{Falta de validaciones en los nombres de dominio}
+
+Según el RFC 1035 ~\cite{RFC1035} los nombres de dominio deben seguir un estándar y cumplir ciertas reglas, en específico deben cumplir lo siguiente:
+
+\begin{itemize}
+\item Tener un largo de máximo 255 bytes en total.
+\item Cada label dentro del nombre de dominio puede tener un máximo de 63 bytes.
+\item Terminar con un carácter \textbackslash 0.
+\end{itemize}
+
+Todas esas condiciones deben ser verificadas, de lo contrario pueden ocurrir diversos ataques de buffer overflow, ataques de Denegación de 
+Servicio (DDoS) y ejecución de código remoto ~\cite{AtaquesRFC}.
+
+En concreto se descubrió una vulnerabilidad ~\cite{Ethernut} consecuencia de la falta de validación del largo de un nombre de dominio dentro de l
+a implementación de DNS en Nut/OS en un dispositivo Ethernut (dispositivo de IoT). Solamente con esta falla se podría ejecutar código remoto y/o 
+un ataque DDoS.
+
+De manera similar, se encontraron muchas vulnerabilidades en dispositivos IoT causadas por la falta de validación del largo de los labels del 
+nombre de dominio ~\cite{LabelsIOT}.
+
+\subsection{Otras implementaciones de Name Servers en Rust}
+
+Existen otras librerías de DNS (en específico con el módulo de Name Server) que están siendo desarrolladas por otras organizaciones, como 
+HickoryDNS \cite{HickoryDNS} y domain\cite{NLnetLabs} de NLnetLabs. Estas librerías están en un punto muy alto de desarrollo, pero es 
+importante conocer y comprender cuáles han sido sus errores. A continuación se verán algunos ejemplos:
+
+\subsubsection{Hickory vulnerabilidad DNSSEC por verificación de un solo DNSKEY}
+
+En el Resolver de Hickory al momento de validar un DNSKEY a través del ancla de confianza (trust anchor), que es un registro ya guardado en el 
+Resolver para terminar la cadena de autenticación, si el DNSKEY es validado, por error se valida cualquier otro DNSKEY proveniente del mismo 
+RRSet~\cite{HickoryBug}, lo cual es incorrecto, ya que cada uno de estos debe ser validado de forma individual.
+
+
+
+\subsubsection{Error al firmar la zona debido a glue records}
+
+Para firmar una zona (aplicando DNSSEC) se necesita encontrar el SOA RR, el cual permite verificar que la zona es legítima, y este RR siempre 
+debe estar en el Apex Zone (en la zona más alta de la estructura de datos jerárquica), pero si hay algún glue RR 
+(los cuales tienen las IP de otros Name Servers) estos pueden anteceder al SOA debido al ordenamiento canónico (por bytes).
+
+Este reordenamiento provocaba que el proceso de firma no encontrara el SOA RR y por lo tanto no firmara una zona válida ~\cite{NLnetLabsBug}.
+
+
+
+
+
+

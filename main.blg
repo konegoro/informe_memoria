@@ -1,0 +1,63 @@
+This is BibTeX, Version 0.99d
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: main.aux
+Reallocating 'name_of_file' (item size: 1) to 6 items.
+The style file: plain.bst
+Reallocating 'name_of_file' (item size: 1) to 13 items.
+Database file #1: bibliografia.bib
+Warning--I didn't find a database entry for "Bind9"
+Warning--I didn't find a database entry for "PowerDNS"
+Warning--I didn't find a database entry for "SafeRust"
+Warning--I didn't find a database entry for "VulnerabilidadBind"
+Warning--I didn't find a database entry for "Dnsmasq"
+Warning--I didn't find a database entry for "BirthdayAttacks"
+Warning--I didn't find a database entry for "RFC1035"
+Warning--I didn't find a database entry for "AtaquesRFC"
+Warning--I didn't find a database entry for "Ethernut"
+Warning--I didn't find a database entry for "LabelsIOT"
+Warning--I didn't find a database entry for "HickoryDNS"
+Warning--I didn't find a database entry for "NLnetLabs"
+Warning--I didn't find a database entry for "HickoryBug"
+Warning--I didn't find a database entry for "NLnetLabsBug"
+You've used 3 entries,
+            2118 wiz_defined-function locations,
+            547 strings with 4622 characters,
+and the built_in function-call counts, 782 in all, are:
+= -- 74
+> -- 33
+< -- 1
++ -- 13
+- -- 10
+* -- 45
+:= -- 142
+add.period$ -- 10
+call.type$ -- 3
+change.case$ -- 13
+chr.to.int$ -- 0
+cite$ -- 3
+duplicate$ -- 36
+empty$ -- 67
+format.name$ -- 10
+if$ -- 165
+int.to.chr$ -- 0
+int.to.str$ -- 3
+missing$ -- 6
+newline$ -- 18
+num.names$ -- 6
+pop$ -- 20
+preamble$ -- 1
+purify$ -- 11
+quote$ -- 0
+skip$ -- 19
+stack$ -- 0
+substring$ -- 15
+swap$ -- 4
+text.length$ -- 1
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 6
+warning$ -- 0
+while$ -- 6
+width$ -- 4
+write$ -- 37
+(There were 14 warnings)

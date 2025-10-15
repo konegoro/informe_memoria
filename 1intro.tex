@@ -1,0 +1,86 @@
+\chapter{Introducción}
+
+\section{Contexto}
+
+DNS (Domain Name System) es un protocolo fundamental para el funcionamiento de la capa siete del modelo OSI, permitiendo que un usuario pueda 
+acceder a una IP global a través de un nombre de dominio, como por ejemplo dcc.uchile.cl. Para lograr esto existen 2 actores principales: 
+el Resolver y el Name Server.
+
+El Resolver es el programa encargado de tomar una consulta de un nombre de dominio desde un dispositivo como un computador o un celular y 
+transformarlo en una consulta DNS, la cual es un mensaje en bytes con una estructura definida por el protocolo DNS, con las siguientes 5 
+secciones: Header, Question, Answer, Authority y Additional
+
+El Name Server es el que conoce las IP de los dominios y es el encargado de responder las consultas DNS que envía el Resolver, pero este proceso
+no es sencillo y requiere del arduo estudio y programación de los RFC (Request For Comments), documentos estandarizados de cómo debe funcionar 
+el internet.
+
+En este contexto, el área de investigación de NIC Chile (NIC Labs) implementó una librería de funciones para DNS en lenguaje Rust, como 
+caso de prueba de dicha librería desean implementar un servidor de nombres (Name Server) DNS que utilicen para su propia zona niclabs.cl. 
+Una zona es un conjunto de nombres de dominios hijos de un dominio padre, en este caso el dominio padre es niclabs.cl (la zona misma) y un dominio hijo podría ser a.niclabs.cl
+
+La librería DNS-RUST  de NIC Labs sigue cabalmente las indicaciones de los RFC sin implementar ningún tipo de optimización que no sea 
+referenciada por ellos, por lo que es importante la implementación del Name Server bajo esas especificaciones ya que puede ser utilizado 
+más adelante para investigación y desarrollo.
+
+Mencionar que la librería DNS-RUST es solo una herramienta que contiene las funciones necesarias para transformar un mensaje DNS en bytes a 
+una estructura en Rust (parse), un Cliente y un Stub-Resolver, es decir, no posee nada relacionado a un Name Server. De esta manera todas las 
+funcionalidades, estructuras de datos y algoritmos serán implementados desde cero. 
+
+Como se verá más adelante, implementar un Name Server con todas sus funcionalidades incluyendo las que aún no posee la librería es un trabajo 
+que toma más de un semestre, de hecho, para tener más contexto, el Stub-Resolver de la libería DNS-RUST fue desarrollado por años de manera 
+grupal, por lo que es lógico pensar que su contraparte (un Name Server) no puede ser completado al 100 porciento por una sola persona en un 
+semestre, provocando así que el trabajo a realizar sea acotado sólo a las funcionalidades de DNS Security Extension, Extension DNS 0, 
+creación de estructuras de datos basadas en el \texttt{masterfile}, implementación del algoritmo de búsqueda del Name Server y conexiones UDP-TCP 
+asíncrónicas.
+
+
+
+\section{Glosario}
+Antes de seguir con el desarrollo de este informe, es necesario abarcar ciertos conceptos específicos que se referenciarán más adelante:
+
+\begin{itemize}
+    \item Stub-Resolver: Es un resolver que utiliza un resolver recursivo, el cual se encarga de todo el proceso real para responder a una 
+    consulta DNS. Estos resolvers recursivos son complejos y un stub-resolver suele utilizar los creados por Google y otras grandes empresas.
+    \item Extension DNS 0 (EDNS0): Primera extensión del protocolo DNS, incluyendo la capacidad de aumentar el tamaño de los mensajes DNS 
+    (consultas y responses).
+    \item DNS Security Extension (DNSSEC): Extensión de seguridad del protocolo DNS, permitiendo mensajes firmados y validaciones basadas 
+    en criptografia.
+    \item Resource Record (RR): Estructura de datos que se envía como respuesta desde el Name Server. Existen muchos tipos, cada uno con 
+    sus especificaciones.
+    \item RRset: Conjunto de RR's que poseen el mismo nombre de dominio, tipo y clase.
+    \item Catalogo: Estructura jerárquica con las zonas que maneja el Name Server.
+    \item Arbol de dominios: Estructura jerárquica que contiene los RRSets de los dominios guardados por el Name Server.
+    \item Tipos de Resource Records clasicos:
+        \begin{itemize}
+            \item Answer (A): Dirección IP del nombre de dominio solicitado.
+            \item Name Server (NS): Nombre de dominio del Name Server autoritativo que sabe responder a la consulta solicitada. 
+            \item Canonical Name (CNAME): Nombre de dominio secundario-canónico que pueda tener el nombre de dominio solicitado.
+            \item Optional (OPT): RR especial para Extension DNS 0 con muchas funcionalidades, pero la más importante es la de aumentar el 
+            tamaño default de las consultas DNS (512 bytes).
+        \end{itemize}
+    \item Tipos de Resource Records de DNSSEC:
+            \begin{itemize}
+            \item DNS Public Key Record (DNSKEY): Contiene la llave pública necesaria para validar la firma contenida en el RRSIG.
+            \item  Resource Record Signature (RRSSIG): Firma criptográfica creada a partir de una llave privada alojada en el Name Server.
+            \item Delegation Signer (DS): Hash de la llave pública alojada en el Name Server padre necesario para validar el DNSKEY RR.
+            \item Next Secure Record (NSEC): RR que contiene el siguiente nombre de dominio en un orden canonico dentro del arbol de dominios (
+                ordenado en bytes).
+        \end{itemize}
+    \item Clase en un RR: Valor que determina el medio a usar en el protocolo, normalmente es de tipo $IN$ (Internet), pero también existen 
+    otros tipos secundarios que no es necesario mencionar.
+    \item RDATA (Response Data): Valores de retorno que contienen la información clave de un RR. Es diferente para cada tipo de RR.
+\end{itemize}
+
+\section{Objetivos}
+
+\subsection*{Objetivo General}
+
+El objetivo de este trabajo es construir un MVP (Producto Mínimo Viable) de un Name Server Autoritativo Iterativo capaz de controlar la zona de 
+dominio del laboratorio de manera segura, eficiente, siguiendo al pie de la letra los RFC y usando las herramientas de la librería DNS-RUST como 
+apoyo.
+
+Que el Name Server sea Iterativo consiste en que su algoritmo busca el nombre de dominio solicitado dentro de su estructura de datos, si no 
+tiene la respuesta directa, envía una referencia hacia otro Name Server que si podría tenerla, y si no encuentra ninguna respuesta envía un 
+error. La alternativa es un Name Server recursivo que, si no conoce la respuesta a la consulta, utiliza un Resolver interno para averiguarla y 
+responder, y que por su diseño y construcción no es parte de este trabajo de título.
+
