@@ -84,3 +84,19 @@ tiene la respuesta directa, envía una referencia hacia otro Name Server que si 
 error. La alternativa es un Name Server recursivo que, si no conoce la respuesta a la consulta, utiliza un Resolver interno para averiguarla y 
 responder, y que por su diseño y construcción no es parte de este trabajo de título.
 
+\subsection*{Objetivos Específicos}\label{sec:obj-e}
+
+\begin{enumerate}
+\item Establecer canales de trasmisión confiables, en los protocolos de UDP y TCP asincrónicos.
+\item Responder correctamente a consultas DNS de tipo basico (A, NS, CN) con sus Resource Records correspondientes.
+\item Seguir estrictamente lo establecido por los RFC antiguios y actuales.
+\item Asegurar seguridad con DNSSEC (DNS Security Extension), usando algoritmos de encriptación, llaves publicas y privadas, firmas y una cadena de autentificación.
+\item Crear de estructuras de datos jerárquicas (árboles) a partir de un \texttt{masterfile} .
+\item Conectar las herramientas de la libería DNS-RUST usando su stub-resolver como cliente y sus parses de mensajes para manejar las consultas DNS .
+\item Cumplir con estándares de documentación en el código.
+\item Incluir EDNS0 (Extension DNS 0) necesaria para cumplir DNSSEC. Especificamente sabiendo leer y procesar consultas del tipo OPT.
+
+
+\end{enumerate}
+
+
