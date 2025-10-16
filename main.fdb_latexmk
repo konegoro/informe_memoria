@@ -1,16 +1,16 @@
 # Fdb version 4
-["bibtex main"] 1760565113.69148 "main.aux" "main.bbl" "main" 1760565810.6695 0
+["bibtex main"] 1760629629.9221 "main.aux" "main.bbl" "main" 1760629840.74005 0
   "./bibliografia.bib" 1760557466 1937 68f54fed56c6e786f4b15e50becc546d ""
   "C:/Users/bastian/AppData/Local/Programs/MiKTeX/bibtex/bst/bibtex/plain.bst" 1291864736 20613 bd3fbfa9f64872b81ac57a0dd2ed855f ""
-  "main.aux" 1760565809 4990 3c252d56f59aa811673ac2827a783605 "pdflatex"
+  "main.aux" 1760629839 5169 9844d09db99c5387127dc5a88880658b "pdflatex"
   (generated)
   "main.bbl"
   "main.blg"
   (rewritten before read)
-["pdflatex"] 1760565808.23232 "c:/Users/bastian/Desktop/DCC/Primavera2025/F/informe_memoria/main.tex" "main.pdf" "main" 1760565810.67003 0
+["pdflatex"] 1760629838.54965 "c:/Users/bastian/Desktop/DCC/Primavera2025/F/informe_memoria/main.tex" "main.pdf" "main" 1760629840.74054 0
   "1intro.tex" 1760558586 7680 e5e1b3cf9e99b895ca5e29fc99813216 ""
   "2marco_teorico.tex" 1760551737 9306 be5ba31096b53c5858ffde0197544e7a ""
-  "3comunicacion.tex" 1760565807 6882 506dad101499e216e344b367bbca52b8 ""
+  "3comunicacion.tex" 1760629837 5588 fea53b49ed1259dff3fdb6fd746308ce ""
   "4estructura_de_datos.tex" 1760557466 44 e95f0eb94fe070ac4dc6cb984d85531f ""
   "5algoritmo.tex" 1760557466 47 f1c993bcd3c1a973b8cec6e6cea8ad2e ""
   "6edns0.tex" 1760557466 30 7da773c33688ef1700baec1d977a4f6d ""
@@ -199,14 +199,15 @@
   "C:/Users/bastian/AppData/Local/Programs/MiKTeX/tex/latex/xcolor/xcolor.sty" 1729265222 55384 b454dec21c2d9f45ec0b793f0995b992 ""
   "anexoA.tex" 1760557466 30 28e7f75da4aafadd37aca710cddee491 ""
   "c:/Users/bastian/Desktop/DCC/Primavera2025/F/informe_memoria/main.tex" 1760563599 4355 afeed3f6f6263fac69ec480962d7b39e ""
+  "diagramas/recieve_and_response.png" 1760570190 132335 fb7ac38aca1a49317a26e2523056bc7d ""
   "imagenes/escudoU2014.pdf" 1760557466 43308 3a9e2b3b1f37899134c09e731c033786 ""
-  "main.aux" 1760565809 4990 3c252d56f59aa811673ac2827a783605 "pdflatex"
-  "main.bbl" 1760565114 592 a580c9857b0b6afb4a0ef8146ac08ed1 "bibtex main"
-  "main.lof" 1760565809 230 0d730e2619ef0f22aacbec22bb6fcb0f "pdflatex"
-  "main.lot" 1760565809 230 0d730e2619ef0f22aacbec22bb6fcb0f "pdflatex"
-  "main.out" 1760565809 3235 32662edd0943be162051fbf8d9b6022b "pdflatex"
+  "main.aux" 1760629839 5169 9844d09db99c5387127dc5a88880658b "pdflatex"
+  "main.bbl" 1760629630 592 a580c9857b0b6afb4a0ef8146ac08ed1 "bibtex main"
+  "main.lof" 1760629839 230 0d730e2619ef0f22aacbec22bb6fcb0f "pdflatex"
+  "main.lot" 1760629839 230 0d730e2619ef0f22aacbec22bb6fcb0f "pdflatex"
+  "main.out" 1760629839 3235 a8431b89a7e99083cb2d05966d594b8e "pdflatex"
   "main.tex" 1760563599 4355 afeed3f6f6263fac69ec480962d7b39e ""
-  "main.toc" 1760565809 2257 6cfb8da8879e4cd42c1baf65bc5cec4f "pdflatex"
+  "main.toc" 1760629839 2257 b11beed4ee345ca45bb3b89390104c46 "pdflatex"
   "umemoria.cls" 1760557466 8901 53fa812ed06076de516f453f3311e771 ""
   (generated)
   "main.aux"

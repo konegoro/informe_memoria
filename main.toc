@@ -18,12 +18,12 @@
 \contentsline {subsubsection}{Hickory vulnerabilidad DNSSEC por verificación de un solo DNSKEY}{9}{section*.9}%
 \contentsline {subsubsection}{Error al firmar la zona debido a glue records}{9}{section*.10}%
 \contentsline {chapter}{\numberline {3}Conneciones UDP y TCP}{10}{chapter.3}%
-\contentsline {section}{\numberline {3.1}UDP}{11}{section.3.1}%
-\contentsline {chapter}{\numberline {4}Estructura de Datos}{14}{chapter.4}%
-\contentsline {chapter}{\numberline {5}Algoritmo de Búsqueda}{17}{chapter.5}%
-\contentsline {chapter}{\numberline {6}EDNS0}{20}{chapter.6}%
-\contentsline {chapter}{\numberline {7}DNSSEC}{23}{chapter.7}%
-\contentsline {chapter}{\numberline {8}Discusiones}{26}{chapter.8}%
-\contentsline {chapter}{\numberline {9}Conclusiones}{29}{chapter.9}%
-\contentsline {chapter}{\numberline {}Bibliograf\'ia}{32}{chapter*.12}%
-\contentsline {chapter}{Ap\'{e}ndice \numberline {A}Anexo}{33}{Appendix.1.Alph1}%
+\contentsline {section}{\numberline {3.1}UDP}{10}{section.3.1}%
+\contentsline {chapter}{\numberline {4}Estructura de Datos}{13}{chapter.4}%
+\contentsline {chapter}{\numberline {5}Algoritmo de Búsqueda}{16}{chapter.5}%
+\contentsline {chapter}{\numberline {6}EDNS0}{19}{chapter.6}%
+\contentsline {chapter}{\numberline {7}DNSSEC}{22}{chapter.7}%
+\contentsline {chapter}{\numberline {8}Discusiones}{25}{chapter.8}%
+\contentsline {chapter}{\numberline {9}Conclusiones}{28}{chapter.9}%
+\contentsline {chapter}{\numberline {}Bibliograf\'ia}{31}{chapter*.13}%
+\contentsline {chapter}{Ap\'{e}ndice \numberline {A}Anexo}{32}{Appendix.1.Alph1}%
