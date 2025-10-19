@@ -196,6 +196,8 @@ INPUT C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex\latex\tools\multicol.st
 INPUT C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex\latex\tools\multicol.sty
 INPUT C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex\latex\fancyhdr\fancyhdr.sty
 INPUT C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex\latex\fancyhdr\fancyhdr.sty
+INPUT C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex\latex\enumitem\enumitem.sty
+INPUT C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex\latex\enumitem\enumitem.sty
 INPUT C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex\latex\pgf\frontendlayer\tikz.sty
 INPUT C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex\latex\pgf\frontendlayer\tikz.sty
 INPUT C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex\latex\pgf\basiclayer\pgf.sty
@@ -372,6 +374,13 @@ INPUT .\diagramas\recieve_and_response.png
 INPUT .\diagramas\recieve_and_response.png
 INPUT .\diagramas\recieve_and_response.png
 INPUT .\diagramas\recieve_and_response.png
+INPUT .\diagramas\udp.png
+INPUT .\diagramas\udp.png
+INPUT .\diagramas\udp.png
+INPUT .\diagramas\udp.png
+INPUT .\diagramas\udp.png
+INPUT .\diagramas\udp.png
+INPUT .\diagramas\udp.png
 INPUT .\4estructura_de_datos.tex
 INPUT .\4estructura_de_datos.tex
 INPUT .\4estructura_de_datos.tex

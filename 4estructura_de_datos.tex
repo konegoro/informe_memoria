@@ -1,2 +1,23 @@
-\chapter{Estructura de Datos}
-\lipsum[50-60]
+\chapter{Estructura y procesamiento de datos}
+
+Un masterfile es un archivo de texto que contiene todos los registros DNS (Resource Records) que conforman la zona que el servidor va a manejar, pero estos datos están en crudo
+y necesitan de un procesamiento refinado para poder convertirse en estructuras de datos eficientes que permitan responder consultas DNS de manera rápida.
+En esta seccion se explica cómo se lleva a cabo este procesamiento y las estructuras de datos utilizadas para almacenar la información de la zona DNS en memoria.
+
+\section{Catalogo}
+Estructura que contiene un \texttt{Hashmap} donde cada llave es un string con el nombre de la zona y el valor es un puntero a la estructura con los datos reales.
+Es basicamente un índice que permite acceder rápidamente a los datos de cada zona, y es especialmente útil cuando el servidor maneja múltiples zonas DNS. También
+es útil para saber si una consulta pertenece a una zona manejada por el servidor o no, ya que si el dominio consultado no es parte de ninguna
+zona del catalogo, entonces se puede responder inmediatamente con un \texttt{REFUSED}.
+
+El valor de retorno en el \texttt{Hashmap} está envuelto en un \verb|Arc<RwLock<>>| para permitir el acceso concurrente a los datos de la zona desde múltiples threads.
+
+%salto de linea para que se vea mejor
+\begin{lstlisting}
+    pub struct Catalog {
+        zones: HashMap<String, Arc<RwLock<DataStructure>>>, 
+    }
+\end{lstlisting}
+
+\section{Hash anidado de Resource Records}
+
