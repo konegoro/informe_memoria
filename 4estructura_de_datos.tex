@@ -59,8 +59,40 @@ Estructura de datos global accesible por el algoritmo de búsqueda para la obten
 la estructura de datos iba a ser un árbol n-ario jerarquico, pero al momento de implementarlo hubieron muchos problemas, esto se verá con más detalle en la sección (REDACTED)
 
 
-Esta estructura contiene el nombre de la zona (por ejemplo, \texttt{"niclabs.cl"}) y todos los datos asociados organizados en un \texttt{HashMap} anidado. 
+Esta estructura contiene el nombre de la zona (por ejemplo \texttt{"niclabs.cl"}) y todos los datos asociados organizados en un \texttt{HashMap} anidado. 
 La primera llave corresponde al \texttt{nombre de dominio}, y la segunda al \texttt{Rrtype} (tipo de registro). Esta organización responde al hecho de que el algoritmo de 
 búsqueda debe obtener un \texttt{RRset}, el cual está definido como el conjunto de todos los registros (\texttt{RR}) que comparten el mismo nombre de dominio, 
 tipo (\texttt{Rrtype}) y clase. En esta implementación se asume que la clase es siempre \texttt{IN} (Internet), por lo que no se incluye como parte de las llaves del hashmap.
+
+A continuación se muestra la definición de la estructura \texttt{DataStructure}:\\
+
+\begin{lstlisting}
+pub struct DataStructure {
+    name: String,
+    data: HashMap<DomainName, HashMap<Rrtype, RRset>>,
+}
+\end{lstlisting}
+
+Aclarar también que para que la estructura sea accesible de manera global y concurrente, se crea la siguiente variable global:\\
+
+\begin{lstlisting}
+pub static DATA_STRUCTURE_NICLABS: Lazy<Arc<RwLock<DataStructure>>> = Lazy::new(|| {
+    let path = 'src/masterfiles/masterfile.txt';
+    Arc::new(RwLock::new(data_initialization(path, 'niclabs.cl.').unwrap()))
+});
+\end{lstlisting}
+
+Cabe mencionar que esta variable está envuelta en muchas estructuras, a continuación se explicará el uso de cada una:
+
+\begin{itemize}
+    \item \textbf{RwLock}: Permite múltiples accesos concurrentes de solo lectura desde distintos hilos (\textit{threads}). Sin embargo, cuando un hilo adquiere acceso de escritura, bloquea todas las lecturas hasta que finalice la operación de escritura.
+
+    \item \textbf{Arc}: Es un puntero inteligente de conteo de referencias atómico que permite compartir datos entre múltiples hilos de manera segura. Es necesario usar un puntero ya que la estructura \texttt{Catálogo} debe mantener una referencia compartida a esta información.
+
+    \item \textbf{Lazy}: Es una construcción de evaluación diferida que permite inicializar un valor solo la primera vez que se accede a él. Esto es útil para inicializar estructuras pesadas de forma diferida y segura en tiempo de ejecución.
+\end{itemize}
+
+\section{Procesamiento del Masterfile}
+
+
 

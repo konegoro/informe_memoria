@@ -415,6 +415,7 @@ INPUT .\masterfiles\toy_masterfile.txt
 INPUT C:\Users\bastian\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmtt10.tfm
 INPUT masterfiles\toy_masterfile.txt
 INPUT C:\Users\bastian\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmr10.tfm
+INPUT C:\Users\bastian\AppData\Local\Programs\MiKTeX\fonts\tfm\jknappen\ec\tctt1095.tfm
 INPUT .\5algoritmo.tex
 INPUT .\5algoritmo.tex
 INPUT .\5algoritmo.tex
@@ -449,6 +450,8 @@ INPUT anexoA.tex
 INPUT main.aux
 INPUT .\main.out
 INPUT .\main.out
+INPUT C:\Users\bastian\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\tctt1095.pk
+INPUT C:\Users\bastian\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\tctt1095.pk
 INPUT C:\Users\bastian\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\tcrm1200.pk
 INPUT C:\Users\bastian\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\tcrm1200.pk
 INPUT C:\Users\bastian\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\cm\cmbx12.pfb
