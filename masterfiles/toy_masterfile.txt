@@ -1,0 +1,21 @@
+example.com.     IN SOA ns1.example.com. hostmaster.example.com. (
+                    2025052101 ; serial
+                    3600       ; refresh
+                    1800       ; retry
+                    1209600    ; expire
+                    3600       ; minimum TTL
+                )
+example.com.     IN NS  ns1.example.com.
+example.com.     IN NS  ns2.example.com.
+*.example.com.   IN A 0.0.0.0
+
+www.example.com. IN A   1.2.3.4
+www.example.com. IN A   1.1.1.2 ; second IP
+mail.example.com. IN A  2.2.2.2
+blog.example.com. IN CNAME blog2.example.com.
+blog2.example.com. IN A  1.2.3.4
+ns1.example.com. IN A  3.3.3.3
+
+b.example.com.    IN NS ns.a.b.example.com. ; delegation point
+ns.a.b.example.com. IN A 4.3.2.1 ; name server address (glue)
+

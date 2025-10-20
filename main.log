@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex 2025.10.15)  19 OCT 2025 00:54
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex 2025.10.15)  20 OCT 2025 13:00
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -519,38 +519,120 @@ Package: fancyhdr 2025/02/07 v5.2 Extensive control of page headers and footers
 \f@nch@widthC=\skip78
 \f@nch@widthR=\skip79
 \@temptokenb=\toks45
+) (C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex/latex/minted\minted.sty
+Package: minted 2025/05/14 v3.7.0 Yet another Pygments shim for LaTeX
+ (C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex/generic/catchfile\catchfile.sty
+Package: catchfile 2019/12/09 v1.8 Catch the contents of a file (HO)
+ (C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex/generic/etexcmds\etexcmds.sty
+Package: etexcmds 2019/12/15 v1.7 Avoid name clashes with e-TeX commands (HO)
+)) (C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex/latex/fvextra\fvextra.sty
+Package: fvextra 2025/05/29 v1.13.2 fvextra - extensions and patches for fancyvrb
+ (C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex/latex/fancyvrb\fancyvrb.sty
+Package: fancyvrb 2025/07/28 4.6 verbatim text (tvz,hv)
+\FV@CodeLineNo=\count355
+\FV@InFile=\read3
+\FV@TabBox=\box112
+\c@FancyVerbLine=\count356
+\FV@StepNumber=\count357
+\FV@OutFile=\write3
+) (C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex/latex/upquote\upquote.sty
+Package: upquote 2012/04/19 v1.3 upright-quote and grave-accent glyphs in verbatim
+) (C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex/latex/lineno\lineno.sty
+Package: lineno 2025/05/13 line numbers on paragraphs v5.5
+\linenopenalty=\count358
+\output=\toks46
+\linenoprevgraf=\count359
+\linenumbersep=\dimen266
+\linenumberwidth=\dimen267
+\c@linenumber=\count360
+\c@pagewiselinenumber=\count361
+\c@LN@truepage=\count362
+\c@internallinenumber=\count363
+\c@internallinenumbers=\count364
+\quotelinenumbersep=\dimen268
+\bframerule=\dimen269
+\bframesep=\dimen270
+\bframebox=\box113
+\@LN@amsmath@ams@eqpen=\count365
+)
+\c@FancyVerbWriteLine=\count366
+\c@FancyVerbBufferLine=\count367
+\c@FV@TrueTabGroupLevel=\count368
+\c@FV@TrueTabCounter=\count369
+\FV@TabBox@Group=\box114
+\FV@bgcolorstructbox=\box115
+\FV@TmpLength=\skip80
+\c@FV@HighlightLinesStart=\count370
+\c@FV@HighlightLinesStop=\count371
+\FV@LoopCount=\count372
+\FV@NCharsBox=\box116
+\FV@BreakIndent=\dimen271
+\FV@BreakIndentNChars=\count373
+\FV@BreakSymbolSepLeft=\dimen272
+\FV@BreakSymbolSepLeftNChars=\count374
+\FV@BreakSymbolSepRight=\dimen273
+\FV@BreakSymbolSepRightNChars=\count375
+\FV@BreakSymbolIndentLeft=\dimen274
+\FV@BreakSymbolIndentLeftNChars=\count376
+\FV@BreakSymbolIndentRight=\dimen275
+\FV@BreakSymbolIndentRightNChars=\count377
+\c@FancyVerbLineBreakLast=\count378
+\FV@LineBox=\box117
+\FV@LineIndentBox=\box118
+\c@FV@BreakBufferDepth=\count379
+\FV@LineWidth=\dimen276
+) (C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex/latex/latex2pydata\latex2pydata.sty
+Package: latex2pydata 2025/03/26 v0.6.0 latex2pydata - write data to file in Python literal format
+) (C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex/latex/pgfopts\pgfopts.sty
+Package: pgfopts 2014/07/10 v2.1a LaTeX package options with pgfkeys
+\pgfopts@list@add@a@toks=\toks47
+\pgfopts@list@add@b@toks=\toks48
+) (C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex/latex/tools\shellesc.sty
+Package: shellesc 2023/07/08 v1.0d unified shell escape interface for LaTeX
+Package shellesc Info: Restricted shell escape enabled on input line 77.
+) (C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex/latex/float\float.sty
+Package: float 2001/11/08 v1.3d Float enhancements (AL)
+\c@float@type=\count380
+\float@exts=\toks49
+\float@box=\box119
+\@float@everytoks=\toks50
+\@floatcapt=\box120
+)
+\c@minted@FancyVerbLineTemp=\count381
+\@float@every@listing=\toks51
+\c@listing=\count382
 ) (C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex/latex/enumitem\enumitem.sty
 Package: enumitem 2025/02/06 v3.11 Customized lists
-\labelindent=\skip80
-\enit@outerparindent=\dimen266
-\enit@toks=\toks46
-\enit@inbox=\box112
-\enit@count@id=\count355
-\enitdp@description=\count356
+\labelindent=\skip81
+\enit@outerparindent=\dimen277
+\enit@toks=\toks52
+\enit@inbox=\box121
+\enit@count@id=\count383
+\enitdp@description=\count384
 ) (C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex/latex/pgf/frontendlayer\tikz.sty (C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex/latex/pgf/basiclayer\pgf.sty
 Package: pgf 2025-08-29 v3.1.11a (3.1.11a)
  (C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex/latex/pgf/basiclayer\pgfcore.sty (C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex/latex/pgf/systemlayer\pgfsys.sty (C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfsys.code.tex
 Package: pgfsys 2025-08-29 v3.1.11a (3.1.11a)
-\pgf@x=\dimen267
-\pgf@y=\dimen268
-\pgf@xa=\dimen269
-\pgf@ya=\dimen270
-\pgf@xb=\dimen271
-\pgf@yb=\dimen272
-\pgf@xc=\dimen273
-\pgf@yc=\dimen274
-\pgf@xd=\dimen275
-\pgf@yd=\dimen276
-\w@pgf@writea=\write3
-\r@pgf@reada=\read3
-\c@pgf@counta=\count357
-\c@pgf@countb=\count358
-\c@pgf@countc=\count359
-\c@pgf@countd=\count360
-\t@pgf@toka=\toks47
-\t@pgf@tokb=\toks48
-\t@pgf@tokc=\toks49
-\pgf@sys@id@count=\count361
+\pgf@x=\dimen278
+\pgf@y=\dimen279
+\pgf@xa=\dimen280
+\pgf@ya=\dimen281
+\pgf@xb=\dimen282
+\pgf@yb=\dimen283
+\pgf@xc=\dimen284
+\pgf@yc=\dimen285
+\pgf@xd=\dimen286
+\pgf@yd=\dimen287
+\w@pgf@writea=\write4
+\r@pgf@reada=\read4
+\c@pgf@counta=\count385
+\c@pgf@countb=\count386
+\c@pgf@countc=\count387
+\c@pgf@countd=\count388
+\t@pgf@toka=\toks53
+\t@pgf@tokb=\toks54
+\t@pgf@tokc=\toks55
+\pgf@sys@id@count=\count389
  (C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgf.cfg
 File: pgf.cfg 2025-08-29 v3.1.11a (3.1.11a)
 )
@@ -561,50 +643,50 @@ File: pgfsys-pdftex.def 2025-08-29 v3.1.11a (3.1.11a)
 File: pgfsys-common-pdf.def 2025-08-29 v3.1.11a (3.1.11a)
 ))) (C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfsyssoftpath.code.tex
 File: pgfsyssoftpath.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-\pgfsyssoftpath@smallbuffer@items=\count362
-\pgfsyssoftpath@bigbuffer@items=\count363
+\pgfsyssoftpath@smallbuffer@items=\count390
+\pgfsyssoftpath@bigbuffer@items=\count391
 ) (C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfsysprotocol.code.tex
 File: pgfsysprotocol.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 )) (C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcore.code.tex
 Package: pgfcore 2025-08-29 v3.1.11a (3.1.11a)
  (C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfint.code.tex) (C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcorepoints.code.tex
 File: pgfcorepoints.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-\pgf@picminx=\dimen277
-\pgf@picmaxx=\dimen278
-\pgf@picminy=\dimen279
-\pgf@picmaxy=\dimen280
-\pgf@pathminx=\dimen281
-\pgf@pathmaxx=\dimen282
-\pgf@pathminy=\dimen283
-\pgf@pathmaxy=\dimen284
-\pgf@xx=\dimen285
-\pgf@xy=\dimen286
-\pgf@yx=\dimen287
-\pgf@yy=\dimen288
-\pgf@zx=\dimen289
-\pgf@zy=\dimen290
+\pgf@picminx=\dimen288
+\pgf@picmaxx=\dimen289
+\pgf@picminy=\dimen290
+\pgf@picmaxy=\dimen291
+\pgf@pathminx=\dimen292
+\pgf@pathmaxx=\dimen293
+\pgf@pathminy=\dimen294
+\pgf@pathmaxy=\dimen295
+\pgf@xx=\dimen296
+\pgf@xy=\dimen297
+\pgf@yx=\dimen298
+\pgf@yy=\dimen299
+\pgf@zx=\dimen300
+\pgf@zy=\dimen301
 ) (C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcorepathconstruct.code.tex
 File: pgfcorepathconstruct.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-\pgf@path@lastx=\dimen291
-\pgf@path@lasty=\dimen292
+\pgf@path@lastx=\dimen302
+\pgf@path@lasty=\dimen303
 ) (C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcorepathusage.code.tex
 File: pgfcorepathusage.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-\pgf@shorten@end@additional=\dimen293
-\pgf@shorten@start@additional=\dimen294
+\pgf@shorten@end@additional=\dimen304
+\pgf@shorten@start@additional=\dimen305
 ) (C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcorescopes.code.tex
 File: pgfcorescopes.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-\pgfpic=\box113
-\pgf@hbox=\box114
-\pgf@layerbox@main=\box115
-\pgf@picture@serial@count=\count364
+\pgfpic=\box122
+\pgf@hbox=\box123
+\pgf@layerbox@main=\box124
+\pgf@picture@serial@count=\count392
 ) (C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcoregraphicstate.code.tex
 File: pgfcoregraphicstate.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-\pgflinewidth=\dimen295
+\pgflinewidth=\dimen306
 ) (C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcoretransformations.code.tex
 File: pgfcoretransformations.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-\pgf@pt@x=\dimen296
-\pgf@pt@y=\dimen297
-\pgf@pt@temp=\dimen298
+\pgf@pt@x=\dimen307
+\pgf@pt@y=\dimen308
+\pgf@pt@temp=\dimen309
 ) (C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcorequick.code.tex
 File: pgfcorequick.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 ) (C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcoreobjects.code.tex
@@ -613,17 +695,17 @@ File: pgfcoreobjects.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 File: pgfcorepathprocessing.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 ) (C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcorearrows.code.tex
 File: pgfcorearrows.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-\pgfarrowsep=\dimen299
+\pgfarrowsep=\dimen310
 ) (C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcoreshade.code.tex
 File: pgfcoreshade.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-\pgf@max=\dimen300
-\pgf@sys@shading@range@num=\count365
-\pgf@shadingcount=\count366
+\pgf@max=\dimen311
+\pgf@sys@shading@range@num=\count393
+\pgf@shadingcount=\count394
 ) (C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcoreimage.code.tex
 File: pgfcoreimage.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 ) (C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcoreexternal.code.tex
 File: pgfcoreexternal.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-\pgfexternal@startupbox=\box116
+\pgfexternal@startupbox=\box125
 ) (C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcorelayers.code.tex
 File: pgfcorelayers.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 ) (C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcoretransparency.code.tex
@@ -634,45 +716,46 @@ File: pgfcorepatterns.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 File: pgfcorerdf.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 ))) (C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmoduleshapes.code.tex
 File: pgfmoduleshapes.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-\pgfnodeparttextbox=\box117
+\pgfnodeparttextbox=\box126
 ) (C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmoduleplot.code.tex
 File: pgfmoduleplot.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 ) (C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex/latex/pgf/compatibility\pgfcomp-version-0-65.sty
 Package: pgfcomp-version-0-65 2025-08-29 v3.1.11a (3.1.11a)
-\pgf@nodesepstart=\dimen301
-\pgf@nodesepend=\dimen302
-) (C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex/latex/pgf/compatibility\pgfcomp-version-1-18.sty
+\pgf@nodesepstart=\dimen312
+\pgf@nodesepend=\dimen313
+)
+(C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex/latex/pgf/compatibility\pgfcomp-version-1-18.sty
 Package: pgfcomp-version-1-18 2025-08-29 v3.1.11a (3.1.11a)
 )) (C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tikz\tikz.code.tex
 Package: tikz 2025-08-29 v3.1.11a (3.1.11a)
  (C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries\pgflibraryplothandlers.code.tex
 File: pgflibraryplothandlers.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-\pgf@plot@mark@count=\count367
-\pgfplotmarksize=\dimen303
+\pgf@plot@mark@count=\count395
+\pgfplotmarksize=\dimen314
 )
-\tikz@lastx=\dimen304
-\tikz@lasty=\dimen305
-\tikz@lastxsaved=\dimen306
-\tikz@lastysaved=\dimen307
-\tikz@lastmovetox=\dimen308
-\tikz@lastmovetoy=\dimen309
-\tikzleveldistance=\dimen310
-\tikzsiblingdistance=\dimen311
-\tikz@figbox=\box118
-\tikz@figbox@bg=\box119
-\tikz@tempbox=\box120
-\tikz@tempbox@bg=\box121
-\tikztreelevel=\count368
-\tikznumberofchildren=\count369
-\tikznumberofcurrentchild=\count370
-\tikz@fig@count=\count371
+\tikz@lastx=\dimen315
+\tikz@lasty=\dimen316
+\tikz@lastxsaved=\dimen317
+\tikz@lastysaved=\dimen318
+\tikz@lastmovetox=\dimen319
+\tikz@lastmovetoy=\dimen320
+\tikzleveldistance=\dimen321
+\tikzsiblingdistance=\dimen322
+\tikz@figbox=\box127
+\tikz@figbox@bg=\box128
+\tikz@tempbox=\box129
+\tikz@tempbox@bg=\box130
+\tikztreelevel=\count396
+\tikznumberofchildren=\count397
+\tikznumberofcurrentchild=\count398
+\tikz@fig@count=\count399
  (C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmodulematrix.code.tex
 File: pgfmodulematrix.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-\pgfmatrixcurrentrow=\count372
-\pgfmatrixcurrentcolumn=\count373
-\pgf@matrix@numberofcolumns=\count374
+\pgfmatrixcurrentrow=\count400
+\pgfmatrixcurrentcolumn=\count401
+\pgf@matrix@numberofcolumns=\count402
 )
-\tikz@expandcount=\count375
+\tikz@expandcount=\count403
  (C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tikz/libraries\tikzlibrarytopaths.code.tex
 File: tikzlibrarytopaths.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 ))) (C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tikz/libraries\tikzlibraryshapes.geometric.code.tex
@@ -681,12 +764,11 @@ File: tikzlibraryshapes.geometric.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 File: pgflibraryshapes.geometric.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 )) (C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries\pgflibraryarrows.meta.code.tex
 File: pgflibraryarrows.meta.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-\pgfarrowinset=\dimen312
-\pgfarrowlength=\dimen313
-\pgfarrowwidth=\dimen314
-\pgfarrowlinewidth=\dimen315
-)
-(C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tikz/libraries\tikzlibrarypositioning.code.tex
+\pgfarrowinset=\dimen323
+\pgfarrowlength=\dimen324
+\pgfarrowwidth=\dimen325
+\pgfarrowlinewidth=\dimen326
+) (C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tikz/libraries\tikzlibrarypositioning.code.tex
 File: tikzlibrarypositioning.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 ) (main.aux
 LaTeX Info: Redefining \. on input line 11.
@@ -696,24 +778,24 @@ Package babel Info: 'spanish' activates 'spanish' shorthands.
 )
 \openout1 = `main.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 115.
-LaTeX Font Info:    ... okay on input line 115.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 115.
-LaTeX Font Info:    ... okay on input line 115.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 115.
-LaTeX Font Info:    ... okay on input line 115.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 115.
-LaTeX Font Info:    ... okay on input line 115.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 115.
-LaTeX Font Info:    ... okay on input line 115.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 115.
-LaTeX Font Info:    ... okay on input line 115.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 115.
-LaTeX Font Info:    ... okay on input line 115.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 115.
-LaTeX Font Info:    ... okay on input line 115.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 115.
-LaTeX Font Info:    ... okay on input line 115.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 116.
+LaTeX Font Info:    ... okay on input line 116.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 116.
+LaTeX Font Info:    ... okay on input line 116.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 116.
+LaTeX Font Info:    ... okay on input line 116.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 116.
+LaTeX Font Info:    ... okay on input line 116.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 116.
+LaTeX Font Info:    ... okay on input line 116.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 116.
+LaTeX Font Info:    ... okay on input line 116.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 116.
+LaTeX Font Info:    ... okay on input line 116.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 116.
+LaTeX Font Info:    ... okay on input line 116.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 116.
+LaTeX Font Info:    ... okay on input line 116.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -751,17 +833,17 @@ LaTeX Font Info:    ... okay on input line 115.
 
 (C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count376
-\scratchdimen=\dimen316
-\scratchbox=\box122
-\nofMPsegments=\count377
-\nofMParguments=\count378
-\everyMPshowfont=\toks50
-\MPscratchCnt=\count379
-\MPscratchDim=\dimen317
-\MPnumerator=\count380
-\makeMPintoPDFobject=\count381
-\everyMPtoPDFconversion=\toks51
+\scratchcounter=\count404
+\scratchdimen=\dimen327
+\scratchbox=\box131
+\nofMPsegments=\count405
+\nofMParguments=\count406
+\everyMPshowfont=\toks56
+\MPscratchCnt=\count407
+\MPscratchDim=\dimen328
+\MPnumerator=\count408
+\makeMPintoPDFobject=\count409
+\everyMPtoPDFconversion=\toks57
 ) (C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex/latex/epstopdf-pkg\epstopdf-base.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
 Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 485.
@@ -769,6 +851,7 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 48
 File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
 ))
 Package caption Info: Begin \AtBeginDocument code.
+Package caption Info: float package is loaded.
 Package caption Info: hyperref package is loaded.
 Package caption Info: listings package is loaded.
 Package caption Info: longtable package is loaded.
@@ -776,14 +859,17 @@ Package caption Info: longtable package is loaded.
 Package: ltcaption 2021/01/08 v1.4c longtable captions (AR)
 )
 Package caption Info: End \AtBeginDocument code.
-LaTeX Info: Redefining \. on input line 115.
-LaTeX Info: Redefining \% on input line 115.
-Package hyperref Info: Link coloring OFF on input line 115.
+LaTeX Info: Redefining \. on input line 116.
+LaTeX Info: Redefining \% on input line 116.
+Package hyperref Info: Link coloring OFF on input line 116.
  (main.out) (main.out)
-\@outlinefile=\write4
-\openout4 = `main.out'.
+\@outlinefile=\write5
+\openout5 = `main.out'.
 
-\c@lstlisting=\count382
+ (C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex/latex/base\textcomp.sty
+Package: textcomp 2024/04/24 v2.1b Standard LaTeX package
+)
+\c@lstlisting=\count410
 
 babelbib: Set bibliography fall-back language to spanish
 babelbib: spanish.bdf loaded because language spanish defined.
@@ -794,16 +880,16 @@ babelbib extension \btxifchangecaseoff added to \extrasspanish
 )
 babelbib: Load BibTeX extensions \bibsspanish for spanish
 babelbib: Set language for keywords in the bibliography fixed to spanish
-<imagenes/escudoU2014.pdf, id=118, 320.19624pt x 689.57625pt>
+<imagenes/escudoU2014.pdf, id=122, 320.19624pt x 689.57625pt>
 File: imagenes/escudoU2014.pdf Graphic file (type pdf)
 <use imagenes/escudoU2014.pdf>
-Package pdftex.def Info: imagenes/escudoU2014.pdf  used on input line 118.
+Package pdftex.def Info: imagenes/escudoU2014.pdf  used on input line 119.
 (pdftex.def)             Requested size: 38.42189pt x 82.74557pt.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 118.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 119.
 (C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 118.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 119.
  (C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
@@ -817,7 +903,7 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 pdfTeX warning (ext4): destination with the same identifier (name{page.i}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.131 \begin{dedicatoria}
+l.132 \begin{dedicatoria}
                           [1
 
 ]
@@ -837,8 +923,8 @@ LaTeX Info: Redefining \% on input line 1.
 [4
 
 ])
-\tf@toc=\write5
-\openout5 = `main.toc'.
+\tf@toc=\write6
+\openout6 = `main.toc'.
 
 
 
@@ -846,8 +932,8 @@ LaTeX Info: Redefining \% on input line 1.
 LaTeX Info: Redefining \. on input line 1.
 LaTeX Info: Redefining \% on input line 1.
 )
-\tf@lot=\write6
-\openout6 = `main.lot'.
+\tf@lot=\write7
+\openout7 = `main.lot'.
 
 
 
@@ -857,8 +943,8 @@ LaTeX Info: Redefining \% on input line 1.
 LaTeX Info: Redefining \. on input line 1.
 LaTeX Info: Redefining \% on input line 1.
 )
-\tf@lof=\write7
-\openout7 = `main.lof'.
+\tf@lof=\write8
+\openout8 = `main.lof'.
 
 
 
@@ -955,7 +1041,7 @@ Cap\'{\i }tulo 3.
 [10
 
 ]
-<diagramas/recieve_and_response.png, id=277, 1126.2075pt x 1326.9575pt>
+<diagramas/recieve_and_response.png, id=282, 1126.2075pt x 1326.9575pt>
 File: diagramas/recieve_and_response.png Graphic file (type png)
 <use diagramas/recieve_and_response.png>
 Package pdftex.def Info: diagramas/recieve_and_response.png  used on input line 71.
@@ -963,7 +1049,7 @@ Package pdftex.def Info: diagramas/recieve_and_response.png  used on input line 
 
 
 [11 <./diagramas/recieve_and_response.png>]
-<diagramas/udp.png, id=286, 1836.8625pt x 2328.7pt>
+<diagramas/udp.png, id=291, 1836.8625pt x 2328.7pt>
 File: diagramas/udp.png Graphic file (type png)
 <use diagramas/udp.png>
 Package pdftex.def Info: diagramas/udp.png  used on input line 137.
@@ -985,75 +1071,88 @@ Overfull \hbox (6.8218pt too wide) in paragraph at lines 145--171
 
 [14]
 Cap\'{\i }tulo 4.
-) (5algoritmo.tex
+Package hyperref Info: bookmark level for unknown lstlisting defaults to 0 on input line 27.
+(masterfiles/toy_masterfile.txt)
 
 [15
 
 ]
+Underfull \hbox (badness 10000) in paragraph at lines 45--46
+
+ []
+
+
+
+[16]) (5algoritmo.tex
+
+[17]
 Cap\'{\i }tulo 5.
 )
 
-[16
+[18
 
 ] (6edns0.tex
 
-[17]
+[19]
 
-[18]
+[20]
 Cap\'{\i }tulo 6.
 )
 
-[19
+[21
 
 ] (7dnssec.tex
 
-[20]
+[22]
 
-[21]
+[23]
 Cap\'{\i }tulo 7.
 )
 
-[22
+[24
 
 ] (8discusiones.tex
 
-[23]
+[25]
 
-[24]
+[26]
 Cap\'{\i }tulo 8.
 )
 
-[25
+[27
 
 ] (9conclusiones.tex
 
-[26]
+[28]
 
-[27]
+[29]
 Cap\'{\i }tulo 9.
 )
 
-[28
+[30
 
 ]
 
-[29] (main.bbl
+[31] (main.bbl
 
-[30]) (anexoA.tex
+[32]) (anexoA.tex
 
-[31
+[33
 
 ]
 Ap\'{e}ndice A.
 )
 
-[32
+[34
 
 ]
 
-[33]
+[35]
 
-[34] (main.aux
+[36]
+runsystem(latexminted cleantemp  --timestamp 20251020130003 FAD58DE7366495DB4650CFEFAC2FCD61)...disabled (restricted).
+
+ (main.aux
 LaTeX Info: Redefining \. on input line 11.
 LaTeX Info: Redefining \% on input line 11.
 )
@@ -1066,20 +1165,20 @@ L3 programming layer <2025-09-02>
 LaTeX Warning: There were undefined references.
 
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 1A2DF575FC988895A064F3E9527D1F72;3713.
+(rerunfilecheck)             Checksum: 382461CD85AA1D52D8907FCC614CB4A9;3818.
  ) 
 Here is how much of TeX's memory you used:
- 28446 strings out of 468080
- 524600 string characters out of 5424799
- 1415340 words of memory out of 5000000
- 56519 multiletter control sequences out of 15000+600000
- 637210 words of font info for 77 fonts, out of 8000000 for 9000
+ 32512 strings out of 468080
+ 638010 string characters out of 5424799
+ 1660111 words of memory out of 5000000
+ 60510 multiletter control sequences out of 15000+600000
+ 637678 words of font info for 79 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  90i,11n,93p,694b,1263s stack positions out of 10000i,1000n,20000p,200000b,200000s
  <C:\Users\bastian\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcrm1200.pk><C:/Users/bastian/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Users/bastian/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/Users/bastian/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Users/bastian/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr6.pfb><C:/Users/bastian/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/bastian/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmti12.pfb><C:/Users/bastian/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmtt10.pfb><C:/Users/bastian/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmtt12.pfb>
-Output written on main.pdf (42 pages, 469078 bytes).
+Output written on main.pdf (44 pages, 479584 bytes).
 PDF statistics:
- 459 PDF objects out of 1000 (max. 8388607)
- 121 named destinations out of 1000 (max. 500000)
- 252 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 499 PDF objects out of 1000 (max. 8388607)
+ 145 named destinations out of 1000 (max. 500000)
+ 260 words of extra memory for PDF output out of 10000 (max. 10000000)
 

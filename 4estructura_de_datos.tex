@@ -1,8 +1,38 @@
 \chapter{Estructura y procesamiento de datos}
 
-Un masterfile es un archivo de texto que contiene todos los registros DNS (Resource Records) que conforman la zona que el servidor va a manejar, pero estos datos están en crudo
-y necesitan de un procesamiento refinado para poder convertirse en estructuras de datos eficientes que permitan responder consultas DNS de manera rápida.
-En esta seccion se explica cómo se lleva a cabo este procesamiento y las estructuras de datos utilizadas para almacenar la información de la zona DNS en memoria.
+\section{Masterfile}
+
+Un masterfile es un archivo de texto que contiene los registros DNS de una zona en un formato estandarizado. Se trata de la representación más básica y tradicional para almacenar la información de una zona.
+Cada línea del archivo corresponde a un Resource Record, cuyos campos están separados por espacios o tabulaciones. Además, el formato admite directivas especiales que permiten definir 
+parámetros globales para la zona, como el valor predeterminado del TTL (Time To Live) o el servidor de nombres autoritativo.
+
+A continuación se muestra un ejemplo con datos ficticios para la zona example.com:
+
+\lstset{
+  basicstyle=\ttfamily\small,
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  stepnumber=1,
+  numbersep=8pt,
+  backgroundcolor=\color{gray!10},
+  showspaces=false,
+  showstringspaces=false,
+  frame=single,
+  rulecolor=\color{black},
+  breaklines=true,
+  captionpos=b,
+  tabsize=4
+}
+
+\lstinputlisting[caption={Contenido del masterfile de la zona \texttt{example.com}}]{masterfiles/toy_masterfile.txt}
+
+
+Como se aprecia en el ejemplo, es posible incluir comentarios utilizando el símbolo \texttt{;} asimismo, cuando un registro es extenso, se permite dividirlo en múltiples líneas encerrando 
+su contenido entre paréntesis \texttt{()}, lo que mejora significativamente la legibilidad. Incluso dentro de estos paréntesis se pueden insertar comentarios adicionales.
+
+En resumen, un masterfile almacena la información en texto plano, de manera sencilla y legible para humanos. Sin embargo, este formato no es eficiente para responder consultas DNS 
+directamente, por lo que es necesario procesarlo y transformarlo en estructuras de datos internas más adecuadas. A continuación, se describe cómo se realiza este procesamiento y las 
+estructuras utilizadas para representar la información de la zona en memoria.
 
 \section{Catalogo}
 Estructura que contiene un \texttt{Hashmap} donde cada llave es un string con el nombre de la zona y el valor es un puntero a la estructura con los datos reales.
@@ -12,6 +42,8 @@ zona del catalogo, entonces se puede responder inmediatamente con un \texttt{REF
 
 El valor de retorno en el \texttt{Hashmap} está envuelto en un \verb|Arc<RwLock<>>| para permitir el acceso concurrente a los datos de la zona desde múltiples threads.
 
+A continuación se muestra la definición de la estructura \texttt{Catalog}:\\
+
 %salto de linea para que se vea mejor
 \begin{lstlisting}
     pub struct Catalog {
@@ -19,5 +51,16 @@ El valor de retorno en el \texttt{Hashmap} está envuelto en un \verb|Arc<RwLock
     }
 \end{lstlisting}
 
+\newpage
+
 \section{Hash anidado de Resource Records}
+
+Estructura de datos global accesible por el algoritmo de búsqueda para la obtención de los \texttt{Resource Records}. En un principio 
+la estructura de datos iba a ser un árbol n-ario jerarquico, pero al momento de implementarlo hubieron muchos problemas, esto se verá con más detalle en la sección (REDACTED)
+
+
+Esta estructura contiene el nombre de la zona (por ejemplo, \texttt{"niclabs.cl"}) y todos los datos asociados organizados en un \texttt{HashMap} anidado. 
+La primera llave corresponde al \texttt{nombre de dominio}, y la segunda al \texttt{Rrtype} (tipo de registro). Esta organización responde al hecho de que el algoritmo de 
+búsqueda debe obtener un \texttt{RRset}, el cual está definido como el conjunto de todos los registros (\texttt{RR}) que comparten el mismo nombre de dominio, 
+tipo (\texttt{Rrtype}) y clase. En esta implementación se asume que la clase es siempre \texttt{IN} (Internet), por lo que no se incluye como parte de las llaves del hashmap.
 

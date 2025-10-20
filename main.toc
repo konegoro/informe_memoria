@@ -21,12 +21,13 @@
 \contentsline {section}{\numberline {3.1}UDP}{10}{section.3.1}%
 \contentsline {section}{\numberline {3.2}TCP}{14}{section.3.2}%
 \contentsline {chapter}{\numberline {4}Estructura y procesamiento de datos}{15}{chapter.4}%
-\contentsline {section}{\numberline {4.1}Catalogo}{15}{section.4.1}%
-\contentsline {section}{\numberline {4.2}Hash anidado de Resource Records}{15}{section.4.2}%
-\contentsline {chapter}{\numberline {5}Algoritmo de Búsqueda}{16}{chapter.5}%
-\contentsline {chapter}{\numberline {6}EDNS0}{19}{chapter.6}%
-\contentsline {chapter}{\numberline {7}DNSSEC}{22}{chapter.7}%
-\contentsline {chapter}{\numberline {8}Discusiones}{25}{chapter.8}%
-\contentsline {chapter}{\numberline {9}Conclusiones}{28}{chapter.9}%
-\contentsline {chapter}{\numberline {}Bibliograf\'ia}{31}{chapter*.14}%
-\contentsline {chapter}{Ap\'{e}ndice \numberline {A}Anexo}{32}{Appendix.1.Alph1}%
+\contentsline {section}{\numberline {4.1}Masterfile}{15}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Catalogo}{16}{section.4.2}%
+\contentsline {section}{\numberline {4.3}Hash anidado de Resource Records}{17}{section.4.3}%
+\contentsline {chapter}{\numberline {5}Algoritmo de Búsqueda}{18}{chapter.5}%
+\contentsline {chapter}{\numberline {6}EDNS0}{21}{chapter.6}%
+\contentsline {chapter}{\numberline {7}DNSSEC}{24}{chapter.7}%
+\contentsline {chapter}{\numberline {8}Discusiones}{27}{chapter.8}%
+\contentsline {chapter}{\numberline {9}Conclusiones}{30}{chapter.9}%
+\contentsline {chapter}{\numberline {}Bibliograf\'ia}{33}{chapter*.14}%
+\contentsline {chapter}{Ap\'{e}ndice \numberline {A}Anexo}{34}{Appendix.1.Alph1}%
