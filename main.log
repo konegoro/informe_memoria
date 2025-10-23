@@ -1,10 +1,10 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex 2025.10.15)  20 OCT 2025 19:31
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex 2025.10.15)  22 OCT 2025 21:50
 entering extended mode
- restricted \write18 enabled.
+ \write18 enabled.
  file:line:error style messages enabled.
  %&-line parsing enabled.
-**c:/Users/bastian/Desktop/DCC/Primavera2025/F/informe_memoria/main.tex
-(c:/Users/bastian/Desktop/DCC/Primavera2025/F/informe_memoria/main.tex
+**./main.tex
+(main.tex
 LaTeX2e <2025-06-01> patch level 1
 L3 programming layer <2025-09-02>
 (umemoria.cls
@@ -589,7 +589,7 @@ Package: pgfopts 2014/07/10 v2.1a LaTeX package options with pgfkeys
 \pgfopts@list@add@b@toks=\toks48
 ) (C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex/latex/tools\shellesc.sty
 Package: shellesc 2023/07/08 v1.0d unified shell escape interface for LaTeX
-Package shellesc Info: Restricted shell escape enabled on input line 77.
+Package shellesc Info: Unrestricted shell escape enabled on input line 75.
 ) (C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex/latex/float\float.sty
 Package: float 2001/11/08 v1.3d Float enhancements (AL)
 \c@float@type=\count380
@@ -775,27 +775,34 @@ LaTeX Info: Redefining \. on input line 11.
 LaTeX Info: Redefining \% on input line 11.
 Package babel Info: 'spanish' activates 'spanish' shorthands.
 (babel)             Reported on input line 11.
+
+
+LaTeX Warning: Label `main-fig:udp_handle_flowchart' multiply defined.
+
+
+LaTeX Warning: Label `main-fig:udp_handle_flowchart' multiply defined.
+
 )
 \openout1 = `main.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 116.
-LaTeX Font Info:    ... okay on input line 116.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 116.
-LaTeX Font Info:    ... okay on input line 116.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 116.
-LaTeX Font Info:    ... okay on input line 116.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 116.
-LaTeX Font Info:    ... okay on input line 116.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 116.
-LaTeX Font Info:    ... okay on input line 116.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 116.
-LaTeX Font Info:    ... okay on input line 116.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 116.
-LaTeX Font Info:    ... okay on input line 116.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 116.
-LaTeX Font Info:    ... okay on input line 116.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 116.
-LaTeX Font Info:    ... okay on input line 116.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 131.
+LaTeX Font Info:    ... okay on input line 131.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 131.
+LaTeX Font Info:    ... okay on input line 131.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 131.
+LaTeX Font Info:    ... okay on input line 131.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 131.
+LaTeX Font Info:    ... okay on input line 131.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 131.
+LaTeX Font Info:    ... okay on input line 131.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 131.
+LaTeX Font Info:    ... okay on input line 131.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 131.
+LaTeX Font Info:    ... okay on input line 131.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 131.
+LaTeX Font Info:    ... okay on input line 131.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 131.
+LaTeX Font Info:    ... okay on input line 131.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -859,9 +866,9 @@ Package caption Info: longtable package is loaded.
 Package: ltcaption 2021/01/08 v1.4c longtable captions (AR)
 )
 Package caption Info: End \AtBeginDocument code.
-LaTeX Info: Redefining \. on input line 116.
-LaTeX Info: Redefining \% on input line 116.
-Package hyperref Info: Link coloring OFF on input line 116.
+LaTeX Info: Redefining \. on input line 131.
+LaTeX Info: Redefining \% on input line 131.
+Package hyperref Info: Link coloring OFF on input line 131.
  (main.out) (main.out)
 \@outlinefile=\write5
 \openout5 = `main.out'.
@@ -880,16 +887,16 @@ babelbib extension \btxifchangecaseoff added to \extrasspanish
 )
 babelbib: Load BibTeX extensions \bibsspanish for spanish
 babelbib: Set language for keywords in the bibliography fixed to spanish
-<imagenes/escudoU2014.pdf, id=126, 320.19624pt x 689.57625pt>
+<imagenes/escudoU2014.pdf, id=146, 320.19624pt x 689.57625pt>
 File: imagenes/escudoU2014.pdf Graphic file (type pdf)
 <use imagenes/escudoU2014.pdf>
-Package pdftex.def Info: imagenes/escudoU2014.pdf  used on input line 119.
+Package pdftex.def Info: imagenes/escudoU2014.pdf  used on input line 134.
 (pdftex.def)             Requested size: 38.42189pt x 82.74557pt.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 119.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 134.
 (C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 119.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 134.
  (C:\Users\bastian\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
@@ -903,7 +910,7 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 pdfTeX warning (ext4): destination with the same identifier (name{page.i}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.132 \begin{dedicatoria}
+l.147 \begin{dedicatoria}
                           [1
 
 ]
@@ -1041,7 +1048,7 @@ Cap\'{\i }tulo 3.
 [10
 
 ]
-<diagramas/recieve_and_response.png, id=287, 1126.2075pt x 1326.9575pt>
+<diagramas/recieve_and_response.png, id=312, 1126.2075pt x 1326.9575pt>
 File: diagramas/recieve_and_response.png Graphic file (type png)
 <use diagramas/recieve_and_response.png>
 Package pdftex.def Info: diagramas/recieve_and_response.png  used on input line 71.
@@ -1049,7 +1056,7 @@ Package pdftex.def Info: diagramas/recieve_and_response.png  used on input line 
 
 
 [11 <./diagramas/recieve_and_response.png>]
-<diagramas/udp.png, id=296, 1836.8625pt x 2328.7pt>
+<diagramas/udp.png, id=321, 1836.8625pt x 2328.7pt>
 File: diagramas/udp.png Graphic file (type png)
 <use diagramas/udp.png>
 Package pdftex.def Info: diagramas/udp.png  used on input line 137.
@@ -1093,56 +1100,95 @@ Underfull \hbox (badness 10000) in paragraph at lines 76--77
 
  []
 
-) (5algoritmo.tex
+
 
 [17]
+<diagramas/read_masterfile_records.png, id=385, 837.1275pt x 1538.74875pt>
+File: diagramas/read_masterfile_records.png Graphic file (type png)
+<use diagramas/read_masterfile_records.png>
+Package pdftex.def Info: diagramas/read_masterfile_records.png  used on input line 137.
+(pdftex.def)             Requested size: 333.51662pt x 613.03893pt.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
 
 [18]
+
+[19 <./diagramas/read_masterfile_records.png>]
+<diagramas/parse_resource_records.png, id=396, 830.10126pt x 1447.4075pt>
+File: diagramas/parse_resource_records.png Graphic file (type png)
+<use diagramas/parse_resource_records.png>
+Package pdftex.def Info: diagramas/parse_resource_records.png  used on input line 152.
+(pdftex.def)             Requested size: 292.98439pt x 510.86923pt.
+
+
+[20 <./diagramas/parse_resource_records.png>]
+Overfull \hbox (20.0537pt too wide) in paragraph at lines 158--161
+[]\OT1/cmr/m/n/12 Como se ve en el dia-gra-ma, es-ta fun-ci^^Son lla-ma a otra fun-ci^^Son au-xi-liar lla-ma-da \OT1/cmtt/m/n/12 rr[]from[]string\OT1/cmr/m/n/12 ,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 158--161
+
+ []
+
+
+
+[21]
+Underfull \hbox (badness 10000) in paragraph at lines 200--201
+
+ []
+
+
+
+[22]) (5algoritmo.tex
+
+[23]
 Cap\'{\i }tulo 5.
 ) (6edns0.tex
 
-[19
+[24
 
 ]
 Cap\'{\i }tulo 6.
 ) (7dnssec.tex
 
-[20
+[25
 
 ]
 Cap\'{\i }tulo 7.
 ) (8discusiones.tex
 
-[21
+[26
 
 ]
 Cap\'{\i }tulo 8.
-) (9conclusiones.tex
+)
 
-[22
+[27
 
-]
-Cap\'{\i }tulo 9.
-) (main.bbl
+] (main.bbl
 
-[23
+[28
 
 ]) (anexoA.tex
 
-[24
+[29
 
 ]
 Ap\'{e}ndice A.
 )
 
-[25
+[30
 
 ]
 
-[26]
+[31]
 
-[27]
-runsystem(latexminted cleantemp  --timestamp 20251020193154 FAD58DE7366495DB4650CFEFAC2FCD61)...disabled (restricted).
+[32]
+runsystem(latexminted cleantemp  --timestamp 20251022215007 FAD58DE7366495DB4650CFEFAC2FCD61)...executed.
 
  (main.aux
 LaTeX Info: Redefining \. on input line 11.
@@ -1156,21 +1202,24 @@ L3 programming layer <2025-09-02>
 
 LaTeX Warning: There were undefined references.
 
+
+LaTeX Warning: There were multiply-defined labels.
+
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 443E29739E06A9A32FB88F9842E34AA9;4019.
+(rerunfilecheck)             Checksum: DBCB438900D3851DBA8FF8F2D673FCEA;5050.
  ) 
 Here is how much of TeX's memory you used:
- 32548 strings out of 468080
- 638538 string characters out of 5424799
- 1660111 words of memory out of 5000000
- 60543 multiletter control sequences out of 15000+600000
+ 32771 strings out of 468080
+ 642398 string characters out of 5424799
+ 1688295 words of memory out of 5000000
+ 60726 multiletter control sequences out of 15000+600000
  637976 words of font info for 80 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 90i,11n,93p,694b,1263s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 90i,11n,93p,635b,1263s stack positions out of 10000i,1000n,20000p,200000b,200000s
  <C:\Users\bastian\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tctt1095.pk> <C:\Users\bastian\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcrm1200.pk><C:/Users/bastian/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Users/bastian/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/Users/bastian/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Users/bastian/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr6.pfb><C:/Users/bastian/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/bastian/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmti12.pfb><C:/Users/bastian/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmtt10.pfb><C:/Users/bastian/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmtt12.pfb>
-Output written on main.pdf (35 pages, 454922 bytes).
+Output written on main.pdf (40 pages, 615850 bytes).
 PDF statistics:
- 479 PDF objects out of 1000 (max. 8388607)
- 147 named destinations out of 1000 (max. 500000)
- 268 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 574 PDF objects out of 1000 (max. 8388607)
+ 192 named destinations out of 1000 (max. 500000)
+ 318 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -1,5 +1,3 @@
-% se puede agregar la opción [english] para 
-%  memorias o tesis en inglés (borrando el archivo .aux)
 \documentclass{umemoria} 
 
 \depto{Departamento de las ciencias de computación}
@@ -44,8 +42,8 @@
 \usepackage{graphicx}
 
 \usepackage{listings}
-\usepackage{xcolor}
-\usepackage{minted}
+\usepackage{xcolor} % xcolor MUST be loaded before minted if you use color options
+\usepackage{minted} % <-- ENSURE THIS LINE IS PRESENT AND CORRECT
 
 \usepackage{enumitem}
 
@@ -56,6 +54,17 @@
 \tikzstyle{decision} = [diamond, aspect=2, text centered, draw=black, fill=green!25]
 \tikzstyle{arrow} = [thick,->,>=stealth]
 
+% --- Configuration for Minted ---
+\setminted{
+    style=dracula, 
+    linenos=true,       
+    frame=lines,        
+    framesep=2mm,       
+    bgcolor=black!95,   
+    fontfamily=tt,      
+    fontsize=\small,    
+    breaklines=true,    
+}
 \lstdefinelanguage{Rust}{
   keywords=[1]{pub, struct, fn, let, mut, match, impl, for, in, loop, while, if, else, use, mod, crate, ref, return, break, continue, as, const},
   keywords=[2]{String, HashMap, usize, Result, Option},
@@ -113,6 +122,12 @@
 }
 \lstset{style=mystyle}
 
+% Prefix all \label names with the job name to avoid multiply-defined labels
+\makeatletter
+\let\orig@label\label
+\renewcommand{\label}[1]{\orig@label{\jobname-#1}}
+\makeatother
+
 \begin{document}
 
 \frontmatter
@@ -151,9 +166,14 @@ Una dedicatoria corta.
 \input{6edns0}
 \input{7dnssec}
 \input{8discusiones}
-\input{9conclusiones}
+% If you do not have a bibliografia.bib or prefer an inline bibliography,
+% provide entries here to avoid BibTeX errors ("I found no \citation", etc.).
+\begin{thebibliography}{9}
 
+\bibitem{example}
+Autor, Título del trabajo, Editorial o Conferencia, Año.
 
+\end{thebibliography}
 % ver https://www.overleaf.com/learn/latex/Glossaries
 % \input{glosario.tex} % opcional
 

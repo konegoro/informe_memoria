@@ -53,13 +53,13 @@ A continuación se muestra la definición de la estructura \texttt{Catalog}:\\
 
 \newpage
 
-\section{Hash anidado de Resource Records}
+\section{Hash anidado de Resource Records Set (RRset)}
 
-Estructura de datos global accesible por el algoritmo de búsqueda para la obtención de los \texttt{Resource Records}. En un principio 
+Estructura de datos global accesible por el algoritmo de búsqueda para la obtención de los \texttt{Resource Record Set}. En un principio 
 la estructura de datos iba a ser un árbol n-ario jerarquico, pero al momento de implementarlo hubieron muchos problemas, esto se verá con más detalle en la sección (REDACTED)
 
 
-Esta estructura contiene el nombre de la zona (por ejemplo \texttt{"niclabs.cl"}) y todos los datos asociados organizados en un \texttt{HashMap} anidado. 
+Esta estructura contiene el nombre de la zona (por ejemplo \texttt{'niclabs.cl'}) y todos los datos asociados organizados en un \texttt{HashMap} anidado. 
 La primera llave corresponde al \texttt{nombre de dominio}, y la segunda al \texttt{Rrtype} (tipo de registro). Esta organización responde al hecho de que el algoritmo de 
 búsqueda debe obtener un \texttt{RRset}, el cual está definido como el conjunto de todos los registros (\texttt{RR}) que comparten el mismo nombre de dominio, 
 tipo (\texttt{Rrtype}) y clase. En esta implementación se asume que la clase es siempre \texttt{IN} (Internet), por lo que no se incluye como parte de las llaves del hashmap.
@@ -82,7 +82,7 @@ pub static DATA_STRUCTURE_NICLABS: Lazy<Arc<RwLock<DataStructure>>> = Lazy::new(
 });
 \end{lstlisting}
 
-Cabe mencionar que esta variable está envuelta en muchas estructuras, a continuación se explicará el uso de cada una:
+Mencionar que esta variable está envuelta en muchas estructuras, a continuación se explica el uso de cada una:
 
 \begin{itemize}
     \item \textbf{RwLock}: Permite múltiples accesos concurrentes de solo lectura desde distintos hilos (\textit{threads}). Sin embargo, cuando un hilo adquiere acceso de escritura, bloquea todas las lecturas hasta que finalice la operación de escritura.
@@ -93,6 +93,169 @@ Cabe mencionar que esta variable está envuelta en muchas estructuras, a continu
 \end{itemize}
 
 \section{Procesamiento del Masterfile}
+
+Pasar de la estructura vista en el Masterfile al HashMap anidado de RRset requiere de un proceso extenso de parsing, el cual se puede resumir con el siguiente diagrama:
+
+\noindent\hspace*{-1cm}% <-- ajusta este valor hasta que se vea centradoA
+\begin{tikzpicture}[node distance=2cm]
+
+\node (start) [startstop] {Inicio};
+\node (readfile) [process, below of=start] {
+\texttt{read\_masterfile\_records: } \\ 
+Lee el \texttt{masterfile}, extrae los RR en strings\\
+y el TTL por defecto
+};
+\node (parse) [process, below of=readfile] {
+\texttt{parse\_resource\_records: }\\
+ Convierte cada string en un \texttt{ResourceRecord}
+};
+\node (group) [process, below of=parse] {
+\texttt{group\_rrs\_into\_rrsets: }\\
+ Agrupa RR en \texttt{RRsets} según nombre y tipo a través de \texttt{hashmaps}
+};
+\node (finish) [startstop, below of=group] {\texttt{DataStructure} final};
+
+\draw [arrow] (start) -- (readfile);
+\draw [arrow] (readfile) -- (parse);
+\draw [arrow] (parse) -- (group);
+\draw [arrow] (group) -- (finish);
+
+\end{tikzpicture}
+
+A continuación se descrbiben en detalle cada una de las funciones involucradas en el proceso:
+
+\subsection{read\_masterfile\_records}
+
+Esta funcion se encarga de leer el archivo masterfile línea por línea, ignorando comentarios, líneas vacías, manejando los parentesis para registros largos y extrayendo el TTL por defecto si está definido.
+Cada línea que corresponde a un Resource Record se almacena en un vector de strings, el cual es retornado junto con el TTL por defecto.
+
+El diagrama de flujo es el siguiente:
+
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[height=0.9\textheight, keepaspectratio]{diagramas/read_masterfile_records.png}
+    \label{fig:udp_handle_flowchart}
+\end{figure}
+
+\newpage
+
+\subsection{parse\_resource\_records}
+
+Esta función recibe el vector de strings generado en la función anterior y convierte cada string en una estructura \texttt{ResourceRecord}. Para ello, divide cada línea en sus componentes 
+(nombre, TTL, clase, tipo y datos) y los asigna a los campos correspondientes de la estructura. Si el TTL no está especificado en el registro, utiliza el TTL por defecto extraído previamente.
+
+Su diagrama de flujo es el siguiente:
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[height=0.75\textheight, keepaspectratio]{diagramas/parse_resource_records.png}
+    \label{fig:udp_handle_flowchart}
+\end{figure}
+
+\newpage 
+
+Como se ve en el diagrama, esta función llama a otra función auxiliar llamada \texttt{rr\_from\_string}, la cual se encarga de convertir un string específico en un \texttt{ResourceRecord}. 
+Basicamente esta función hace un match y según el tipo del RR, se llama recursivamente a funciones especializadas para cada tipo de \texttt{RR}. Esto se hizo así
+ya que en la librería \texttt{dns-rust} ya existía ésta función para el caso de tipo A, pero no estaba para los demás, así que se tuvo que implementar para los siguientes tipos:\\
+
+\begin{lstlisting}
+fn rr_from_string(
+    rdata_values: SplitWhitespace,
+    ttl: u32,
+    class: &str,
+    host_name: String,
+    origin: String,
+    rtype: String,
+) -> ResourceRecord {
+    match rtype.as_str() {
+        'A' => { return ARdata::rr_from_master_file(rdata_values, ttl, class, host_name); }
+        'NS' => { return NsRdata::rr_from_master_file(rdata_values, ttl, class, host_name, origin); }
+        'SOA' => { return SoaRdata::rr_from_master_file(rdata_values, ttl, class, host_name, origin).0; }
+        'CNAME' => { return CnameRdata::rr_from_master_file(rdata_values, ttl, class, host_name, origin); }
+        'MX' => { return MxRdata::rr_from_master_file(rdata_values, ttl, class, host_name, origin); }
+        'TXT' => { return TxtRdata::rr_from_master_file(rdata_values, ttl, class, host_name); }
+        'AAAA' => { return AAAARdata::rr_from_master_file(rdata_values, ttl, class, host_name); }
+        'DS' => { return DsRdata::rr_from_master_file(rdata_values, ttl, class, host_name, origin); }
+        _ => {
+            panic!('Unsupported rtype: {}', rtype);
+        }
+    }
+}
+\end{lstlisting}
+
+En este caso el parametro \texttt{rdata\_values} corresponde a los datos del Rdata divididos en palabras, es decir, un iterador que permite recorrer cada palabra de los datos del \texttt{Rdata}.
+
+\newpage
+
+
+\subsection{group\_rrs\_into\_rrsets}
+Esta función recibe el vector de \texttt{ResourceRecord} generado previamente y los agrupa en conjuntos \texttt{RRset} utilizando una estructura de varios \texttt{HashMap} anidados.
+En primer lugar, la función recorre todos los registros y obtiene, para cada uno, su owner name y su tipo (\texttt{Rrtype}). Con ambos valores se construye una llave compuesta que se usa para poblar un 
+primer \texttt{HashMap}.Este mapa inicial permite agrupar los registros de acuerdo con la definición de un RRset (mismo nombre y mismo tipo), aunque su estructura no es todavía la más conveniente.
+Por ello, en un segundo paso, se recorre nuevamente este mapa y se genera una nueva estructura jerárquica: el primer nivel corresponde al owner name, el segundo al Rrtype, y finalmente, 
+como valor asociado, se almacena un \texttt{RRset}.En esta etapa, cada vector de \texttt{ResourceRecord} se transforma explícitamente en un objeto \texttt{RRset}, ya que, estrictamente 
+hablando, un RRset no es simplemente una colección de \texttt{RR's}, sino una estructura que encapsula dichos registros junto con metadatos adicionales asociados.
+
+La definición de RRset de la librería \texttt{dns-rust} es la siguiente:\\
+
+\begin{lstlisting}
+pub struct RRset {
+    name: DomainName,
+    rrtype: Rrtype,
+    rclass: Rclass,
+    ttl: u32,
+    records: Vec<(u16, Rdata)> //Pair rdlen, rdata
+}
+\end{lstlisting}
+
+Como se ve en la estructura, un \texttt{RRset} contiene los valores que definen el conjunto (nombre, tipo, clase), un TTL común que suele ser el mínimo de todos los \texttt{RR's} y finalmente
+un vector con tuplas que contienen la longitud del \texttt{Rdata} y el \texttt{Rdata} en sí. ¿Por qué se guarda el \texttt{Rdata} en vez del \texttt{ResourceRecord} completo? Porque sería redundante, 
+ya que los valores comunes a todos los \texttt{RR's} del conjunto ya están almacenados en los campos superiores del \texttt{RRset}.
+
+El diagrama de flujo se encuentra en anexos (REDACTED).
+
+\newpage 
+
+\section{Descarte del árbol jerárquico}
+
+Como se vió en la sección Hash anidado de Resource Records Set (RRset) se intentó implementar un árbol n-ario jerárquico para almacenar los datos de la zona DNS. Sin embargo, 
+esta implementación presentó múltiples dificultades y problemas que finalmente llevaron a descartarla en favor de una estructura basada en \texttt{HashMap} anidados. Primero se 
+explicará que RFC recomienda esta estructura y luego se detallarán los problemas encontrados.
+
+\subsection{RFC 1035}
+
+El RFC 1035, que define el estándar para el sistema de nombres de dominio, \textbf{sugiere} que los servidores DNS deberían utilizar una estructura de datos jerárquica para almacenar
+los registros de recursos (\texttt{RR}) de una zona DNS, pero también dice explicitamente que el manejo de estructuras internas es completamente libre. Citando textualmente la sección 6.1.2 del RFC 1035:
+
+\begin{quote}
+   ``While name server implementations are \textbf{free} to use any internal data
+    structures they choose, the suggested structure consists of three major
+    parts:\\
+    \dots
+
+    All of these data structures can be implemented an identical \textbf{tree
+    structure format}''
+\end{quote}
+
+
+De esta manera no se está rompiendo con ninguna norma o estándar al optar por una estructura diferente a la sugerida en el RFC.
+
+\subsection{Problemas de implementación}
+
+Implementar una estructura de árbol n-ario jerárquico para almacenar los registros DNS presentó varios desafíos técnicos y conceptuales que dificultaron su desarrollo y
+finalmente llevaron a su descarte. Algunos de los problemas más relevantes fueron:
+
+\begin{itemize}
+    \item \textbf{Complejidad innata de la estructura}: La idea de un arbol es que vaya desde el dominio más general (raíz) hasta el más específico (hojas), pero para lograr esto desde el masterfile se debia 
+     agrupar los registros por niveles, lo que implicaba múltiples pasadas sobre los datos y una lógica compleja para manejar casos especiales como CNAMEs, delegaciones, etc.
+
+    \item \textbf{Ownership de Rust}: Rust tiene un sistema de ownership muy estricto que complica la implementación de estructuras de datos recursivas como árboles. Manejar referencias mutables y compartidas en un árbol n-ario
+     resultó ser particularmente desafiante, especialmente cuando se necesitaba modificar nodos en diferentes niveles del árbol. Además el sistema debeía funcionar en un entorno concurrente, lo que añadió más 
+     restricciones.
+\end{itemize}
+
+
 
 
 
