@@ -32,8 +32,8 @@
 \contentsline {subsection}{\numberline {4.5.1}RFC 1035}{23}{subsection.4.5.1}%
 \contentsline {subsection}{\numberline {4.5.2}Problemas de implementación}{23}{subsection.4.5.2}%
 \contentsline {chapter}{\numberline {5}Algoritmo de Búsqueda}{24}{chapter.5}%
-\contentsline {chapter}{\numberline {6}EDNS0}{25}{chapter.6}%
-\contentsline {chapter}{\numberline {7}DNSSEC}{26}{chapter.7}%
-\contentsline {chapter}{\numberline {8}Discusiones}{27}{chapter.8}%
-\contentsline {chapter}{\numberline {}Bibliograf\'ia}{29}{chapter*.17}%
-\contentsline {chapter}{Ap\'{e}ndice \numberline {A}Anexo}{30}{Appendix.1.Alph1}%
+\contentsline {chapter}{\numberline {6}EDNS0}{27}{chapter.6}%
+\contentsline {chapter}{\numberline {7}DNSSEC}{28}{chapter.7}%
+\contentsline {chapter}{\numberline {8}Discusiones}{29}{chapter.8}%
+\contentsline {chapter}{\numberline {}Bibliograf\'ia}{31}{chapter*.18}%
+\contentsline {chapter}{Ap\'{e}ndice \numberline {A}Anexo}{32}{Appendix.1.Alph1}%

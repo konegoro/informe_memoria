@@ -1,1 +1,45 @@
 \chapter{Algoritmo de Búsqueda}
+
+El algoritmo de busqueda es el descrito en el RFC 1034, el cual se encarga recibir la consulta DNS y responder acorde a esta, buscando los registros en la base de datos del servidor.
+Este algoritmo contempla distintos escenarios, desde lo más general hasta lo más específico. Un resumen del mismo es el siguiente:
+
+\begin{itemize}
+    \item ¿El dominio consultado es parte del Catalogo? si no lo es, se responde REFUSED
+    \item Se hace un loop donde en cada iteración se van tomando subdominios del dominio consultado, comenzando desde el dominio completo hasta llegar al dominio raíz.
+    \begin{itemize}
+        \item Si el dominio actual y el tipo de registro consultado existen en la base de datos, se responde con los registros encontrados.
+        \item Si el tipo consultado NO es CNAME y existe un registro CNAME para el dominio, entonces se vuelve a llamar a la función de búsqueda con el valor del CNAME y el tipo original, agregando
+            los registros CNAME encontrados en la respuesta final.
+    \end{itemize}
+    \item Si el proceso anterior no logra una respuesta, entonces se pasa al proceso de glue records y de wildcards (que también es un loop de subdominios):
+    \begin{itemize}
+        \item Si el dominio  tiene un glue record en la base de datos, se responde con este registro.
+        \item Si no existe un glue record, se busca si existe un wildcard que aplique para el dominio consultado.
+        \begin{itemize} 
+            \item Si existe un wildcard, se responde con los registros correspondientes al wildcard.
+            \item Si no existe un wildcard, se responde con NXDOMAIN.
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+
+Este proceso está simplificado, la versión de código es bastante más compleja y además cubre el estandar de DNSSEC. A contiuación se mostrará un diagrama de flujo de la función \texttt{lookup\_data}, 
+la cual es la función principal. Luego en otras subsecciones se explicará en detalle las funciones auxiliares.
+
+\newpage
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.9\textwidth]{diagramas/lookup_data.png}
+    \label{fig:lookup_data_flowchart}
+\end{figure}
+
+Como se ve en el diagrama, la función \texttt{lookup\_data} recibe como parámetro la consulta DNS completa y la flag de DNSSEC, de ahí obtiene el nombre de dominio y el tipo de registro consultado y comienza el proceso de búsqueda.
+Pasando por el Catalogo, por la resolución directa o con CNAMES en \texttt{resolve\_qname\_query}, función que añade los registros correspondientes y retorna un par de booleanos (answered, original\_query),
+answered es verdadero si se logró responder la consulta y original\_query es verdadero si la respuesta contiene registros del tipo consultado originalmente, original\_query es falso si la respuesta fue añadida gracias
+a un registro CNAME. Luego si se pidió en modo DNSSEC, se añaden los registros RRSIG correspondientes a los registros ya añadidos en la respuesta y en caso de que no haya respuesta se buscan glue records y wildcard y se añaden sus RRSIGs. 
+Si la consulta no es original, entonces se deben añadir todas las firmas RRSIG de los CNAMEs añadidos de manera extra (caso borde) y finalmente se añaden los NSEC en caso
+de que se haya respondido con NXDOMAIN o con registros de deleción. Si no se pidió DNSSEC, simplemente se pregunta si no hubo respuesta, si no hubo entonces se intentan añadir glue records y/o los wilcards. Finalmente se setean los contadores del 
+HEADER y se retorna
+
+A continuación se explican cada una de las funciones auxiliares que componen el algoritmo de búsqueda.
