@@ -1,32 +1,32 @@
 \chapter{Algoritmo de Búsqueda}
 
+\section{Flujo y funcionamiento}
+
 El algoritmo de busqueda es el descrito en el RFC 1034, el cual se encarga recibir la consulta DNS y responder acorde a esta, buscando los registros en la base de datos del servidor.
 Este algoritmo contempla distintos escenarios, desde lo más general hasta lo más específico. Un resumen del mismo es el siguiente:
 
 \begin{itemize}
-    \item ¿El dominio consultado es parte del Catalogo? si no lo es, se responde REFUSED
-    \item Se hace un loop donde en cada iteración se van tomando subdominios del dominio consultado, comenzando desde el dominio completo hasta llegar al dominio raíz.
+    \item Primero, se verifica si el dominio consultado pertenece al catálogo del servidor.  
+    Si no pertenece, se responde con el código \texttt{REFUSED}, indicando que el servidor no es autoritativo para dicho dominio.
     \begin{itemize}
-        \item Si el dominio actual y el tipo de registro consultado existen en la base de datos, se responde con los registros encontrados.
-        \item Si el tipo consultado NO es CNAME y existe un registro CNAME para el dominio, entonces se vuelve a llamar a la función de búsqueda con el valor del CNAME y el tipo original, agregando
-            los registros CNAME encontrados en la respuesta final.
+        \item Si el dominio consultado y el tipo de registro solicitado existen en la base de datos, se responde directamente con los registros encontrados.
+        \item Si el tipo de registro solicitado no es \texttt{CNAME}, pero existe un registro \texttt{CNAME} para el dominio, se realiza una nueva llamada a la función de búsqueda utilizando el valor del \texttt{CNAME} como nuevo nombre de dominio y conservando el tipo original.  
+        Los registros \texttt{CNAME} encontrados se agregan a la respuesta final.
     \end{itemize}
-    \item Si el proceso anterior no logra una respuesta, entonces se pasa al proceso de glue records y de wildcards (que también es un loop de subdominios):
+
+    \item Si el proceso anterior no produce una respuesta, se continúa con la búsqueda de \textit{glue records} y \textit{wildcards}:
     \begin{itemize}
-        \item Si el dominio  tiene un glue record en la base de datos, se responde con este registro.
-        \item Si no existe un glue record, se busca si existe un wildcard que aplique para el dominio consultado.
-        \begin{itemize} 
-            \item Si existe un wildcard, se responde con los registros correspondientes al wildcard.
-            \item Si no existe un wildcard, se responde con NXDOMAIN.
+        \item Si el dominio posee un \textit{glue record} en la base de datos, se responde con dicho registro.
+        \item En caso contrario, se verifica si existe un \textit{wildcard} aplicable al dominio consultado.
+        \begin{itemize}
+            \item Si se encuentra un \textit{wildcard}, se responde con los registros asociados a él.
+            \item Si no se encuentra ningún \textit{wildcard}, se responde con \texttt{NXDOMAIN}, indicando que el dominio no existe.
         \end{itemize}
     \end{itemize}
 \end{itemize}
 
-
 Este proceso está simplificado, la versión de código es bastante más compleja y además cubre el estandar de DNSSEC. A contiuación se mostrará un diagrama de flujo de la función \texttt{lookup\_data}, 
 la cual es la función principal. Luego en otras subsecciones se explicará en detalle las funciones auxiliares.
-
-\newpage
 
 \begin{figure}[h!]
     \centering
@@ -34,12 +34,124 @@ la cual es la función principal. Luego en otras subsecciones se explicará en d
     \label{fig:lookup_data_flowchart}
 \end{figure}
 
-Como se ve en el diagrama, la función \texttt{lookup\_data} recibe como parámetro la consulta DNS completa y la flag de DNSSEC, de ahí obtiene el nombre de dominio y el tipo de registro consultado y comienza el proceso de búsqueda.
-Pasando por el Catalogo, por la resolución directa o con CNAMES en \texttt{resolve\_qname\_query}, función que añade los registros correspondientes y retorna un par de booleanos (answered, original\_query),
-answered es verdadero si se logró responder la consulta y original\_query es verdadero si la respuesta contiene registros del tipo consultado originalmente, original\_query es falso si la respuesta fue añadida gracias
-a un registro CNAME. Luego si se pidió en modo DNSSEC, se añaden los registros RRSIG correspondientes a los registros ya añadidos en la respuesta y en caso de que no haya respuesta se buscan glue records y wildcard y se añaden sus RRSIGs. 
-Si la consulta no es original, entonces se deben añadir todas las firmas RRSIG de los CNAMEs añadidos de manera extra (caso borde) y finalmente se añaden los NSEC en caso
-de que se haya respondido con NXDOMAIN o con registros de deleción. Si no se pidió DNSSEC, simplemente se pregunta si no hubo respuesta, si no hubo entonces se intentan añadir glue records y/o los wilcards. Finalmente se setean los contadores del 
-HEADER y se retorna
+La función \texttt{lookup\_data} recibe como parámetros la consulta DNS completa y la bandera que indica si el modo DNSSEC está activado. A partir de la consulta, 
+se extraen el nombre de dominio y el tipo de registro solicitado, y se inicia el proceso de búsqueda.
+
+Primero, la función intenta localizar la zona correspondiente en el catálogo. Si la zona existe, se procede a resolver el nombre mediante la función \texttt{resolve\_qname\_in\_zone},
+la cual realiza la resolución directa o a través de registros internos. Esta función retorna dos valores booleanos:
+
+
+\begin{itemize}
+    \item answered: Indica si la consulta fue respondida correctamente.
+    \item \texttt{original\_query}: Verdadero cuando la respuesta incluye registros del tipo solicitado originalmente, y falso cuando la respuesta se basa en un CNAME intermedio.
+\end{itemize}
+
+Si la consulta se realiza con \texttt{DNSSEC} habilitado, se añaden los registros de firma \texttt{RRSIG} correspondientes a los registros presentes en la respuesta. 
+En caso de que no se haya podido responder, se agregan los \texttt{glue records}, posibles \texttt{wildcards} y sus respectivas firmas \texttt{RRSIG}.
+Cuando la respuesta no corresponde a la consulta original (es decir, proviene de \texttt{CNAMEs}), se añaden también las firmas \texttt{RRSIG} de dichos registros adicionales. 
+Además, si la respuesta corresponde a un error \texttt{NXDOMAIN} o a un caso \texttt{NO\_DATA}, se incluyen los registros \texttt{NSEC} que sirven como prueba criptográfica de inexistencia.
+
+Por otro lado, si \texttt{DNSSEC} no está activo, el proceso se simplifica: si no se obtuvo una respuesta directa, se intenta completar la información añadiendo \texttt{glue records} o 
+\texttt{wildcards}.
+
+Finalmente, se actualizan los contadores y tamaños de las secciones en el encabezado (\texttt{HEADER}), y la función retorna la respuesta completa.
 
 A continuación se explican cada una de las funciones auxiliares que componen el algoritmo de búsqueda.
+
+\subsection{find\_zone\_in\_catalog}
+
+Esta función recibe el nombre de dominio consultado y el tipo de registro y busca por cada subdomoinio del domino original si existe una zona en el catálogo que maneje ese dominio.
+Por ejemplo si el dominio consultado es \texttt{a.niclabs.cl}, la función buscará en el catálogo las zonas \texttt{a.niclabs.cl}, \texttt{niclabs.cl}, \texttt{cl} y \texttt{root}. 
+Si encuentra una zona que maneje alguno de estos dominios, retorna la estructura de datos de la zona vista en la sección [REDACTED].
+
+Esta función es bastante simple pero maneja casos especiales que son importantes y que vienen desde el estandar de DNSSEC. Por ejemplo si tipo consultado es \texttt{DS},
+la función debe retornar la zona padre, ya que los registros DS son manejados siempre por la zona padre. Además existe un problema con el nombre de dominio raíz, ya que como se verá
+en una sección posterior, el nombre de dominio raíz se maneja internamente como \texttt{root} ya que no se puede usar \texttt{.} como nombre de carpeta en el sistema de archivos. Por lo tanto, si 
+el dominio consultado es \texttt{.} la función debe buscar la zona \texttt{root} en el catálogo.
+
+\subsection{resolve\_qname\_in\_zone} 
+
+Esta función traduce en lógica programática el paso 3.a del algoritmo definido en el RFC 1034, gestionando de forma coherente la búsqueda interna, 
+la detección de alias, las delegaciones y los casos sin datos dentro de una zona DNS.
+
+Se puede dividir el funcionamiento de esta función en los siguientes pasos:
+
+\subsubsection{Presencia de un registro CNAME}
+
+Si el nombre consultado posee un registro CNAME, la función distingue dos situaciones:
+
+\begin{itemize}
+    \item Si el tipo solicitado no es CNAME, el registro CNAME se añade igualmente a la respuesta, ya que informa que el nombre consultado es un alias. A continuación, 
+          el algoritmo sustituye el nombre original por el destino del CNAME y reinicia la búsqueda con ese nuevo nombre, tal como lo indica el RFC.
+    \item Si el tipo solicitado es CNAME, se agregan los registros CNAME encontrados a la respuesta y se considera la consulta resuelta. En ambos casos, el bit de respuesta autoritativa 
+          (AA) se marca como verdadero, indicando que la información proviene directamente de la zona local.
+\end{itemize}
+
+\subsubsection{Coincidencia exacta con nombre y tipo solicitado (distinto a CNAME)}
+
+Si el nombre posee registros del tipo consultado, estos se incorporan a la sección de respuestas. En este punto, la función evalúa si los registros corresponden a servidores de nombres (NS). 
+Si el conjunto NS pertenece al apex de la zona (al nombre de la zona, por ejemplo \texttt{niclabs.cl}), la respuesta es autoritativa; si pertenece a un subdominio delegado, la función interpreta que se trata de una delegación y 
+desactiva el bit de autoridad. De este modo, el comportamiento refleja la distinción entre datos autoritativos y delegaciones establecida por el RFC.
+
+\subsubsection{El nombre existe, pero no hay datos del tipo solicitado (NODATA)}
+Cuando el nombre se encuentra en la zona pero no existen registros del tipo pedido, la función retorna con un código de respuesta NOERROR, indicando que el nombre es válido 
+pero no posee información del tipo solicitado. Este caso corresponde al escenario “no data” descrito en el RFC 1034, en el cual no se genera un error, sino simplemente una respuesta vacía.
+
+\subsubsection{El nombre no existe en la zona}
+
+Si el nombre de dominio no aparece en los datos de la zona, el algoritmo finaliza sin agregar información a la respuesta. La ausencia total de datos para ese nombre
+será tratada posteriormente por otra función que añade Wildcards y/o NSECs segun corresponda. Hasta este punto el codigo de respuesta debería ser \texttt{NXDOMAIN} pero
+no se asigna aún, ya que podría cambiar si se encuentran wildcards o glue records.
+
+El diagrama de flujo de esta función es el siguiente:
+
+\newpage
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.9\textwidth]{diagramas/resolve_qname_in_zone.png}
+    \label{fig:resolve_qname_in_zone_flowchart}
+\end{figure}
+
+\newpage
+\subsection{add\_glue\_records\_and\_wildcard}
+
+La función \texttt{add\_glue\_records\_and\_wildcard} implementa las secciones 3.b y 3.c del algoritmo de búsqueda descrito en el RFC~1034. Su objetivo principal es manejar los 
+casos de \textit{delegations} (referrals) y de coincidencias con \textit{wildcards}.
+
+En primer lugar, la función analiza si el dominio consultado (\texttt{qname}) corresponde a un punto de delegación. Para ello, busca si existen registros \texttt{NS} 
+asociados al nombre, y verifica que dicho conjunto de registros no esté acompañado por un \texttt{SOA}. Si existen registros \texttt{NS} sin \texttt{SOA}, significa que el 
+dominio actual marca el inicio de una subzona delegada, por lo que el servidor debe responder con una \textit{referral}. En este caso:
+
+\begin{itemize}
+    \item Todos los registros \texttt{NS} encontrados se copian en la sección \texttt{Authority} de la respuesta.
+    \item Luego, por cada nombre de servidor listado en esos registros \texttt{NS}, se busca si existe un registro \texttt{A} o \texttt{AAAA} correspondiente 
+          (denominado \textit{glue record}). Si se encuentran, estos se añaden en la sección \texttt{Additional}.
+\end{itemize}
+
+Una vez construida la \textit{referral}, el código establece el campo \texttt{Rcode} en \texttt{NOERROR} y marca la respuesta como no autoritativa (\texttt{AA = 0}), 
+dado que el servidor no es responsable de la zona delegada.
+
+
+Si no se encuentra un punto de delegación, el algoritmo continúa con la búsqueda de coincidencias mediante \textit{wildcards}, correspondiente al paso 3.c del RFC~1034. 
+Para ello, si existe un registro \texttt{RRset} asociado al \textit{wildcard} y que coincida con el tipo de consulta (\texttt{qtype}), entonces:
+
+\begin{itemize}
+    \item Se añaden los registros encontrados a la sección \texttt{Answer}, utilizando como nombre propietario el \texttt{qname} original (según lo especificado por el RFC, aunque la firma se haya generado sobre el \textit{wildcard}).
+    \item Si existen firmas digitales \texttt{RRSIG} que cubran el tipo solicitado, estas se añaden igualmente en la sección \texttt{Answer}.
+    \item Además, se incluyen en la sección \texttt{Authority} los registros \texttt{NSEC} y sus firmas \texttt{RRSIG} asociadas, cuando corresponda.
+\end{itemize}
+
+Finalmente, si no se encuentra ningún \textit{wildcard} aplicable:
+\begin{itemize}
+    \item Si la consulta actual corresponde al nombre original, el servidor determina si se trata de un caso \textit{NO\_DATA} (nombre existente sin registros del tipo solicitado). 
+          En tal caso, responde con \texttt{NOERROR} y \texttt{AA = 1}.
+    \item En caso contrario, responde con \texttt{NXDOMAIN} (nombre inexistente) y también marca la respuesta como autoritativa.
+\end{itemize}
+ 
+Aclarar que NO se añaden los RRSIG en los glue record ya que la respuesta NO es autoritativa en ese caso.
+
+\newpage
+
+
+

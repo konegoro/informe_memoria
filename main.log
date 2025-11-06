@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex 2025.10.15)  23 OCT 2025 17:53
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex 2025.10.15)  5 NOV 2025 21:18
 entering extended mode
  \write18 enabled.
  file:line:error style messages enabled.
@@ -887,7 +887,7 @@ babelbib extension \btxifchangecaseoff added to \extrasspanish
 )
 babelbib: Load BibTeX extensions \bibsspanish for spanish
 babelbib: Set language for keywords in the bibliography fixed to spanish
-<imagenes/escudoU2014.pdf, id=146, 320.19624pt x 689.57625pt>
+<imagenes/escudoU2014.pdf, id=162, 320.19624pt x 689.57625pt>
 File: imagenes/escudoU2014.pdf Graphic file (type pdf)
 <use imagenes/escudoU2014.pdf>
 Package pdftex.def Info: imagenes/escudoU2014.pdf  used on input line 134.
@@ -1048,7 +1048,7 @@ Cap\'{\i }tulo 3.
 [10
 
 ]
-<diagramas/recieve_and_response.png, id=312, 1126.2075pt x 1326.9575pt>
+<diagramas/recieve_and_response.png, id=332, 1126.2075pt x 1326.9575pt>
 File: diagramas/recieve_and_response.png Graphic file (type png)
 <use diagramas/recieve_and_response.png>
 Package pdftex.def Info: diagramas/recieve_and_response.png  used on input line 71.
@@ -1056,7 +1056,7 @@ Package pdftex.def Info: diagramas/recieve_and_response.png  used on input line 
 
 
 [11 <./diagramas/recieve_and_response.png>]
-<diagramas/udp.png, id=321, 1836.8625pt x 2328.7pt>
+<diagramas/udp.png, id=341, 1836.8625pt x 2328.7pt>
 File: diagramas/udp.png Graphic file (type png)
 <use diagramas/udp.png>
 Package pdftex.def Info: diagramas/udp.png  used on input line 137.
@@ -1103,7 +1103,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 76--77
 
 
 [17]
-<diagramas/read_masterfile_records.png, id=385, 837.1275pt x 1538.74875pt>
+<diagramas/read_masterfile_records.png, id=405, 837.1275pt x 1538.74875pt>
 File: diagramas/read_masterfile_records.png Graphic file (type png)
 <use diagramas/read_masterfile_records.png>
 Package pdftex.def Info: diagramas/read_masterfile_records.png  used on input line 137.
@@ -1117,7 +1117,7 @@ LaTeX Warning: `!h' float specifier changed to `!ht'.
 [18]
 
 [19 <./diagramas/read_masterfile_records.png>]
-<diagramas/parse_resource_records.png, id=396, 830.10126pt x 1447.4075pt>
+<diagramas/parse_resource_records.png, id=416, 830.10126pt x 1447.4075pt>
 File: diagramas/parse_resource_records.png Graphic file (type png)
 <use diagramas/parse_resource_records.png>
 Package pdftex.def Info: diagramas/parse_resource_records.png  used on input line 152.
@@ -1137,7 +1137,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 158--161
 
 
 [21]
-Underfull \hbox (badness 10000) in paragraph at lines 200--201
+Underfull \hbox (badness 10000) in paragraph at lines 189--190
 
  []
 
@@ -1147,58 +1147,69 @@ Underfull \hbox (badness 10000) in paragraph at lines 200--201
 
 [23]
 Cap\'{\i }tulo 5.
+<diagramas/lookup_data.png, id=444, 1541.76pt x 1853.92625pt>
+File: diagramas/lookup_data.png Graphic file (type png)
+<use diagramas/lookup_data.png>
+Package pdftex.def Info: diagramas/lookup_data.png  used on input line 33.
+(pdftex.def)             Requested size: 424.82523pt x 510.83556pt.
 
 
 [24
 
 ]
-<diagramas/lookup_data.png, id=451, 2055.68pt x 2250.4075pt>
-File: diagramas/lookup_data.png Graphic file (type png)
-<use diagramas/lookup_data.png>
-Package pdftex.def Info: diagramas/lookup_data.png  used on input line 33.
-(pdftex.def)             Requested size: 424.82523pt x 465.04507pt.
 
-
-[25 <./diagramas/lookup_data.png>]) (6edns0.tex
+[25 <./diagramas/lookup_data.png>]
 
 [26]
+
+[27]
+<diagramas/resolve_qname_in_zone.png, id=467, 2005.4925pt x 1728.4575pt>
+File: diagramas/resolve_qname_in_zone.png Graphic file (type png)
+<use diagramas/resolve_qname_in_zone.png>
+Package pdftex.def Info: diagramas/resolve_qname_in_zone.png  used on input line 112.
+(pdftex.def)             Requested size: 424.82523pt x 366.1253pt.
+
+
+[28 <./diagramas/resolve_qname_in_zone.png>]
+
+[29]) (6edns0.tex
 Cap\'{\i }tulo 6.
 ) (7dnssec.tex
 
-[27
+[30
 
 ]
 Cap\'{\i }tulo 7.
 ) (8discusiones.tex
 
-[28
+[31
 
 ]
 Cap\'{\i }tulo 8.
 )
 
-[29
+[32
 
 ] (main.bbl
 
-[30
+[33
 
 ]) (anexoA.tex
 
-[31
+[34
 
 ]
 Ap\'{e}ndice A.
 )
 
-[32
+[35
 
 ]
 
-[33]
+[36]
 
-[34]
-runsystem(latexminted cleantemp  --timestamp 20251023175344 FAD58DE7366495DB4650CFEFAC2FCD61)...executed.
+[37]
+runsystem(latexminted cleantemp  --timestamp 20251105211853 FAD58DE7366495DB4650CFEFAC2FCD61)...executed.
 
  (main.aux
 LaTeX Info: Redefining \. on input line 11.
@@ -1216,20 +1227,20 @@ LaTeX Warning: There were undefined references.
 LaTeX Warning: There were multiply-defined labels.
 
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 3206F6D779C1DEDA6E25FE6CB964F7E3;5050.
+(rerunfilecheck)             Checksum: 0E0F954FA83E53B79FFD42EFA2A3010E;5787.
  ) 
 Here is how much of TeX's memory you used:
- 32782 strings out of 468080
- 642684 string characters out of 5424799
- 1688395 words of memory out of 5000000
- 60734 multiletter control sequences out of 15000+600000
+ 32730 strings out of 468080
+ 642233 string characters out of 5424799
+ 1660520 words of memory out of 5000000
+ 60693 multiletter control sequences out of 15000+600000
  637976 words of font info for 80 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  90i,11n,93p,635b,1263s stack positions out of 10000i,1000n,20000p,200000b,200000s
  <C:\Users\bastian\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tctt1095.pk> <C:\Users\bastian\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcrm1200.pk><C:/Users/bastian/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Users/bastian/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/Users/bastian/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Users/bastian/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr6.pfb><C:/Users/bastian/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/bastian/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmti12.pfb><C:/Users/bastian/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmtt10.pfb><C:/Users/bastian/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmtt12.pfb>
-Output written on main.pdf (42 pages, 772994 bytes).
+Output written on main.pdf (45 pages, 897258 bytes).
 PDF statistics:
- 586 PDF objects out of 1000 (max. 8388607)
- 195 named destinations out of 1000 (max. 500000)
- 323 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 601 PDF objects out of 1000 (max. 8388607)
+ 184 named destinations out of 1000 (max. 500000)
+ 360 words of extra memory for PDF output out of 10000 (max. 10000000)
 

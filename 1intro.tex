@@ -69,6 +69,11 @@ Antes de seguir con el desarrollo de este informe, es necesario abarcar ciertos 
     \item Clase en un RR: Valor que determina el medio a usar en el protocolo, normalmente es de tipo $IN$ (Internet), pero también existen 
     otros tipos secundarios que no es necesario mencionar.
     \item RDATA (Response Data): Valores de retorno que contienen la información clave de un RR. Es diferente para cada tipo de RR.
+    \item Glue Record: RR especial que contiene la IP de un Name Server delegado en otra zona, usado para evitar ciclos de referencias.
+    \item Wildcard: Nombre de dominio especial que permite que subdominios no definidos respondan con la misma información, usando un asterisco (*). Por ejemplo, *.niclabs.cl puede responder a consultas 
+          como a.niclabs.cl o b.c.niclabs.cl.
+    \item NXDOMAIN : Código de error que indica que el nombre de dominio consultado no existe.
+    \item NO\_DATA : Código de error que indica que el nombre de dominio consultado existe, pero no posee registros del tipo solicitado.
 \end{itemize}
 
 \section{Objetivos}

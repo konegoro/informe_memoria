@@ -1,18 +1,18 @@
 # Fdb version 4
-["bibtex main"] 1761252823.68227 "main.aux" "main.bbl" "main" 1761252826.9141 0
+["bibtex main"] 1762377605.38544 "main.aux" "main.bbl" "main" 1762388337.04742 0
   "./bibliografia.bib" 1760557466 1937 68f54fed56c6e786f4b15e50becc546d ""
   "C:/Users/bastian/AppData/Local/Programs/MiKTeX/bibtex/bst/bibtex/plain.bst" 1291864736 20613 bd3fbfa9f64872b81ac57a0dd2ed855f ""
-  "main.aux" 1761252826 7287 37a448360c560221ae90c4a10c721694 "pdflatex"
+  "main.aux" 1762388335 8566 f6ab67305db78cdbcac427d99f4bb416 "pdflatex"
   (generated)
   "main.bbl"
   "main.blg"
   (rewritten before read)
-["pdflatex"] 1761252823.93639 "main.tex" "main.pdf" "main" 1761252826.91466 0
-  "1intro.tex" 1760558586 7680 e5e1b3cf9e99b895ca5e29fc99813216 ""
+["pdflatex"] 1762388333.01347 "main.tex" "main.pdf" "main" 1762388337.04854 0
+  "1intro.tex" 1762189544 8301 ac0e045d7bcbe3296625bb7e72c636a3 ""
   "2marco_teorico.tex" 1760551737 9306 be5ba31096b53c5858ffde0197544e7a ""
   "3comunicacion.tex" 1760839756 8498 e2ff0c429afc6a8b3d992bad8805b955 ""
-  "4estructura_de_datos.tex" 1761180607 14412 70a6db77f46732dda1c5183ab18590a8 ""
-  "5algoritmo.tex" 1761252816 3711 55319a77e67c749c2f9555fd2fadb59d ""
+  "4estructura_de_datos.tex" 1762188252 13720 facc49849a5b552bc8739e9c90a8c033 ""
+  "5algoritmo.tex" 1762388332 11650 949469b8536f2ae830065ad0e25d3c9c ""
   "6edns0.tex" 1760999503 15 2c00ab9a7075460cb7b6372137ced7ae ""
   "7dnssec.tex" 1760999505 17 046c46ebcbe853e11de9eadbb4972f68 ""
   "8discusiones.tex" 1760999511 22 8f9cf1c43f50159c884d8fa260b96cdd ""
@@ -213,19 +213,20 @@
   "C:/Users/bastian/AppData/Local/Programs/MiKTeX/tex/latex/url/url.sty" 1388490452 12796 8edb7d69a20b857904dd0ea757c14ec9 ""
   "C:/Users/bastian/AppData/Local/Programs/MiKTeX/tex/latex/xcolor/xcolor.sty" 1729265222 55384 b454dec21c2d9f45ec0b793f0995b992 ""
   "anexoA.tex" 1760557466 30 28e7f75da4aafadd37aca710cddee491 ""
-  "diagramas/lookup_data.png" 1761251900 348589 9505dd88668b58a89f4ad7742708b0b6 ""
+  "diagramas/lookup_data.png" 1762188968 238813 5c4a2846c208cb11065e388d5a67f5f1 ""
   "diagramas/parse_resource_records.png" 1761084154 144498 fcb927a26e9ea24a1b7c73ed7decb8f2 ""
   "diagramas/read_masterfile_records.png" 1761072839 169590 ebfd1715e0c3e041d1c9b38b38d38fa7 ""
   "diagramas/recieve_and_response.png" 1761066323 127816 9a50b689103fcbb23d20cc65f54a9bea ""
+  "diagramas/resolve_qname_in_zone.png" 1762359959 341916 8fab863e7d6ac6c9b7933f71bbcb9fbb ""
   "diagramas/udp.png" 1760842230 383062 e524521a4ac9a3a2375bf1d445bd71d0 ""
   "imagenes/escudoU2014.pdf" 1760557466 43308 3a9e2b3b1f37899134c09e731c033786 ""
-  "main.aux" 1761252826 7287 37a448360c560221ae90c4a10c721694 "pdflatex"
-  "main.bbl" 1761252823 592 a580c9857b0b6afb4a0ef8146ac08ed1 "bibtex main"
-  "main.lof" 1761252826 210 bd16b93b12a299fc03440b5e021371b3 "pdflatex"
-  "main.lot" 1761252826 210 bd16b93b12a299fc03440b5e021371b3 "pdflatex"
-  "main.out" 1761252826 5050 3206f6d779c1deda6e25fe6cb964f7e3 "pdflatex"
+  "main.aux" 1762388335 8566 f6ab67305db78cdbcac427d99f4bb416 "pdflatex"
+  "main.bbl" 1762377605 592 a580c9857b0b6afb4a0ef8146ac08ed1 "bibtex main"
+  "main.lof" 1762388336 210 bd16b93b12a299fc03440b5e021371b3 "pdflatex"
+  "main.lot" 1762388336 210 bd16b93b12a299fc03440b5e021371b3 "pdflatex"
+  "main.out" 1762388335 5787 0e0f954fa83e53b79ffd42efa2a3010e "pdflatex"
   "main.tex" 1761168584 5081 438d8f6d3a4a25152a473d0510fa459c ""
-  "main.toc" 1761252826 3158 bb66314af83630d9b1a713e97eb391c0 "pdflatex"
+  "main.toc" 1762388336 3925 1b4499fa26983ca033aba27c724ff76d "pdflatex"
   "masterfiles/toy_masterfile.txt" 1760975246 769 98e33a7a3147983ae78062d8c14011cc ""
   "umemoria.cls" 1760557466 8901 53fa812ed06076de516f453f3311e771 ""
   (generated)

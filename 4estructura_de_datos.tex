@@ -159,32 +159,21 @@ Como se ve en el diagrama, esta función llama a otra función auxiliar llamada 
 Basicamente esta función hace un match y según el tipo del RR, se llama recursivamente a funciones especializadas para cada tipo de \texttt{RR}. Esto se hizo así
 ya que en la librería \texttt{dns-rust} ya existía ésta función para el caso de tipo A, pero no estaba para los demás, así que se tuvo que implementar para los siguientes tipos:\\
 
-\begin{lstlisting}
-fn rr_from_string(
-    rdata_values: SplitWhitespace,
-    ttl: u32,
-    class: &str,
-    host_name: String,
-    origin: String,
-    rtype: String,
-) -> ResourceRecord {
-    match rtype.as_str() {
-        'A' => { return ARdata::rr_from_master_file(rdata_values, ttl, class, host_name); }
-        'NS' => { return NsRdata::rr_from_master_file(rdata_values, ttl, class, host_name, origin); }
-        'SOA' => { return SoaRdata::rr_from_master_file(rdata_values, ttl, class, host_name, origin).0; }
-        'CNAME' => { return CnameRdata::rr_from_master_file(rdata_values, ttl, class, host_name, origin); }
-        'MX' => { return MxRdata::rr_from_master_file(rdata_values, ttl, class, host_name, origin); }
-        'TXT' => { return TxtRdata::rr_from_master_file(rdata_values, ttl, class, host_name); }
-        'AAAA' => { return AAAARdata::rr_from_master_file(rdata_values, ttl, class, host_name); }
-        'DS' => { return DsRdata::rr_from_master_file(rdata_values, ttl, class, host_name, origin); }
-        _ => {
-            panic!('Unsupported rtype: {}', rtype);
-        }
-    }
-}
-\end{lstlisting}
+\begin{itemize}
+    \item A
+    \item AAAA
+    \item CNAME
+    \item MX
+    \item NS
+    \item SOA
+    \item TXT
+    \item DS
+\end{itemize}
 
 En este caso el parametro \texttt{rdata\_values} corresponde a los datos del Rdata divididos en palabras, es decir, un iterador que permite recorrer cada palabra de los datos del \texttt{Rdata}.
+
+Aclarar también que no se muestra cada función especializada para cada tipo de \texttt{RR} por cuestiones de espacio, pero todas siguen la misma lógica: reciben el nombre, TTL, clase y el iterador de datos,
+y retornan un \texttt{ResourceRecord} con los campos correspondientes llenados.
 
 \newpage
 
