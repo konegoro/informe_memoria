@@ -349,6 +349,7 @@ INPUT .\main.toc
 INPUT .\main.toc
 INPUT main.toc
 INPUT C:\Users\bastian\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmbx12.tfm
+INPUT C:\Users\bastian\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmtt12.tfm
 OUTPUT main.toc
 INPUT .\main.lot
 INPUT .\main.lot
@@ -363,7 +364,6 @@ INPUT .\1intro.tex
 INPUT 1intro.tex
 INPUT C:\Users\bastian\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmr17.tfm
 INPUT C:\Users\bastian\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmbx12.tfm
-INPUT C:\Users\bastian\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmtt12.tfm
 INPUT C:\Users\bastian\AppData\Local\Programs\MiKTeX\fonts\tfm\jknappen\ec\tcrm1200.tfm
 INPUT C:\Users\bastian\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmr12.tfm
 INPUT C:\Users\bastian\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmbx12.tfm
@@ -449,6 +449,14 @@ INPUT .\diagramas\resolve_qname_in_zone.png
 INPUT .\diagramas\resolve_qname_in_zone.png
 INPUT .\diagramas\resolve_qname_in_zone.png
 INPUT .\diagramas\resolve_qname_in_zone.png
+INPUT .\diagramas\add_glue_records_and_wildcard.png
+INPUT .\diagramas\add_glue_records_and_wildcard.png
+INPUT .\diagramas\add_glue_records_and_wildcard.png
+INPUT .\diagramas\add_glue_records_and_wildcard.png
+INPUT .\diagramas\add_glue_records_and_wildcard.png
+INPUT .\diagramas\add_glue_records_and_wildcard.png
+INPUT .\diagramas\add_glue_records_and_wildcard.png
+INPUT C:\Users\bastian\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmtt12.tfm
 INPUT .\6edns0.tex
 INPUT .\6edns0.tex
 INPUT .\6edns0.tex
