@@ -1,1 +1,47 @@
 \chapter{EDNS0}
+
+Extension DNS 0 (EDNS0) es una extensión del protocolo DNS que permite superar algunas de las limitaciones del formato original del DNS, 
+como el tamaño máximo de los mensajes y la capacidad de transportar información adicional. Fue definido en el RFC 2671 y posteriormente actualizado por el RFC 6891. 
+EDNS0 es un requisito para muchas de las funcionalidades avanzadas del DNS, incluyendo DNSSEC.
+
+\section{Características principales de EDNS0}
+
+Para habilitar EDNS0, los clientes y servidores DNS incluyen un registro especial en sus mensajes DNS llamado "OPT" (Option), el cual va en la seccción Additional.
+Este Resource Record (RR) no usa los campos de manera tradicional, sino que los utiliza para transportar información adicional sobre las capacidades y opciones del DNS.
+Especificamente, cada campo se utiliza de la siguiente manera:
+
+\begin{itemize}
+    \item \textbf{NAME}: Siempre es un nombre vacío (0 bytes).
+    \item \textbf{TYPE}: Siempre es 41, que indica que es un registro OPT.
+    \item \textbf{CLASS}: Indica el tamaño máximo de mensaje que el emisor/cliente puede manejar. Por ejemplo, un valor de 4096 bytes permite mensajes DNS más grandes que el límite original de 512 bytes.
+    \item \textbf{TTL}: Se utiliza para transportar varias opciones y banderas.
+                        \begin{itemize}
+                            \item \textbf{Extended RCODE} : Los primeros 8 bits representan el RCODE extendido.
+                            \item \textbf{EDNS Version} :  8 bits que representan la versión de EDNS0 (actualmente siempre es 0).
+                            \item \textbf{Z field} : 16 bits reservados para banderas, especificamente el bit 15 es la flag DO (DNSSEC OK).
+                        \end{itemize}
+                        La flag más importante es el DO (DNSSEC OK), que indica si el emisor puede manejar respuestas DNSSEC.
+    \item \textbf{RDLENGTH}: Indica la longitud de los datos de opciones adicionales.
+    \item \textbf{RDATA}: Contiene las opciones adicionales que pueden ser utilizadas para diversas funcionalidades, como la negociación de capacidades, pero no se utiliza para \texttt{DNSSEC}.
+\end{itemize}
+
+
+
+\section{Ejemplo de mensaje DNS con EDNS0}
+
+Para facilitar el proceso de construcción de una consulta con EDNS0 se creó una función especial llamada \texttt{create\_dns\_opt\_query}, la cual recibe
+como parámetros el nombre de dominio, el tipo de consulta y retorna una una consulta DNS que incluye un registro OPT en la sección Additional, usando como tamaño máximo de mensaje 4096 bytes.
+
+Un ejemplo del registro OPT generado por esta función es el siguiente:\\
+
+\begin{lstlisting}
+    [ResourceRecord { name: DomainName { name: '.'}, rtype: OPT, rclass: UNKNOWN(4096), ttl: 32768, rdlength: 0, rdata: OPT(OptRdata { option: [] }) }]
+\end{lstlisting}
+
+En este ejemplo, se puede observar que el campo \texttt{rclass} tiene un valor de \texttt{UNKOWN} con un 4096 dentro, indicando que el emisor puede manejar mensajes DNS de hasta 4096 bytes.
+Además se puede ver que el campo \texttt{ttl} tiene un valor de 32768, lo que indica que la flag DO (DNSSEC OK) está activada\\
+
+\begin{lstlisting}
+    TTL (32 bits): 00000000 00000000 10000000 00000000
+                 |<-RCODE->|<-VERS->|<-------Z------>|
+\end{lstlisting}            

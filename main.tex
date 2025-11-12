@@ -41,6 +41,10 @@
 \usepackage{fancyhdr}
 \usepackage{graphicx}
 
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+
 \usepackage{listings}
 \usepackage{xcolor} % xcolor MUST be loaded before minted if you use color options
 \usepackage{minted} % <-- ENSURE THIS LINE IS PRESENT AND CORRECT
@@ -185,4 +189,5 @@ Autor, Título del trabajo, Editorial o Conferencia, Año.
 \begin{appendices}
 \input{anexoA.tex}
 \end{appendices}
+% Close any unclosed itemize environments from included files
 \end{document}

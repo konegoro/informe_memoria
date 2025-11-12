@@ -1,1 +1,126 @@
 \chapter{DNSSEC}
+
+En este capítulo se verá cómo funciona DNSSEC (Domain Name System Security Extensions) dentro del servidor, desde la generación de las claves criptográficas, pasando por distintos procecsos de firmas
+para cada \texttt{RRSET}, hasta la creación e inserción de los registros \texttt{NSEC} y \texttt{DS}. 
+
+Pero para poder comprobar que las respuestas DNS son auténticas y válidas, es necesario tener un cliente que pueda validar las respuestas DNSSEC, especificamente
+usando la cadena de autentificación. En primera instancia, esta verificación se iba a realizar dentro del \texttt{stub-resolver} de la librería \texttt{dns-rust}, pero debido a que las funciones de parsing de la librería
+están rotas (las funciones \texttt{to\_bytes} y \texttt{from\_bytes}), se decidió hacer todo de manera local. En un capítulo posterior se explicará por qué las funciones de parsing están rotas y 
+cómo se podría solucionar.
+
+\section{Servidor}
+
+\subsection{Generación de llaves criptográficas}
+
+El proceso de firma es complejo y requiere de dos pares de llaves criptográficas por cada zona: un par de llaves para firmar los datos (llaves ZSK : Zone Signing Key) y otro par de llaves para 
+firmar las llaves ZSK (llaves KSK : Key Signing Key). Esto es requerido ya que DNSSEC utiliza un modelo de confianza basado en la jerarquía del DNS, donde cada zona firma sus registros
+\texttt{DNSKEY} con su llave KSK, y la zona padre guarda un registro \texttt{DS} que apunta a la llave KSK de la zona hija, firmando este registro con su propia llave KSK. De esta manera, se 
+puede construir una cadena de confianza desde la raíz del DNS hasta cualquier zona, verificando las firmas en cada nivel.
+
+Para mayor claridad se muestra el siguiente diagrama que ilustra el proceso de firmas en DNSSEC:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{diagramas/diagrama_encriptacion.jpg}
+    \label{fig:dnssec-signing-process}
+\end{figure}
+
+
+
+El proceso de generación de las llaves criptográficas del sistema se realiza mediante el algoritmo RSA, utilizando la librería \texttt{rsa} del lenguaje Rust. Como 
+este proceso debe hacerse una sola vez (y no cada vez que se ejecuta el servidor) se separó la lógica dentro de un archivo aparte llamado \texttt{generate\_keys.rs}, archivo
+que se encuentra dentro del directorio \texttt{src/bin}, para que así pueda ser ejecutado de manera independiente.
+
+El proceso de generación de las llaves criptográficas se realiza de la siguiente manera:
+\begin{itemize}
+    \item Se tiene una lista de zonas de los cuales se quieren generar las llaves criptográficas. En este caso, los dominios son \texttt{example.com},
+          \texttt{niclabs.cl}, \texttt{.com}, \texttt{.cl} y \texttt{root} (raíz).
+    \item Por cada dominio, se generan los dos pares de llaves criptográficas (KSK y ZSK) utilizando la función \texttt{generate\_keypair}
+    \item Cada llave generada se guardan archivos dentro del directorio \texttt{keys/zona} a través de la función \texttt{write\_keys\_to\_disk}
+\end{itemize}
+
+\subsubsection{generate\_keypair}
+
+En primer lugar, la función \texttt{generate\_keypair(bits)} recibe como parámetro el tamaño de la llave en bits (por ejemplo, 1024 o 2048). Dentro de la función, 
+se instancia un generador de números aleatorios seguro del sistema operativo (\texttt{OsRng}), el cual provee la entropía necesaria para la generación de claves criptográficamente seguras, a 
+partir de este generador se crea una llave privada RSA
+
+Posteriormente, la llave pública se deriva directamente desde la llave privada usando el método \texttt{to\_public\_key()}.
+El resultado de esta función es una tupla que contiene ambas llaves: \texttt{(RsaPrivateKey, RsaPublicKey)}.
+
+\subsubsection{write\_keys\_to\_disk}
+
+La función \texttt{write\_keys\_to\_disk(domain, zsk, ksk)} se encarga de almacenar físicamente las llaves generadas en disco.
+Esta función recibe como parámetros el nombre de la zona (por ejemplo, \texttt{cl}) y los pares de llaves correspondientes al ZSK (Zone Signing Key) y KSK (Key Signing Key).
+
+Dentro de la función, primero se crea un directorio con la estructura \texttt{keys/{domain}} para asegurar que exista la carpeta donde se guardarán los archivos PEM (Privacy Enhanced Mail), formato
+comúnmente utilizado para almacenar llaves criptográficas. Posteriormente, se escriben las llaves en formato PKCS\#8 (estándar de representación de llaves en formato PEM) mediante los 
+métodos \texttt{to\_pkcs8\_pem()} para las llaves privadas y \texttt{to\_public\_key\_pem()} para las llaves públicas.
+
+Cada llave se almacena en un archivo independiente con nombres descriptivos:
+\begin{itemize}
+\item \texttt{zsk\_priv.pem}
+\item \texttt{zsk\_pub.pem}
+\item \texttt{ksk\_priv.pem}
+\item \texttt{ksk\_pub.pem}
+\end{itemize}
+
+Aclarar que un nombre de carpeta NO puede ser "." (punto), por lo menos en Windows, ya que genera un error al intentar crear el directorio, esto obliga a renombrar la carpeta de la raíz a "root"
+
+\subsection{Estructuras de datos para las llaves}
+
+Una vez generadas las llaves y guardadas en formato PEM dentro de la carpeta \texttt{keys/zona} correspondiente, es necesario cargarlas en memoria
+a través de alguna estructura global accesible desde cualquier parte del servidor. Para esto, se definieron las siguientes estructuras de datos
+
+\subsubsection{ZoneKeyStore}
+
+La estructura \texttt{ZoneKeyStore} es un mapa hash que asocia cada zona (representada como un string) con un puntero a su correspondiente conjunto de llaves criptográficas, que a su vez es otra
+estructura llamada \texttt{ZoneKeys}. Esta estructura se define de la siguiente manera:
+
+\begin{lstlisting}
+    pub struct ZoneKeyStore {
+        keys: HashMap<String, Arc<ZoneKeys>>,
+    }
+\end{lstlisting}
+
+Se usa \texttt{Arc} (Atomic Reference Counting) para permitir que múltiples partes del programa puedan compartir acceso a las llaves de una zona sin necesidad de clonarlas.
+
+La variable global accesible desde cualquier parte del servidor se define como:
+
+\begin{lstlisting}
+    pub static GLOBAL_ZONE_KEY_STORE: Lazy<ZoneKeyStore> = Lazy::new(|| {
+        let mut store = ZoneKeyStore::new();
+
+        let domains = ["example.com.", "niclabs.cl.", "com.", "cl.", "root."];
+
+        for domain in &domains {
+            let path = format!("keys/{}", domain);
+            let zone_keys = ZoneKeys::load_from_path(&path);
+            store.insert_zone_keys(domain.to_string(), Arc::new(zone_keys));
+        }
+
+        store
+    });
+\end{lstlisting}
+
+La cual basicamente itera sobre la lista de zonas, carga las llaves desde el disco usando la función \texttt{ZoneKeys::load\_from\_path}
+y las inserta en el ZoneKeyStore.
+
+\subsubsection{ZoneKeys}
+
+La estructura \texttt{ZoneKeys} almacena las cuatro llaves criptográficas necesarias para una zona DNSSEC: la llave privada y pública del ZSK (Zone Signing Key) 
+y la llave privada y pública del KSK (Key Signing Key). Esta estructura se define de la siguiente manera:
+
+\begin{lstlisting}
+    pub struct ZoneKeys {
+        zsk_priv: RsaPrivateKey,
+        zsk_pub: RsaPublicKey,
+        ksk_priv: RsaPrivateKey,
+        ksk_pub: RsaPublicKey,
+    }
+\end{lstlisting}
+
+Su metodo \texttt{load\_from\_path(path)} se encarga de leer los archivos PEM desde el disco, parsearlos con el método \texttt{from\_pkcs8\_pem} de la librería \texttt{rsa}
+y crear una instancia de \texttt{ZoneKeys} con las llaves correspondientes.
+
+    

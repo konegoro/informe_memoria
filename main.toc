@@ -53,7 +53,16 @@
 \contentsline {subsection}{\numberline {5.2.4}Consulta sin coincidencia en nombre de dominio y sin wildcard: NXDOMAIN}{36}{subsection.5.2.4}%
 \contentsline {subsection}{\numberline {5.2.5}Consulta sin coincidencia en el tipo y sin wilcard: NODATA}{37}{subsection.5.2.5}%
 \contentsline {chapter}{\numberline {6}EDNS0}{38}{chapter.6}%
-\contentsline {chapter}{\numberline {7}DNSSEC}{39}{chapter.7}%
-\contentsline {chapter}{\numberline {8}Discusiones}{40}{chapter.8}%
-\contentsline {chapter}{\numberline {}Bibliograf\'ia}{42}{chapter*.32}%
-\contentsline {chapter}{Ap\'{e}ndice \numberline {A}Anexo}{43}{Appendix.1.Alph1}%
+\contentsline {section}{\numberline {6.1}Características principales de EDNS0}{38}{section.6.1}%
+\contentsline {section}{\numberline {6.2}Ejemplo de mensaje DNS con EDNS0}{39}{section.6.2}%
+\contentsline {chapter}{\numberline {7}DNSSEC}{40}{chapter.7}%
+\contentsline {section}{\numberline {7.1}Servidor}{40}{section.7.1}%
+\contentsline {subsection}{\numberline {7.1.1}Generación de llaves criptográficas}{40}{subsection.7.1.1}%
+\contentsline {subsubsection}{generate\_keypair}{41}{section*.32}%
+\contentsline {subsubsection}{write\_keys\_to\_disk}{42}{section*.33}%
+\contentsline {subsection}{\numberline {7.1.2}Estructuras de datos para las llaves}{42}{subsection.7.1.2}%
+\contentsline {subsubsection}{ZoneKeyStore}{43}{section*.34}%
+\contentsline {subsubsection}{ZoneKeys}{43}{section*.35}%
+\contentsline {chapter}{\numberline {8}Discusiones}{45}{chapter.8}%
+\contentsline {chapter}{\numberline {}Bibliograf\'ia}{47}{chapter*.37}%
+\contentsline {chapter}{Ap\'{e}ndice \numberline {A}Anexo}{48}{Appendix.1.Alph1}%
