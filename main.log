@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex 2025.10.15)  11 NOV 2025 19:14
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex 2025.10.15)  12 NOV 2025 18:33
 entering extended mode
  \write18 enabled.
  file:line:error style messages enabled.
@@ -888,7 +888,7 @@ babelbib extension \btxifchangecaseoff added to \extrasspanish
 )
 babelbib: Load BibTeX extensions \bibsspanish for spanish
 babelbib: Set language for keywords in the bibliography fixed to spanish
-<imagenes/escudoU2014.pdf, id=218, 320.19624pt x 689.57625pt>
+<imagenes/escudoU2014.pdf, id=230, 320.19624pt x 689.57625pt>
 File: imagenes/escudoU2014.pdf Graphic file (type pdf)
 <use imagenes/escudoU2014.pdf>
 Package pdftex.def Info: imagenes/escudoU2014.pdf  used on input line 138.
@@ -1044,7 +1044,7 @@ Cap\'{\i }tulo 3.
 [10
 
 ]
-<diagramas/recieve_and_response.png, id=411, 1126.2075pt x 1326.9575pt>
+<diagramas/recieve_and_response.png, id=426, 1126.2075pt x 1326.9575pt>
 File: diagramas/recieve_and_response.png Graphic file (type png)
 <use diagramas/recieve_and_response.png>
 Package pdftex.def Info: diagramas/recieve_and_response.png  used on input line 71.
@@ -1052,7 +1052,7 @@ Package pdftex.def Info: diagramas/recieve_and_response.png  used on input line 
 
 
 [11 <./diagramas/recieve_and_response.png>]
-<diagramas/udp.png, id=419, 1836.8625pt x 2328.7pt>
+<diagramas/udp.png, id=434, 1836.8625pt x 2328.7pt>
 File: diagramas/udp.png Graphic file (type png)
 <use diagramas/udp.png>
 Package pdftex.def Info: diagramas/udp.png  used on input line 137.
@@ -1099,10 +1099,10 @@ Underfull \hbox (badness 10000) in paragraph at lines 76--77
 
 
 [17]
-<diagramas/read_masterfile_records.png, id=485, 837.1275pt x 1538.74875pt>
+<diagramas/read_masterfile_records.png, id=500, 837.1275pt x 1538.74875pt>
 File: diagramas/read_masterfile_records.png Graphic file (type png)
 <use diagramas/read_masterfile_records.png>
-Package pdftex.def Info: diagramas/read_masterfile_records.png  used on input line 137.
+Package pdftex.def Info: diagramas/read_masterfile_records.png  used on input line 140.
 (pdftex.def)             Requested size: 333.51662pt x 613.03893pt.
 
 
@@ -1113,27 +1113,27 @@ LaTeX Warning: `!h' float specifier changed to `!ht'.
 [18]
 
 [19 <./diagramas/read_masterfile_records.png>]
-<diagramas/parse_resource_records.png, id=496, 830.10126pt x 1447.4075pt>
+<diagramas/parse_resource_records.png, id=511, 830.10126pt x 1447.4075pt>
 File: diagramas/parse_resource_records.png Graphic file (type png)
 <use diagramas/parse_resource_records.png>
-Package pdftex.def Info: diagramas/parse_resource_records.png  used on input line 152.
+Package pdftex.def Info: diagramas/parse_resource_records.png  used on input line 155.
 (pdftex.def)             Requested size: 292.98439pt x 510.86923pt.
 
 
 [20 <./diagramas/parse_resource_records.png>]
-Overfull \hbox (23.39905pt too wide) in paragraph at lines 158--161
+Overfull \hbox (23.39905pt too wide) in paragraph at lines 161--164
 []\T1/cmr/m/n/12 Como se ve en el dia-gra-ma, es-ta fun-ción lla-ma a otra fun-ción au-xi-liar lla-ma-da \T1/cmtt/m/n/12 rr_from_string\T1/cmr/m/n/12 ,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 158--161
+Underfull \hbox (badness 10000) in paragraph at lines 161--164
 
  []
 
 
 
 [21]
-Underfull \hbox (badness 10000) in paragraph at lines 189--190
+Underfull \hbox (badness 10000) in paragraph at lines 192--193
 
  []
 
@@ -1143,7 +1143,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 189--190
 
 [23]
 Cap\'{\i }tulo 5.
-<diagramas/lookup_data.png, id=524, 1541.76pt x 1853.92625pt>
+<diagramas/lookup_data.png, id=539, 1541.76pt x 1853.92625pt>
 File: diagramas/lookup_data.png Graphic file (type png)
 <use diagramas/lookup_data.png>
 Package pdftex.def Info: diagramas/lookup_data.png  used on input line 33.
@@ -1159,7 +1159,7 @@ Package pdftex.def Info: diagramas/lookup_data.png  used on input line 33.
 [26]
 
 [27]
-<diagramas/resolve_qname_in_zone.png, id=547, 2005.4925pt x 1728.4575pt>
+<diagramas/resolve_qname_in_zone.png, id=562, 2005.4925pt x 1728.4575pt>
 File: diagramas/resolve_qname_in_zone.png Graphic file (type png)
 <use diagramas/resolve_qname_in_zone.png>
 Package pdftex.def Info: diagramas/resolve_qname_in_zone.png  used on input line 112.
@@ -1169,7 +1169,7 @@ Package pdftex.def Info: diagramas/resolve_qname_in_zone.png  used on input line
 [28 <./diagramas/resolve_qname_in_zone.png>]
 
 [29]
-<diagramas/add_glue_records_and_wildcard.png, id=559, 1333.98375pt x 1523.6925pt>
+<diagramas/add_glue_records_and_wildcard.png, id=574, 1333.98375pt x 1523.6925pt>
 File: diagramas/add_glue_records_and_wildcard.png Graphic file (type png)
 <use diagramas/add_glue_records_and_wildcard.png>
 Package pdftex.def Info: diagramas/add_glue_records_and_wildcard.png  used on input line 161.
@@ -1250,7 +1250,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 41--43
 
 [39]
 Cap\'{\i }tulo 7.
-<diagramas/diagrama_encriptacion.jpg, id=691, 798.985pt x 509.905pt>
+<diagramas/diagrama_encriptacion.jpg, id=706, 798.985pt x 509.905pt>
 File: diagramas/diagrama_encriptacion.jpg Graphic file (type jpg)
 <use diagramas/diagrama_encriptacion.jpg>
 Package pdftex.def Info: diagramas/diagrama_encriptacion.jpg  used on input line 24.
@@ -1265,34 +1265,43 @@ Package pdftex.def Info: diagramas/diagrama_encriptacion.jpg  used on input line
 
 [42]
 
-[43]) (8discusiones.tex
+[43]
 
 [44]
+Overfull \hbox (16.24893pt too wide) in paragraph at lines 174--176
+\T1/cmr/m/n/12 ne-ce el RRSet. Su va-lor se ob-tie-ne me-dian-te la fun-ción au-xi-liar \T1/cmtt/m/n/12 count_labels(zone_name)\T1/cmr/m/n/12 . 
+ []
+
+
+
+[45]) (8discusiones.tex
+
+[46]
 Cap\'{\i }tulo 8.
 )
 
-[45
+[47
 
 ] (main.bbl
 
-[46
+[48
 
 ]) (anexoA.tex
 
-[47
+[49
 
 ]
 Ap\'{e}ndice A.
 )
 
-[48
+[50
 
 ]
 
-[49]
+[51]
 
-[50]
-runsystem(latexminted cleantemp  --timestamp 20251111191418 FAD58DE7366495DB4650CFEFAC2FCD61)...executed.
+[52]
+runsystem(latexminted cleantemp  --timestamp 20251112183330 FAD58DE7366495DB4650CFEFAC2FCD61)...executed.
 
  (main.aux
 LaTeX Info: Redefining \. on input line 11.
@@ -1310,20 +1319,20 @@ LaTeX Warning: There were undefined references.
 LaTeX Warning: There were multiply-defined labels.
 
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: E6EC0B587B98EB85C4378161FAC72C1E;9860.
+(rerunfilecheck)             Checksum: 47879E9F96D69AE21138F5CA20F5EE56;10913.
  ) 
 Here is how much of TeX's memory you used:
- 33211 strings out of 468080
- 648079 string characters out of 5424799
- 1753991 words of memory out of 5000000
- 61017 multiletter control sequences out of 15000+600000
+ 33224 strings out of 468080
+ 648271 string characters out of 5424799
+ 1753992 words of memory out of 5000000
+ 61022 multiletter control sequences out of 15000+600000
  645109 words of font info for 84 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  90i,10n,93p,635b,2052s stack positions out of 10000i,1000n,20000p,200000b,200000s
  <C:\Users\bastian\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ectt1440.pk> <C:\Users\bastian\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tctt1095.pk> <C:\Users\bastian\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ectt1095.pk> <C:\Users\bastian\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ectt1000.pk> <C:\Users\bastian\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm0600.pk> <C:\Users\bastian\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1440.pk> <C:\Users\bastian\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcrm1200.pk> <C:\Users\bastian\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1728.pk> <C:\Users\bastian\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ectt1200.pk> <C:\Users\bastian\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1200.pk> <C:\Users\bastian\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecti1200.pk> <C:\Users\bastian\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx2488.pk> <C:\Users\bastian\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1200.pk><C:/Users/bastian/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/Users/bastian/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb>
-Output written on main.pdf (59 pages, 1221278 bytes).
+Output written on main.pdf (61 pages, 1236186 bytes).
 PDF statistics:
- 1484 PDF objects out of 1728 (max. 8388607)
- 330 named destinations out of 1000 (max. 500000)
- 482 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1520 PDF objects out of 1728 (max. 8388607)
+ 338 named destinations out of 1000 (max. 500000)
+ 506 words of extra memory for PDF output out of 10000 (max. 10000000)
 

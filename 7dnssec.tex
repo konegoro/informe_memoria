@@ -123,4 +123,106 @@ y la llave privada y pública del KSK (Key Signing Key). Esta estructura se defi
 Su metodo \texttt{load\_from\_path(path)} se encarga de leer los archivos PEM desde el disco, parsearlos con el método \texttt{from\_pkcs8\_pem} de la librería \texttt{rsa}
 y crear una instancia de \texttt{ZoneKeys} con las llaves correspondientes.
 
+\subsection{Inserción de DNSKEY's RRSETS en la estructura de datos}
+
+Una vez que ya se tienen las llaves cargadas en memoria, se pueden utilizar para crear los registros \texttt{DNSKEY} necesarios para cada zona. Estos registros contienen las llaves públicas
+utilizadas para verificar las firmas de los registros DNS, tanto del par ZSK como del par KSK.
+
+Por lo que se debe insertar un \texttt{RRSET} de tipo \texttt{DNSKEY} por cada estructura de datos de cada zona. Esto se realiza en la función \texttt{insert\_dnskey\_rrsets}.
+
+El algoritmo \texttt{insert\_dnskey\_rrset} crea un \texttt{RRset} para la zona con clase \texttt{IN}, tipo \texttt{DNSKEY} y el \texttt{TTL} dado por el proceso de parsing del masterfile. Luego
+obtiene las claves desde la variable global \texttt{GLOBAL\_ZONE\_KEY\_STORE}, codifica las claves públicas con \texttt{encode\_rsa\_public\_key} y construye dos \texttt{DnskeyRdata}, los cuales 
+tienen los siguientes campos:
+
+\begin{itemize}
+    \item \texttt{flags}: Indica el tipo de llave. El valor 256 indica una llave ZSK (Zone Signing Key) y el valor 257 indica una llave KSK (Key Signing Key). En este caso se usan ambos valores.
+    \item \texttt{protocol}: Siempre es 3, según lo especificado en el RFC 4034.
+    \item \texttt{algorithm}: Indica el algoritmo criptográfico utilizado. En este caso, se usa el valor 8, que corresponde a RSA/SHA-256.
+    \item \texttt{public\_key}: Contiene la representación codificada de la llave pública en formato wire.
+\end{itemize}
+
+En cuanto al proceso de codificación de las llaves públicas RSA en el formato requerido por DNSSEC, se utiliza la función \texttt{encode\_rsa\_public\_key}, la cual
+se encarga de codificar una clave pública RSA en el formato wire definido por el RFC 3110.
+
+Primero obtiene los bytes del exponente (\texttt{e}) y del módulo (\texttt{n}) en orden big-endian. Luego, si el exponente tiene una longitud entre 1 y 255 octetos, 
+este se representa con un solo byte; si supera los 255 bytes, se antepone un byte con valor 0 seguido de dos bytes que indican su longitud. 
+
+Después de codificar la longitud, se concatenan los bytes del exponente y del módulo, formando la representación final que sigue la sintaxis del campo \texttt{public\_key} en los registros \texttt{DNSKEY}
+
+Finalmente se insertan los datos a las estructuras correspondientes.
+
+\subsection{Inserción de los RRSIG de los DNSKEY's RRSET}
+
+Una vez insertados los registros \texttt{DNSKEY} en la estructura de datos, se procede a firmarlos utilizando la llave KSK (Key Signing Key), conforme a lo establecido en el RFC 4035, 
+Sección 2.1.1. Esta firma es distinta de las que se aplican a los demás RRsets de la zona, los cuales se firman con la llave ZSK (Zone Signing Key).
+La función \texttt{insert\_rrsig\_rrset\_dnskey} es la encargada de realizar este proceso.
+
+En primer lugar, el algoritmo obtiene el conjunto de registros \texttt{DNSKEY} desde la estructura de datos y recupera la llave privada KSK almacenada en \texttt{GLOBAL\_ZONE\_KEY\_STORE}.
+Luego, calcula el \texttt{key\_tag} de la KSK aplicando el algoritmo definido en el Apéndice B del RFC 4034, el cual consiste en sumar los bytes del \texttt{RDATA} del registro \texttt{DNSKEY} 
+en formato wire y reducir el resultado a 16 bits. Este valor actúa como un identificador único de la clave utilizada en la firma.
+
+Posteriormente, se construye la estructura \texttt{RRSIG\_Rdata}, completando los campos definidos en el RFC~4034, Sección~3.1. 
+Cada uno de estos campos cumple una función específica dentro del registro de firma:
+
+\begin{itemize}
+    \item \textbf{\texttt{type\_covered}}: indica el tipo de registro DNS cubierto por la firma.  
+    En este caso, su valor es \texttt{DNSKEY}, ya que la firma se aplica sobre el conjunto de claves públicas del dominio.
+
+    \item \textbf{\texttt{algorithm}}: especifica el algoritmo criptográfico utilizado para generar la firma.  
+    Se asigna el valor \texttt{8}, correspondiente a \texttt{RSASHA256}, conforme al RFC~4034.
+
+    \item \textbf{\texttt{labels}}: representa la cantidad de etiquetas (labels) del nombre de dominio al que pertenece el RRSet.  
+    Su valor se obtiene mediante la función auxiliar \texttt{count\_labels(zone\_name)}.
+
+    \item \textbf{\texttt{original\_ttl}}: contiene el valor TTL original del \texttt{RRSet} firmado, copiado directamente desde el conjunto \texttt{DNSKEY}.
+
+    \item \textbf{\texttt{signature\_inception}} y \textbf{\texttt{signature\_expiration}}: definen el intervalo de validez de la firma.  
+    En esta implementación se establecen con valor \texttt{0}, ya que el servidor no implementa aún manejo de tiempo real ni soporte para zonas dinámicas.
+
+    \item \textbf{\texttt{key\_tag}}: identifica de forma única la clave usada para la firma. En este caso se utiliza el valor calculado previamente a partir de la KSK.
     
+    \item \textbf{\texttt{signer\_name}}: indica el nombre del propietario de la clave utilizada para la firma, correspondiente al dominio de la zona (\texttt{zone\_name}).
+    
+    \item \textbf{\texttt{signature}}: almacena la firma criptográfica generada sobre el \texttt{RRSet} de \texttt{DNSKEY}. A continuación se detalla el proceso para calcular este campo.
+\end{itemize}
+
+Para generar la \texttt{signature} se necesita firmar el \texttt{TBS} (To Be Signed), el cual sería la concatenación de los campos del \texttt{RRSIG} (exceptuando la misma \texttt{signature})
+con el \texttt{DNSKEY} en versión canónica. Este proceso se realiza mediante la función auxiliar \texttt{build\_tbs\_data} siguiendo el orden establecido por el proceso de canonicalización de DNSSEC.
+
+Finalmente, se utiliza la llave privada del par KSK para firmar el \texttt{TBS} utilizando el algoritmo RSA con SHA-256b y se añade el \texttt{RRSET} de \texttt{RRSIG} resultante a la estructura de datos del servidor.
+
+
+\subsection{Creación e inserción de firmas y el manejo de casos bordes}
+
+Después de insertar y firmar los registros \texttt{DNSKEY}, el siguiente paso consiste en firmar todos los demás \texttt{RRSET} presentes en la zona.
+Naturalmente, los registros \texttt{RRSIG} no deben firmarse, ya que ellos mismos contienen las firmas de los conjuntos de registros.
+
+Este procedimiento es prácticamente idéntico al proceso de firma de los \texttt{DNSKEY}, con la diferencia de que en este caso se utiliza la llave \texttt{ZSK} (Zone Signing Key) en lugar de la 
+\texttt{KSK} (Key Signing Key), y se aplica a cada \texttt{RRSET} perteneciente a un dominio de la zona. Sin embargo, existen ciertos casos borde que deben manejarse cuidadosamente: 
+los registros \texttt{NSEC}, los registros no autoritativos o de delegación, y los \texttt{wildcards}.
+
+En primer lugar, el proceso de generación y firma de los registros \texttt{NSEC} es más extenso y se detalla en la siguiente sección.
+En cuanto a los registros no autoritativos o de delegación (por ejemplo, los registros \texttt{NS} que apuntan a una zona hija), estos no deben ser firmados, ya que son responsabilidad de la zona delegada.
+Para detectar estos casos dentro de la estructura de datos, se implementó la función \texttt{is\_authoritative\_rrset}, cuyo flujo general es el siguiente:
+
+\begin{itemize}
+    \item Verifica que el nombre del \texttt{RRset} pertenezca efectivamente a la zona. Si no está dentro de la zona, no se considera autoritativo.
+
+    \item Evita firmar los \texttt{RRset} de delegación, es decir, los registros \texttt{NS} que no se encuentran en el apex de la zona.
+
+    \item Evita firmar los \texttt{glue records}, es decir, registros \texttt{A} o \texttt{AAAA} asociados a una delegación, los cuales solo sirven para resolver los nombres de los servidores delegados.
+
+    \item En cualquier otro caso, el \texttt{RRset} se considera autoritativo y debe ser firmado.
+\end{itemize}
+
+En el caso de los wildcards, su identificación es directa, ya que el nombre del \texttt{RRset} comienza con un asterisco (\texttt{*}).
+Cuando esto ocurre, se debe restar uno al conteo de etiquetas (\texttt{labels}) del campo correspondiente en el \texttt{RRSIG}.
+Esto permite que el resolver pueda reconocer que la respuesta proviene de un wildcard y validar correctamente su firma.
+De no hacerlo, el cliente no podría distinguir el wildcard de un nombre explícito y la validación DNSSEC fallaría.
+
+Esta regla está establecida explícitamente en el RFC 4035, Sección 5.3.2, que indica:
+
+\begin{lstlisting}
+"If the number of labels in an RRset's owner name is greater than the Labels field of the covering RRSIG RR,
+then the RRset and its covering RRSIG RR were created as a result of wildcard expansion."
+\end{lstlisting}

@@ -92,6 +92,9 @@ Mencionar que esta variable está envuelta en muchas estructuras, a continuació
     \item \textbf{Lazy}: Es una construcción de evaluación diferida que permite inicializar un valor solo la primera vez que se accede a él. Esto es útil para inicializar estructuras pesadas de forma diferida y segura en tiempo de ejecución.
 \end{itemize}
 
+En primera instancia esa variable global más la misma pero para la zona \texttt{example.com} son suficientes, pero como el server emulará zonas padres para lograr la resolución
+de la cadena de autentificación de DNSSEC, se deberán crear variables globales similares para las zonas \texttt{com.}, \texttt{cl.} y \texttt{root.}.
+
 \section{Procesamiento del Masterfile}
 
 Pasar de la estructura vista en el Masterfile al HashMap anidado de RRset requiere de un proceso extenso de parsing, el cual se puede resumir con el siguiente diagrama:
