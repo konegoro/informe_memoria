@@ -311,7 +311,7 @@ El proceso de autenticación debe distinguir entre varios escenarios posibles en
 \item Respuestas con código \texttt{NXDOMAIN}.
 \item Respuestas \texttt{NO\_DATA}.
 \item Respuestas originadas por consultas \texttt{DNSKEY}.
-\item Respuestas generadas a partir de \textit{wildcard expansion}.
+\item Respuestas generadas a partir de un \texttt{Wildcard}.
 \end{itemize}
 
 Para gestionar correctamente cada caso, se definió la función \texttt{dnssec\_authentification}, la cual recibe la consulta DNS original y retorna true si la respuesta es válida bajo DNSSEC, 
@@ -324,15 +324,15 @@ o false en caso contrario. El flujo general de esta función es el siguiente:
 \item Si el código de respuesta en el \texttt{Header} es \texttt{NXDOMAIN}, significa que el nombre consultado no existe en la zona.  
       En este caso se activa el proceso de autenticación basado en pruebas \texttt{NSEC} de inexistencia de dominio, mediante \texttt{nxdomain\_authentication\_process}.
 
-\item Si el código es \texttt{NOERROR}, pero la sección \texttt{Answer} está vacía y la sección \texttt{Authority} contiene un registro \texttt{NSEC}, la respuesta corresponde al caso \textit{NO\_DATA}.  
+\item Si el código es \texttt{NOERROR}, pero la sección \texttt{Answer} está vacía y la sección \texttt{Authority} contiene un registro \texttt{NSEC}, la respuesta corresponde al caso \texttt{NO\_DATA}.  
       Para validar esta situación, se ejecuta \texttt{nodata\_authentication\_process}, el cual verifica la ausencia del tipo consultado mediante la prueba NSEC apropiada.
 
 \item Si la consulta original corresponde al tipo \texttt{DNSKEY}, se activa el modo especial de autenticación que utiliza la KSK.  
       En este caso se invoca \texttt{authentification\_process} con la bandera \texttt{dnskey\_mod} en \texttt{true}.
 
 \item Si no se cumplen las condiciones anteriores, se analiza la presencia de registros \texttt{RRSIG} en las secciones \texttt{Answer} y \texttt{Authority}.  
-      Luego, se compara la cantidad de labels del nombre de dominio del RRset con el campo \texttt{labels} contenido en la firma \texttt{RRSIG}.  
-      Si el número de labels del dominio es mayor que el valor en el \texttt{RRSIG}, se trata de una respuesta producida por \textit{wildcard expansion}.  
+      Luego, se compara la cantidad de labels (etiquetas) del nombre de dominio del RRset con el campo \texttt{labels} contenido en la firma \texttt{RRSIG}.  
+      Si el número de labels del dominio es mayor que el valor en el \texttt{RRSIG}, se trata de una respuesta producida por \texttt{wildcard expansion}.  
       En este caso, se ejecuta \texttt{wildcard\_authentication\_process}.
 
 \item Si no se detecta wildcard, pero al menos un \texttt{RRSIG} existe, la respuesta corresponde a un caso de validación estándar, por lo que se invoca \texttt{authentification\_process}.
@@ -349,3 +349,232 @@ El siguiente diagrama de flujo ilustra visualmente este proceso:
     \label{fig:dnssec-resolver-flow}
 \end{figure}
 
+A continuación se describen todos los procesos de validación para cada caso:
+
+\subsection{Proceso de autenticación para nombres inexistentes (NXDOMAIN)}
+
+La función \texttt{nxdomain\_authentication\_process} se encarga de validar respuestas con código \texttt{NXDOMAIN}, asegurando que el nombre consultado no existe en la zona,
+utilizando los registros \texttt{NSEC} presentes en la sección \texttt{Authority} de la respuesta DNS.
+
+La función tiene dos verificaciones pricipales:
+
+\subsubsection{Verificación del intervalo NSEC}
+
+Itera sobre cada registro \texttt{NSEC} en la sección \texttt{Authority} y, para cada uno, verifica si el nombre consultado cae dentro del intervalo definido por el nombre 
+dueño del \texttt{NSEC} y su \texttt{next\_name}. Esta verificación se realiza comparando los nombres en su forma canónica. La función utilizada para esto, \texttt{name\_in\_nsec\_range}, 
+la cual implementa exactamente la lógica descrita en el RFC 4034 6.2.1: comprueba si el nombre consultado está estrictamente entre el \texttt{owner} y el \texttt{next}, o si se trata del
+caso especial de “wrap-around”, donde el \texttt{next} es lexicográficamente menor que el \texttt{owner} y el intervalo cruza el final del espacio de nombres.
+Si el nombre consultado está cubierto por alguno de los intervalos \texttt{NSEC}, se continúa retorna verdadero; si ninguno lo cubre, la autenticación retorna falso.
+
+Para ilustrar el caso normal, considere:
+
+\begin{verbatim}
+example.com. NSEC foo.example.com.
+\end{verbatim}
+
+Este \texttt{NSEC} cubre cualquier nombre estrictamente entre \texttt{example.com.} y \texttt{foo.example.com.}
+Por ejemplo, \texttt{bar.example.com.} está dentro del intervalo, retornando verdadero, en cambio \texttt{baz.example.com.} no lo está, retornando falso.
+
+En contraste, el caso de \texttt{wrap-around} ocurre cuando \texttt{next\_name} es lexicográficamente menor que \texttt{owner}.  
+Por ejemplo:
+
+\begin{verbatim}
+z.example.com. NSEC example.com.
+\end{verbatim}
+
+Aquí el intervalo envuelve el final del espacio de nombres, cubriendo todos los nombres mayores que \texttt{z.example.com.} (como \texttt{zzz.example.com.}) y también todos los menores que
+\texttt{example.com.} (como \texttt{a.example.com.}).  Si el nombre consultado cae dentro de alguno de estos intervalos \texttt{NSEC}, se retorna true, si ninguno lo cubre (como en el caso
+de \texttt{m.example.com.}), se retorna false.
+
+
+
+\subsubsection{Verificación de firmas RRSIG del NSEC}
+Luego se veriifican las firmas \texttt{RRSIG} asociadas a los \texttt{NSEC} encontrados, estas firmas están en la sección \texttt{Authority} y el proceso normal-común es que
+que estén en la sección \texttt{Answer}, por lo que se limpia la sección \texttt{Answer} y se copian las firmas \texttt{RRSIG} a esta sección para reutilizar la función de autenticación estándar
+la cual es \texttt{authentification\_process}. De esta manera, si la firma es válida, se confirma que el \texttt{NSEC} es auténtico y por ende el nombre consultado no existe en la zona.
+
+
+Si ambas verificaciones son exitosas, la función retorna \texttt{true}, confirmando que la respuesta \texttt{NXDOMAIN} es válida bajo DNSSEC.
+
+\subsection{Proceso de autenticación para respuestas NO\_DATA}
+
+La función \texttt{nodata\_authentication\_process} valida respuestas DNS que indican la ausencia de datos para un tipo específico asociado a un nombre existente, es decir, respuestas \texttt{NO\_DATA}.
+Este caso es similar al proceso de autenticación para \texttt{NXDOMAIN}, con la diferencia de que aquí el nombre consultado \emph{sí existe} en la zona, pero el tipo solicitado \textbf{no}.
+
+El proceso de validación consta de 4 pasos principales:
+
+\subsubsection{Verificación de existencia del nombre}
+
+Primero se debe encontrar un registro \texttt{NSEC} cuyo \texttt{owner name} coincida exactamente con el nombre consultado. Si no se encuentra tal \texttt{NSEC}, 
+la autenticación falla inmediatamente, retornando \texttt{false}, ya que esto indicaría que el nombre no existe en la zona.
+
+\subsubsection{Verificación de la ausencia del tipo solicitado}
+
+Una vez localizado el \texttt{NSEC} correspondiente al nombre consultado, se examina su campo \texttt{type\_bitmap} para verificar que el tipo solicitado no esté presente.
+Si el tipo está ausente en el bitmap, se sigue con el proceso, de lo contrario se retorna \texttt{false}.
+
+\subsubsection{Adición del \texttt{DS} asociado si es que existe}
+
+Un caso particular que siempre se manifiesta como \texttt{NO\_DATA} es el de los \texttt{delegation points}. En una delegación, la zona padre es autoritativa únicamente para los registros \texttt{NS} 
+(y, si existe, \texttt{DS}), mientras que \textbf{no} es autoritativa para ningún otro tipo perteneciente a la zona hija. Por lo tanto, cualquier consulta hacia el padre que solicite un tipo distinto 
+de \texttt{NS} o \texttt{DS} debe producir necesariamente una respuesta \texttt{NO\_DATA}. El nombre existe, pero la zona padre no puede servir el tipo solicitado porque no le pertenece.
+
+En estos casos, el RFC~4035, Sección 2.3, establece que la zona padre \emph{debería} (``\texttt{SHOULD}'') incluir un registro \texttt{DS} si este está disponible. El propósito de este 
+\texttt{SHOULD} es permitir a los validadores confirmar la continuidad de la cadena de confianza hacia la zona delegada. Es decir, si se entrega un \texttt{NSEC} para probar la ausencia de un tipo 
+determinado y, adicionalmente, un \texttt{DS} (con su correspondiente \texttt{RRSIG}) para demostrar que la delegación está correctamente firmada, el validador puede:
+
+\begin{itemize}
+    \item Confirmar que no existen datos del tipo consultado en la zona padre.
+    \item Verificar que la delegación hacia la zona hija mantiene una cadena de confianza válida.
+\end{itemize}
+
+Esta lógica de añadir el \texttt{DS} en estos casos de \texttt{delegation points} está cubierta por el algoritmo de búsqueda, especificamente en la función auxiliar \texttt{add\_rrsigs\_for\_delegation},
+que tiene un mal nombre ya que no solo añade los \texttt{RRSIG} sino que también añade el \texttt{DS} si es que existe. Esto se vió en la sección [REDACTED]
+
+Para cumplir con esta recomendación, la función inspecciona la sección \texttt{Authority} en busca de registros \texttt{DS} asociados al nombre consultado y, en caso de encontrarlos, los 
+conserva para su validación posterior. Asimismo, verifica que los registros \texttt{RRSIG} que cubren a dichos \texttt{DS} también estén presentes en la respuesta, asegurando así que cualquier 
+información entregada sobre la delegación pueda ser autenticada criptográficamente.
+
+\subsubsection{Verificación de firmas RRSIG del NSEC y DS}
+
+Finalmente, se verifican las firmas \texttt{RRSIG} asociadas tanto al registro \texttt{NSEC} como, cuando corresponde, al registro \texttt{DS}. El procedimiento es análogo al utilizado en la 
+autenticación de respuestas \texttt{NXDOMAIN}: se limpia la sección \texttt{Answer} y se trasladan a ella los registros \texttt{NSEC}, \texttt{DS} y sus respectivas firmas \texttt{RRSIG}. 
+Esto permite reutilizar directamente la función estándar de validación \texttt{authentification\_process}, garantizando así que todas las pruebas criptográficas asociadas al caso \texttt{NO\_DATA} 
+se verifiquen de manera uniforme y consistente.
+
+
+\subsection{Autenticación para respuestas provenientes de Wildcards}
+
+La función \texttt{wildcard\_authentication\_process} se encarga de validar respuestas DNS que han sido generadas mediante la expansión de un \texttt{wildcard} (comodín).
+Este tipo de respuestas ocurre cuando un nombre no existente coincide con un patrón del tipo \texttt{*.example.com}, y el servidor autoritativo genera los registros utilizando dicho \texttt{wildcard}, 
+tal como lo establecen los RFC 4592 y RFC 4035.
+
+El proceso de validación consta de los siguientes pasos:
+
+\subsubsection{Descubrir cuál fue el wildcard utilizado}
+
+El primer paso consiste en identificar el nombre del wildcard original que fue utilizado para generar la respuesta.
+Para ello, la función inspecciona la sección \texttt{Authority} en busca del primer registro \texttt{NSEC}, ya que el RFC 4035 requiere que toda respuesta basada en \texttt{wildcard} incluya un registro 
+\texttt{NSEC} que pruebe la inexistencia explícita del nombre consultado.
+
+En una respuesta genuina de wildcard, el dueño de ese \texttt{NSEC} es precisamente el nombre del wildcard (por ejemplo, \texttt{*.example.com.}).
+Este valor es crucial, ya que es el \textbf{nombre real} sobre el que se generó y firmó el \texttt{RRSIG} del \texttt{RRset} en el servidor autoritativo.
+
+
+\subsubsection{Reconstruir la sección \texttt{Answer} reemplazando el nombre consultado por el wildcard}
+
+La sección \texttt{Answer} que llega al resolver contiene como \texttt{owner name} el nombre consultado por el cliente, por ejemplo \texttt{unknown.example.com.}, incluso si dicho nombre no existe.
+Esto es un comportamiento obligatorio de acuerdo con RFC 1034 4.3.3, el cual establece que:
+
+\begin{quote}
+the name server creates RRs with an owner name equal to the query name and contents taken from the wildcard RRs
+\end{quote}
+
+Sin embargo el \texttt{RRSIG} del \texttt{RRset} no fue generado sobre  \texttt{unknown.example.com.} sino sobre el wildcard \texttt{*.example.com}. Por lo tanto, 
+para poder verificar correctamente la firma, es necesario reconstruir localmente el \texttt{RRset}  \textbf{tal como fue firmado originalmente}. Esto implica tomar cada registro de la 
+sección \texttt{Answer} y reemplazar su nombre dueño por el wildcard detectado.
+
+El resultado es una nueva sección \texttt{Answer} que refleja el estado real del \texttt{RRset} al momento de la firma en el servidor.
+
+\subsubsection{Autentificar las firmas del RRset reconstruido}
+
+Una vez reconstruida la sección \texttt{Answer}, se procede a verificar el \texttt{RRSIG} asociado mediante la función estándar \texttt{authentification\_process}.
+Si esta verificación falla, la respuesta completa debe considerarse inválida, ya que implicaría que el \texttt{RRset} entregado no corresponde al wildcard que lo generó, o que la firma ha sido alterada.
+
+\subsubsection{Validar los \texttt{NSEC} asociados}
+
+Finalmente, la función verifica que la expansión del wildcard se haya producido legalmente y que el nombre consultado realmente \textbf{no exista en la zona}.
+Para esto:
+\begin{itemize}
+    \item Se crea una copia del mensaje de respuesta.
+    \item Se limpian las secciones \texttt{Answer} y \texttt{Additional}, dejando únicamente la sección \texttt{Authority}.
+          Dicha sección contiene los \texttt{NSEC} y sus correspondientes \texttt{RRSIG}, que son los elementos necesarios para demostrar la no existencia del nombre consultado.
+    \item Se ajusta el código de respuesta a \texttt{NXDOMAIN}, ya que ahora se está validando la inexistencia del nombre original.
+\end{itemize}
+          
+El motivo de este paso está normado:
+el RFC 4035 3.1.3 exige que una respuesta basada en \texttt{wildcard} debe incluir pruebas criptográficas que demuestren la inexistencia del nombre exacto consultado, lo cual se logra mediante un 
+\texttt{NSEC} que cubra dicho nombre.
+
+La función \texttt{nxdomain\_authentication\_process} valida entonces esta copia modificada del mensaje.
+
+Si todas las verificaciones son exitosas, la función retorna \texttt{true}, confirmando que la respuesta generada por el wildcard es válida bajo DNSSEC.
+
+
+\subsection{Proceso de Autenticación DNSSEC Estándar}
+
+La función \texttt{authentification\_process} implementa la validación estándar de firmas DNSSEC para respuestas que contienen datos en la sección \texttt{Answer}.
+De hecho, todas las funciones anteriores de validación  (\texttt{NXDOMAIN}, \texttt{NO\_DATA} y \texttt{Wildcards}) terminan invocando esta función para validar las firmas \texttt{RRSIG}
+correspondientes. La función toma como argumentos la respuesta DNS completa y una bandera booleana \texttt{dnskey\_mod} que indica si la consulta original fue de tipo \texttt{DNSKEY}.
+El proceso de validación consta de las siguientes etapas:
+
+
+\subsubsection{Preparación de información y variables iniciales}
+
+El algoritmo comienza extrayendo desde la respuesta DNS las secciones \texttt{Answer}, \texttt{Authority} y \texttt{Question}, clasificando los registros en dos grupos:
+
+\begin{itemize}
+    \item \textbf{Registros de datos}: Todos los registros que no son \texttt{RRSIG}, los cuales contienen la información real solicitada.
+    \item \textbf{Registros RRSIG}: Registros \texttt{RRSIG}, que contienen las firmas digitales.
+\end{itemize}
+
+A partir del nombre de dominio consultado se determinan las dos últimas etiquetas, que constituyen el apex de la zona (por ejemplo, \texttt{example.com.} o \texttt{niclabs.cl.})
+Este apex es fundamental para obtener las claves \texttt{DNSKEY} necesarias en las siguientes etapas.
+
+\subsubsection{Obtención de las claves DNSKEY y sus firmas (\texttt{DNSKEY RRset})}
+
+Para poder validar una respuesta DNSSEC, el resolver debe obtener el conjunto de claves \texttt{DNSKEY} del apex. Esto lo realiza la función auxiliar 
+\texttt{get\_pubkeys\_dnskey\_and\_rrsig}, que:
+
+\begin{itemize}
+    \item Crea una consulta DNS de tipo \texttt{DNSKEY} dirigida al apex de la zona y la resuelve utilizando la función \texttt{lookup\_data} con DNSSEC habilitado.
+    \item Identifica y separa las claves públicas según su rol criptográfico: la \texttt{ZSK} (Zone Signing Key) y la \texttt{KSK} (Key Signing Key).
+    \item Convierte ambas claves a estructuras \texttt{RSA} utilizables por el validador.
+\end{itemize}
+
+La función retorna: el par (\texttt{ZSK}, \texttt{KSK}), el \texttt{RRset DNSKEY} y el \texttt{RRset RRSIG(DNSKEY)}
+
+\subsubsection{Verificación de las firmas de la respuesta}
+
+La verificación de firmas sobre los datos recibidos (\texttt{Answer} + \texttt{Authority}) se realiza mediante la función \texttt{verify\_rrsig}. 
+Para cada \texttt{RRSIG} se ejecutan los siguientes pasos:
+
+\begin{itemize}
+    \item Determinar el tipo de \texttt{RRset} que la firma cubre (\texttt{type\_covered}).
+    \item Reunir el \texttt{RRset} correspondiente desde los registros recibidos.
+    \item Construir el \texttt{RRset} en formato canónico DNSSEC.
+    \item Construir la estructura TBS (To-Be-Signed), que combina la metada del \texttt{RRSIG} y el \texttt{RRset} canónico.
+    \item Verificar la firma usando Hash: SHA-256, Algoritmo: RSA PKCS1 v1.5 y clave pública: ZSK (modo normal) o KSK (si dnskey\_mod está activo)
+\end{itemize}
+
+Notar que en estricto rigor se debería usar el Hash y Algoritmo indicados en el campo \texttt{algorithm} del \texttt{RRSIG}, pero en esta implementación solo se soporta RSA-SHA256,
+ya que es el algoritmo más comúnmente utilizado en la práctica y fue el único implementado en el servidor.
+
+\subsubsection{Verificación del RRset DNSKEY}
+
+Cuando \texttt{dnskey\_mod} está deshabilitado (modo normal), el algoritmo debe además validar el propio conjunto \texttt{DNSKEY}. Esta verificación es crítica, porque el RRset DNSKEY es la base 
+criptográfica que permite validar al resto de los RRsets de la zona. El proceso consiste en:
+
+\begin{itemize}
+    \item Tomar el \texttt{RRset DNSKEY}, su \texttt{RRSIG(DNSKEY)} y construir la estructura TBS correspondiente.
+    \item Verificar la firma usando exclusivamente la KSK, ya que solo la KSK puede firmar el RRset DNSKEY.
+\end{itemize}
+
+Solo si esta firma es válida, las claves DNSKEY pueden considerarse auténticas y confiables para validar el resto de la zona.
+
+\subsubsection{Cadena de Autenticación DNSSEC}
+
+Para validar completamente la cadena de confianza DNSSEC, el algoritmo determina:
+
+\begin{itemize}
+    \item Zona hija: el apex (\texttt{example.com}, \texttt{niclabs.cl})
+    \item Zona padre: la última etiqueta del apex (\texttt{com}, \texttt{cl})
+\end{itemize}
+
+A continuación se extrae desde el \texttt{RRset DNSKEY} la clave KSK y se delega la validación de la cadena a la función especial \texttt{verify\_ds\_chain}.
+La cual se verá en el siguiente sección ya que es un proceso complejo que involucra múltiples pasos y consultas.
+
+\subsubsection{Resultado final}
+
+La respuesta DNS se considera válida únicamente si todas las validaciones anteriores fueron existosas: las firmas de los \texttt{RRsets}, la firma del \texttt{RRset DNSKEY} y la cadena 
+de autentificación. Si alguna de estas verificaciones falla, la función retorna \texttt{false}, indicando que la respuesta no cumple con los requisitos de seguridad DNSSEC.
