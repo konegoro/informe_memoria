@@ -92,6 +92,20 @@
 \contentsline {subsubsection}{Verificación del RRset DNSKEY}{56}{section*.51}%
 \contentsline {subsubsection}{Cadena de Autenticación DNSSEC}{57}{section*.52}%
 \contentsline {subsubsection}{Resultado final}{57}{section*.53}%
-\contentsline {chapter}{\numberline {8}Discusiones}{58}{chapter.8}%
-\contentsline {chapter}{\numberline {}Bibliograf\'ia}{60}{chapter*.55}%
-\contentsline {chapter}{Ap\'{e}ndice \numberline {A}Anexo}{61}{Appendix.1.Alph1}%
+\contentsline {subsection}{\numberline {7.2.5}Proceso de verificación de la cadena de autenticación}{57}{subsection.7.2.5}%
+\contentsline {subsubsection}{Obtención del registro \texttt {DS} en la zona padre}{57}{section*.54}%
+\contentsline {subsubsection}{Obtención del \texttt {DNSKEY RRset} y sus firmas en la zona padre}{58}{section*.55}%
+\contentsline {subsubsection}{Verificación criptográfica en la zona padre}{58}{section*.56}%
+\contentsline {subsubsection}{Verificación de la correspondencia entre el \texttt {DS} y la KSK de la zona hija}{58}{section*.57}%
+\contentsline {subsubsection}{Ascenso recursivo hasta la raíz}{59}{section*.58}%
+\contentsline {subsubsection}{Resultado final}{59}{section*.59}%
+\contentsline {subsection}{\numberline {7.2.6}Ejemplo real de validación DNSSEC}{60}{subsection.7.2.6}%
+\contentsline {subsubsection}{Consulta con resultado NXDOMAIN}{62}{section*.62}%
+\contentsline {subsubsection}{Consulta con resultado NO\_DATA que no es un delegation point}{62}{section*.63}%
+\contentsline {subsubsection}{Consulta con resultado NO\_DATA que es un delegation point}{62}{section*.64}%
+\contentsline {subsubsection}{Consulta de tipo DNSKEY}{62}{section*.65}%
+\contentsline {subsubsection}{Consulta generada por wildcard}{63}{section*.66}%
+\contentsline {subsubsection}{Consulta que utiliza un CNAME}{63}{section*.67}%
+\contentsline {chapter}{\numberline {8}Discusiones}{64}{chapter.8}%
+\contentsline {chapter}{\numberline {}Bibliograf\'ia}{66}{chapter*.69}%
+\contentsline {chapter}{Ap\'{e}ndice \numberline {A}Anexo}{67}{Appendix.1.Alph1}%

@@ -552,29 +552,224 @@ ya que es el algoritmo más comúnmente utilizado en la práctica y fue el únic
 
 \subsubsection{Verificación del RRset DNSKEY}
 
-Cuando \texttt{dnskey\_mod} está deshabilitado (modo normal), el algoritmo debe además validar el propio conjunto \texttt{DNSKEY}. Esta verificación es crítica, porque el RRset DNSKEY es la base 
-criptográfica que permite validar al resto de los RRsets de la zona. El proceso consiste en:
+Cuando \texttt{dnskey\_mod} está deshabilitado (modo normal), el algoritmo debe además validar el propio conjunto \texttt{DNSKEY}. Esta verificación es crítica, porque el \texttt{RRset DNSKEY} es la base 
+criptográfica que permite validar al resto de los \texttt{RRsets} de la zona. El proceso consiste en:
 
 \begin{itemize}
     \item Tomar el \texttt{RRset DNSKEY}, su \texttt{RRSIG(DNSKEY)} y construir la estructura TBS correspondiente.
     \item Verificar la firma usando exclusivamente la KSK, ya que solo la KSK puede firmar el RRset DNSKEY.
 \end{itemize}
 
-Solo si esta firma es válida, las claves DNSKEY pueden considerarse auténticas y confiables para validar el resto de la zona.
+Solo si esta firma es válida, las claves \texttt{DNSKEY} pueden considerarse auténticas y confiables para validar el resto de la zona.
 
 \subsubsection{Cadena de Autenticación DNSSEC}
 
-Para validar completamente la cadena de confianza DNSSEC, el algoritmo determina:
+Para validar completamente la cadena de confianza DNSSEC, el algoritmo necesita:
 
 \begin{itemize}
-    \item Zona hija: el apex (\texttt{example.com}, \texttt{niclabs.cl})
+    \item Zona hija: el apex (\texttt{example.com} o \texttt{niclabs.cl})
     \item Zona padre: la última etiqueta del apex (\texttt{com}, \texttt{cl})
+    \item El \texttt{DnskeyRdata} de la KSK de la zona hija, ya que el \texttt{DS} en la zona padre debe corresponder con ese valor.
 \end{itemize}
 
-A continuación se extrae desde el \texttt{RRset DNSKEY} la clave KSK y se delega la validación de la cadena a la función especial \texttt{verify\_ds\_chain}.
+Con los datos anteriores, delega la validación de la cadena de autenticación a la función especial \texttt{verify\_ds\_chain}.
 La cual se verá en el siguiente sección ya que es un proceso complejo que involucra múltiples pasos y consultas.
 
 \subsubsection{Resultado final}
 
 La respuesta DNS se considera válida únicamente si todas las validaciones anteriores fueron existosas: las firmas de los \texttt{RRsets}, la firma del \texttt{RRset DNSKEY} y la cadena 
-de autentificación. Si alguna de estas verificaciones falla, la función retorna \texttt{false}, indicando que la respuesta no cumple con los requisitos de seguridad DNSSEC.
+de autentificación. Si alguna de estas verificaciones falla, la función retorna \texttt{false}, indicando que la respuesta no cumple con los requisitos de seguridad DNSSEC
+
+\subsection{Proceso de verificación de la cadena de autenticación}
+
+La validación de la cadena de autenticación DNSSEC es el mecanismo que permite verificar que la clave pública (KSK) utilizada por una zona hija es auténtica y se encuentra correctamente 
+delegada por su zona padre y así sucesivamente hasta llegar a una autoridad de confianza (la zona \texttt{root}). Este proceso es fundamental para garantizar la integridad y autenticidad de 
+las respuestas DNS, ya que asegura que los datos no han sido alterados y provienen de una fuente confiable, obligando que la zona padre respalde la autenticidad de la zona hija.
+
+La función es explicada en las siguientes etapas:
+
+\subsubsection{Obtención del registro \texttt{DS} en la zona padre}
+
+El procedimiento comienza realizando una consulta DNS de tipo \texttt{DS}, utilizando como nombre objetivo el apex de la zona hija. Esta consulta debe ser resuelta por la zona padre, 
+ya que los registros \texttt{DS} siempre se almacenan en la delegación que el padre mantiene respecto del hijo.
+
+Es importante señalar que la función \texttt{lookup} utilizada para enviar esta consulta incorpora un manejo especial para este caso.
+Tal como se explicó en la sección correspondiente del algoritmo de resolución, si \texttt{lookup} tratara esta consulta como una consulta DNS normal, intentaría resolverla dentro de la propia zona hija 
+(pues el nombre coincide con su apex), lo que impediría encontrar el registro \texttt{DS} en la zona correcta. Para evitar este error, \texttt{lookup} detecta consultas de tipo \texttt{DS} y 
+fuerza la resolución hacia la zona padre. Aclarar que este comportamiento especial es debido a que no se habla con otros servidores DNS externos, sino que todo se simula localmente.
+
+Como resultado de esta etapa, se obtiene desde la zona padre: El \texttt{El RRset DS} y su correspondiente \texttt{RRset RRSIG(DS)}.
+
+\subsubsection{Obtención del \texttt{DNSKEY RRset} y sus firmas en la zona padre}
+
+Una vez extraído el \texttt{DS}, el verificador debe obtener los registros \texttt{DNSKEY} de la zona padre junto con sus firmas \texttt{RRSIG(DNSKEY)} y el par de llaves públicas 
+(\texttt{ZSK}, \texttt{KSK}) de dicha zona. Esto se realiza mediante la función auxiliar \texttt{get\_pubkeys\_dnskey\_and\_rrsig}.
+
+Esta información es necesaria para verificar tanto las firmas del \texttt{DS} como la autenticidad del propio \texttt{DNSKEY} del padre.
+
+\subsubsection{Verificación criptográfica en la zona padre}
+
+Con toda la información disponible, se realizan dos verificaciones fundamentales:
+
+\begin{itemize}
+    \item \textbf{Verificación del RRset DNSKEY del padre con su propia KSK: } El \texttt{RRset DNSKEY} debe estar firmado con la KSK de la zona padre.
+          Si esta firma no es válida, no se puede confiar en ninguna clave de esa zona, por lo que toda la cadena debe considerarse inválida.
+    \item \textbf{Verificación de la firma RRset DS utilizando la ZSK del padre: } El \texttt{RRset DS} se encuentra firmado por la ZSK del padre.
+          Si esta verificación falla, el RRset DS tampoco es confiable, lo que impide autenticar el vínculo entre el padre y el hijo.
+\end{itemize}
+
+Ambas validaciones se realizan mediante la función \texttt{verify\_rrsig}.
+
+\subsubsection{Verificación de la correspondencia entre el \texttt{DS} y la KSK de la zona hija}
+
+Si ambas firmas del paso anterior son válidas, el algoritmo procede a verificar que alguno de los registros \texttt{DS} obtenidos en la zona padre corresponde efectivamente con la 
+clave KSK de la zona hija.
+
+Para ello se itera por cada registro \texttt{DS} y se compara su \texttt{digest} con el valor calculado a partir de la concatenación del nombre canónico del apex de la zona hija
+y el \texttt{RData} del \texttt{DNSKEY} KSK de la zona hija, utilizando la función hash indicada en el campo \texttt{digest\_type} del \texttt{DS}. Este calculo es el indicado en el RFC [REDACTED]
+
+Aclarar también que en DNSSEC, el uso del \texttt{key tag} para identificar rápidamente la clave correcta es un \textbf{SHOULD}, no un \textbf{MUST}, esto segun el RFC [REDACTED], 
+por lo que este diseño no depende de él, y en cambio comprueba directamente que los \texttt{digest} coincidan
+
+Si algún \texttt{DS} coincide, se confirma que la zona padre efectivamente delega y certifica la clave KSK de la hija.
+
+\subsubsection{Ascenso recursivo hasta la raíz}
+
+Una vez validado el vínculo entre el padre y el hijo, se debe continuar verificando la cadena de autenticación hacia arriba. El algoritmo actúa así:
+
+\begin{itemize}
+    \item Si la zona padre actual corresponde a la zona raíz, la verificación concluye exitosamente, ya que la raíz constituye el trust anchor y no necesita validación adicional, además
+          no se puede seguir subiendo ya que la zona raíz no tiene padre.
+    \item En caso contrario: 
+    \begin{itemize}
+        \item La zona padre se convierte ahora en la zona hija del siguiente nivel
+        \item Se determina cuál es el nuevo nombre de la zona padre
+        \item Se extrae el \texttt{DnskeyRdata} correspondiente (que será utilizada en el próximo cálculo de DS)
+        \item El proceso completo se repite recursivamente sobre ese nivel superior.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Resultado final}
+
+La cadena \texttt{DS} se considera válida únicamente si todas las etapas se completan exitosamente:
+
+\begin{itemize}
+    \item El \texttt{DS} se obtuvo correctamente desde la zona padre.
+    \item El \texttt{DNSKEY RRset} y el \texttt{DS RRset} del padre fueron firmados y verificados correctamente.
+    \item Algún registro \texttt{DS} coincide con el \texttt{digest} calculado a partir de la KSK de la zona hija.
+    \item La verificación se mantiene válida en cada nivel superior hasta alcanzar la zona raíz.
+\end{itemize}
+
+Solo entonces la clave KSK de la zona inicial puede considerarse auténtica y correctamente anclada en la cadena de confianza de DNSSEC.
+
+
+\subsection{Ejemplo real de validación DNSSEC}
+
+Para poder probar que todo lo anterior funciona, se debe crear una consulta DNSSEC válida y usar la función de autenticación para verificar la respuesta.
+En código sería:\\
+
+\begin{lstlisting}
+    let dns_query = create_dns_opt_query("niclabs.cl", Rrtype::A);
+    let authentification = dnssec_authentification(&dns_query).await;
+    println!("the authentification is {:?}", authentification);
+\end{lstlisting}
+
+Este proceso retorna verdadero, confirmando que la respuesta DNSSEC es válida y que todas las firmas y la cadena de autenticación han sido verificadas correctamente.
+Pero además en consola se imprimen todos los pasos intermedios del proceso, mostrando como se obtienen las claves, los \texttt{RRsets}, las firmas y los resultados de cada verificación.
+Mostrar este output completo aquí no es práctico, ya que es demasiado extenso, por lo que a continuación se muestra un diagrama de flujo que ilustra visualmente el proceso de validación.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.65\textwidth]{diagramas/ejemplo_autentificacion_1.png}
+    \label{fig:dnssec-chain-auth-flow}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.65\textwidth]{diagramas/ejemplo_autentificacion_2.png}
+    \label{fig:dnssec-chain-auth-flow}
+\end{figure}
+
+Como se observa en el diagrama, el proceso de validación DNSSEC es complejo y requiere múltiples pasos y verificaciones para garantizar la autenticidad e integridad de las respuestas DNS,
+especificamente requiere de muchos llamados a las distintas base de datos de las zonas involucradas. Aclarar que en el diagrama se pueden ver flechas punteadas, estas indican
+el camino alternativo en caso de que alguna verificación falle, lo que hace que todo el proceso retorne falso inmediatamente, pero en este ejemplo en concreto todas las verificaciones son exitosas y 
+se llega al final del diagrama retornando verdadero.
+
+También decir que este proceso sería muy similar al que se haría si se tuviera comunicación TCP/UDP entre servidor y resolver. Lo único distinto sería que en vez de obtener
+las respuestas con llamados a la función \texttt{lookup\_data}, se haría enviando consultas DNS a través de la red, teniendo que además hacer parsing de las respuestas recibidas.
+Pero en términos de lógica de validación, sería idéntico.
+
+Así como este proceso returna verdadero para una consulta \texttt{A} válida, también se probó con todas las siguientes consultas:
+
+\subsubsection{Consulta con resultado NXDOMAIN}
+
+\begin{lstlisting}
+    let dns_query = create_dns_opt_query("unknown.niclabs.cl", Rrtype::A);
+    let authentification = dnssec_authentification(&dns_query).await;
+\end{lstlisting}
+
+Este caso sería el que usa la función \texttt{nxdomain\_authentication\_process} y retorna verdadero, confirmando que la respuesta \texttt{NXDOMAIN} es válida bajo DNSSEC.
+
+\subsubsection{Consulta con resultado NO\_DATA que no es un delegation point}
+
+\begin{lstlisting}
+    let dns_query = create_dns_opt_query("www.example.com", Rrtype::TXT);
+    let authentification = dnssec_authentification(&dns_query).await;
+\end{lstlisting}
+
+Este caso sería el que usa la función \texttt{nodata\_authentication\_process} y retorna verdadero, confirmando que la respuesta \texttt{NO\_DATA} es válida bajo DNSSEC.
+
+\subsubsection{Consulta con resultado NO\_DATA que es un delegation point}
+
+\begin{lstlisting}
+    let dns_query = create_dns_opt_query("b.example.com", Rrtype::A);
+    let authentification = dnssec_authentification(&dns_query).await;
+\end{lstlisting}
+
+Este caso también usa la función \texttt{nodata\_authentication\_process} pero en este caso se añade el \texttt{DS} asociado a la delegación. Retorna verdadero, confirmando que la respuesta
+\texttt{NO\_DATA} es válida bajo DNSSEC.
+
+\subsubsection{Consulta de tipo DNSKEY}
+
+\begin{lstlisting}
+    let dns_query = create_dns_opt_query("niclabs.cl", Rrtype::DNSKEY);
+    let authentification = dnssec_authentification(&dns_query).await;
+\end{lstlisting}
+
+Este caso activa el modo especial de autenticación para consultas \texttt{DNSKEY} en la función \texttt{authentification\_process}, usando la KSK para verificar la firma del \texttt{RRset DNSKEY}.
+Retorna verdadero, confirmando que la respuesta \texttt{DNSKEY} es válida bajo DNSSEC.
+
+\subsubsection{Consulta generada por wildcard}
+
+\begin{lstlisting}
+    let dns_query = create_dns_opt_query("unknown.example.com", Rrtype::A);
+    let authentification = dnssec_authentification(&dns_query).await;
+\end{lstlisting}
+
+En este caso hay que quitar el comentario del registro wildcard en el masterfile de la zona \texttt{example.com} para que funcione.
+Este caso usa la función \texttt{wildcard\_authentication\_process} y retorna verdadero, confirmando que la respuesta generada por el wildcard es válida bajo DNSSEC.
+
+\subsubsection{Consulta que utiliza un CNAME}
+
+\begin{lstlisting}
+    let dns_query = create_dns_opt_query("blog.example.com", Rrtype::A);
+    let authentification = dnssec_authentification(&dns_query).await;
+\end{lstlisting}
+
+Este caso ocupa la función estándar \texttt{authentification\_process}, pero lo distinto es que contiene dos respuestas de dos tipos distintos: un \texttt{CNAME} y un \texttt{A}.
+Ambos registros tienen su respectivo \texttt{RRSIG} y ambos son validados correctamente. Retorna verdadero, confirmando que la respuesta con \texttt{CNAME} es válida bajo DNSSEC.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

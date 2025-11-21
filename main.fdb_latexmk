@@ -1,20 +1,20 @@
 # Fdb version 4
-["bibtex main"] 1763504612.19165 "main.aux" "main.bbl" "main" 1763504616.62593 0
+["bibtex main"] 1763750327.80252 "main.aux" "main.bbl" "main" 1763750332.5753 0
   "./bibliografia.bib" 1760557466 1937 68f54fed56c6e786f4b15e50becc546d ""
   "C:/Users/bastian/AppData/Local/Programs/MiKTeX/bibtex/bst/bibtex/plain.bst" 1291864736 20613 bd3fbfa9f64872b81ac57a0dd2ed855f ""
-  "main.aux" 1763504615 16328 55320e65718a81ecb3bb33524cd527ac "pdflatex"
+  "main.aux" 1763750331 18602 839e0953af2ce2a10d792e8e4cb10406 "pdflatex"
   (generated)
   "main.bbl"
   "main.blg"
   (rewritten before read)
-["pdflatex"] 1763504612.48569 "main.tex" "main.pdf" "main" 1763504616.62651 0
+["pdflatex"] 1763750328.08194 "main.tex" "main.pdf" "main" 1763750332.57589 0
   "1intro.tex" 1762189544 8301 ac0e045d7bcbe3296625bb7e72c636a3 ""
   "2marco_teorico.tex" 1760551737 9306 be5ba31096b53c5858ffde0197544e7a ""
   "3comunicacion.tex" 1760839756 8498 e2ff0c429afc6a8b3d992bad8805b955 ""
   "4estructura_de_datos.tex" 1762971922 14053 65986ec3d3eda13703dae5703382a713 ""
   "5algoritmo.tex" 1763487271 25340 f50808fa2b487480d299ab6186cdd206 ""
   "6edns0.tex" 1762814400 3384 49f3c703276b476427b70b8c36719a6c ""
-  "7dnssec.tex" 1763504607 43405 148c759d83c8cd4672504851cc002d08 ""
+  "7dnssec.tex" 1763750322 55058 c0f6876f8169a7c15680ec895c7b165e ""
   "8discusiones.tex" 1760999511 22 8f9cf1c43f50159c884d8fa260b96cdd ""
   "C:/Users/bastian/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1761168509 80909 eab91d9745dd2edfd62a31d53cd5fe15 ""
   "C:/Users/bastian/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/ecbx1200.pk" 1762898929 31952 7ccb68b9f3d13a5547373f26c9898424 ""
@@ -231,6 +231,8 @@
   "diagramas/add_glue_records_and_wildcard.png" 1762442528 256784 6d41afc3a57f58cc4398322ebdfc38b8 ""
   "diagramas/diagrama_encriptacion.jpg" 1762885540 38630 b7081bffc57ee9a19d051b21b13b5f88 ""
   "diagramas/dnssec_auth.png" 1763132309 446870 773d43c0fe0824721eab2341c690be6f ""
+  "diagramas/ejemplo_autentificacion_1.png" 1763747927 219519 5d0df06a8a836d180f92f8d4a1439bca ""
+  "diagramas/ejemplo_autentificacion_2.png" 1763748036 373852 d8fa8477452ce2559b0af41b1d4abad6 ""
   "diagramas/lookup_data.png" 1762188968 238813 5c4a2846c208cb11065e388d5a67f5f1 ""
   "diagramas/parse_resource_records.png" 1761084154 144498 fcb927a26e9ea24a1b7c73ed7decb8f2 ""
   "diagramas/read_masterfile_records.png" 1761072839 169590 ebfd1715e0c3e041d1c9b38b38d38fa7 ""
@@ -238,13 +240,13 @@
   "diagramas/resolve_qname_in_zone.png" 1762359959 341916 8fab863e7d6ac6c9b7933f71bbcb9fbb ""
   "diagramas/udp.png" 1760842230 383062 e524521a4ac9a3a2375bf1d445bd71d0 ""
   "imagenes/escudoU2014.pdf" 1760557466 43308 3a9e2b3b1f37899134c09e731c033786 ""
-  "main.aux" 1763504615 16328 55320e65718a81ecb3bb33524cd527ac "pdflatex"
-  "main.bbl" 1763504612 592 a580c9857b0b6afb4a0ef8146ac08ed1 "bibtex main"
-  "main.lof" 1763504615 210 bd16b93b12a299fc03440b5e021371b3 "pdflatex"
-  "main.lot" 1763504615 210 bd16b93b12a299fc03440b5e021371b3 "pdflatex"
-  "main.out" 1763504615 13680 0856c30421e53dde7e11bf49c3efaf13 "pdflatex"
+  "main.aux" 1763750331 18602 839e0953af2ce2a10d792e8e4cb10406 "pdflatex"
+  "main.bbl" 1763750328 592 a580c9857b0b6afb4a0ef8146ac08ed1 "bibtex main"
+  "main.lof" 1763750331 210 bd16b93b12a299fc03440b5e021371b3 "pdflatex"
+  "main.lot" 1763750331 210 bd16b93b12a299fc03440b5e021371b3 "pdflatex"
+  "main.out" 1763750331 14276 29b2d6a78d95c23ab3c4f44dacba18a8 "pdflatex"
   "main.tex" 1762898915 5225 be915d8f5507c525a57d6d1b4dec8f0f ""
-  "main.toc" 1763504615 9115 3f2ef8899ad9a8b7a74c31848e1c9217 "pdflatex"
+  "main.toc" 1763750331 10472 8690c497fd40a11cf956c75841f0dff8 "pdflatex"
   "masterfiles/toy_masterfile.txt" 1760975246 769 98e33a7a3147983ae78062d8c14011cc ""
   "umemoria.cls" 1760557466 8901 53fa812ed06076de516f453f3311e771 ""
   (generated)
