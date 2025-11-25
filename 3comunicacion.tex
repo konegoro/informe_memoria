@@ -1,8 +1,8 @@
-\chapter{Conneciones UDP y TCP}
+\chapter{Conexiones UDP y TCP}
 
 El servidor DNS implementado usa la librería \texttt{tokio} para atender consultas en UDP y TCP de forma asíncrona y concurrente. 
-Además de la funcionalidad básica de recibir y devolver respuestas, también soporta EDNS0, detecta y respeta el payload máximo 
-anunciado por el cliente en el registro OPT, maneja el estándar DNSSEC (lectura del bit DO) y protege operaciones críticas
+Además de la funcionalidad básica de recibir y devolver respuestas, también soporta EDNS0, detecta y respeta el payload (tamaño del mensaje) máximo 
+anunciado por el cliente en el registro \texttt{OPT}, maneja el estándar DNSSEC (lectura del bit DO) y protege operaciones críticas
 con timeouts para evitar bloqueos y bucles infinitos. También se manejan correctamente errores de parseo (se responde FORMERR) y
 se implementa el comportamiento para truncamiento (TC) sobre UDP con fallback a TCP.
 
@@ -14,7 +14,7 @@ El servidor UDP está implementado en la estructura \texttt{ServerUDPConnection}
 
 \begin{table}[h!]
 \centering
-\renewcommand{\arraystretch}{1,1}
+\renewcommand{\arraystretch}{1.1}
 
 \begin{tabular}{|p{0.95\linewidth}|}
 \hline
@@ -27,19 +27,20 @@ El servidor UDP está implementado en la estructura \texttt{ServerUDPConnection}
 \hline
 \textbf{Métodos Públicos} \\
 \hline
-\texttt{+ new\_udp(timeout: Duration, payload\_size: usize) -> Self} \\
-\texttt{+ new\_default(timeout: Duration) -> Self} \\
-\texttt{+ receive\_and\_response(\&mut self) -> Result<(), ServerError>} \\
+\texttt{+ new\_udp(timeout: Duration, payload\_size: usize)\ \ ->\ Self} \\
+\texttt{+ new\_default(timeout: Duration)\ \ ->\ Self} \\
+\texttt{+ receive\_and\_response(\&mut self)\ \ ->\ Result<(), ServerError>} \\
 \hline
 \textbf{Métodos Privados / Auxiliares} \\
 \hline
 \texttt{- handle\_dns\_message\_udp\_with\_timeout (} \\
 \texttt{\ \ timeout\_server: Duration, recv\_buf: \&[u8],} \\
 \texttt{\ \ socket: \&UdpSocket, client\_addr: SocketAddr,} \\
-\texttt{\ \ tc\_case: bool, len: usize ) ->  Result<(), ServerError>} \\
+\texttt{\ \ tc\_case: bool, len: usize )\ \ ->\ Result<(), ServerError>} \\
 \hline
 \end{tabular}
 \end{table}
+
 
 %%Explicacion de los campos
 
@@ -153,21 +154,22 @@ El servidor TCP está implementado en la estructura \texttt{ServerTCPConnection}
 \hline
 \textbf{Métodos Públicos} \\
 \hline
-\texttt{+ new(timeout: Duration, payload\_size: usize) -> Self} \\
-\texttt{+ new\_default(timeout: Duration) -> Self} \\
-\texttt{+ get\_timeout(self: Self) -> tokio::time::Duration} \\
-\texttt{+ receive\_and\_response(\&self) -> Result<(), ServerError>} \\
+\texttt{+ new(timeout: Duration, payload\_size: usize)\ \ ->\ Self} \\
+\texttt{+ new\_default(timeout: Duration)\ \ ->\ Self} \\
+\texttt{+ get\_timeout(self: Self)\ \ ->\ tokio::time::Duration} \\
+\texttt{+ receive\_and\_response(\&self)\ \ ->\ Result<(), ServerError>} \\
 \hline
 \textbf{Métodos Privados / Auxiliares} \\
 \hline
 \texttt{- handle\_dns\_message\_with\_timeout(} \\
 \texttt{\ \ timeout\_server: Duration, recv\_buf: \&[u8],} \\
-\texttt{\ \ socket: \&mut TcpStream ) -> Result<(), ServerError>} \\[0.3em]
+\texttt{\ \ socket: \&mut TcpStream )\ \ ->\ Result<(), ServerError>} \\[0.3em]
 \texttt{- handle\_connection(} \\
 \texttt{\ \ timeout\_server: Duration, socket: TcpStream,} \\
-\texttt{\ \ addr: std::net::SocketAddr ) -> Result<(), ServerError>} \\
+\texttt{\ \ addr: std::net::SocketAddr )\ \ ->\ Result<(), ServerError>} \\
 \hline
 \end{tabular}
+
 
 La versión TCP del servidor comparte gran parte de su estructura con el modo UDP, ya que utiliza los mismos campos principales y métodos similares para la configuración y el procesamiento de consultas.
 

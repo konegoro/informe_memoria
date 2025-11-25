@@ -1,19 +1,125 @@
-\begin{thebibliography}{1}
+\begin{thebibliography}{10}
 
-\bibitem{KAR00}
-Ioannis Karatzas. and Steven~E. Shreve.
-\newblock {\em Brownian Motion and Stochastic Calculus}.
-\newblock Springer, Berlin, 2nd edition, 2000.
+\bibitem{RFC4033}
+{Arends, Roy}, {Austein, Rob}, {Larson, Matt}, {Massey, Dan}, and {Rose,
+  Scott}.
+\newblock Rfc 4033: Dns security introduction and requirements.
+\newblock {\em RFC Editor}, 2005.
+\newblock URL: \url{https://www.rfc-editor.org/rfc/pdfrfc/rfc4033.txt.pdf}.
 
-\bibitem{Pro1990}
-Philip Protter.
-\newblock {\em Stochastic Integration and Differential Equations}.
-\newblock Springer, 1990.
+\bibitem{RFC4034}
+{Arends, Roy}, {Austein, Rob}, {Larson, Matt}, {Massey, Dan}, and {Rose,
+  Scott}.
+\newblock Rfc 4034: Resource records for the dns security extensions.
+\newblock {\em RFC Editor}, 2005.
+\newblock URL: \url{https://www.rfc-editor.org/rfc/pdfrfc/rfc4034.txt.pdf}.
 
-\bibitem{GVK25295551X}
-{Daniel} Revuz and {Marc} Yor.
-\newblock {\em Continuous martingales and Brownian motion}.
-\newblock Number 293 in Grundlehren der mathematischen Wissenschaften.
-  Springer, Berlin [u.a.], 3. ed edition, 1999.
+\bibitem{Notion}
+{Bastián Corrales}.
+\newblock Resúmenes de rfcs (notion).
+\newblock {\em Sitio web}, s.f.
+\newblock URL: \url{https://www.rfc-editor.org/rfc/pdfrfc/rfc1034.txt.pdf}.
+
+\bibitem{HickoryBug}
+{GitHub Security Advisories}.
+\newblock Ghsa-37wc-h8xc-5hc4: Hickory dns bug.
+\newblock {\em Sitio web}, 2023.
+\newblock URL: \url{https://github.com/advisories/GHSA-37wc-h8xc-5hc4}.
+
+\bibitem{HickoryDNS}
+{Hickory Project}.
+\newblock Hickory dns.
+\newblock {\em Sitio web}, s.f.
+\newblock URL: \url{https://github.com/hickory-dns/hickory-dns}.
+
+\bibitem{BirthdayAttacks}
+{IETF}.
+\newblock Birthday attacks en dns.
+\newblock {\em RFC 5452}, 2009.
+\newblock URL: \url{https://datatracker.ietf.org/doc/html/rfc5452#section-5}.
+
+\bibitem{AtaquesRFC}
+{IETF}.
+\newblock Ataques de ciberseguridad por validación incorrecta de nombres de
+  dominio.
+\newblock {\em RFC 9267}, 2022.
+\newblock URL:
+  \url{https://www.rfc-editor.org/rfc/rfc9267.html#name-label-and-name-length-valid}.
+
+\bibitem{SafeRust}
+{InfoWorld}.
+\newblock Why rust is a memory-safe language.
+\newblock {\em InfoWorld}, 2024.
+\newblock URL:
+  \url{https://www.infoworld.com/article/2336661/rust-memory-safety-explained.html}.
+
+\bibitem{Bind9}
+{Internet Systems Consortium}.
+\newblock Bind 9.
+\newblock {\em Sitio web}, s.f.
+\newblock URL: \url{https://www.isc.org/bind/}.
+
+\bibitem{Dnsmasq}
+{Kelley, Simon}.
+\newblock Dnsmasq documentation.
+\newblock {\em Sitio web}, s.f.
+\newblock URL: \url{https://thekelleys.org.uk/dnsmasq/doc.html}.
+
+\bibitem{Ethernut}
+{MITRE}.
+\newblock Cve-2020-25110: Vulnerabilidad en ethernut.
+\newblock {\em CVE Database}, 2020.
+\newblock URL:
+  \url{https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-25110}.
+
+\bibitem{LabelsIOT}
+{MITRE}.
+\newblock Cve-2020-15795: Vulnerabilidades en iot por labels mal validados.
+\newblock {\em CVE Database}, 2023.
+\newblock URL:
+  \url{https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-15795}.
+
+\bibitem{RFC1034}
+{Mockapetris, Paul}.
+\newblock Rfc 1034: Domain names - concepts and facilities.
+\newblock {\em RFC Editor}, 1987.
+\newblock URL: \url{https://www.rfc-editor.org/rfc/pdfrfc/rfc1034.txt.pdf}.
+
+\bibitem{RFC1035}
+{Mockapetris, Paul}.
+\newblock Rfc 1035: Domain names - implementation and specification.
+\newblock {\em RFC Editor}, 1987.
+\newblock URL: \url{https://www.rfc-editor.org/rfc/pdfrfc/rfc1035.txt.pdf}.
+
+\bibitem{NLnetLabsBug}
+{NLnet Labs}.
+\newblock Issue \#520: Bug en domain crate.
+\newblock {\em GitHub Issues}, 2025.
+\newblock URL: \url{https://github.com/NLnetLabs/domain/issues/520}.
+
+\bibitem{NLnetLabs}
+{NLnet Labs}.
+\newblock Domain crate.
+\newblock {\em Sitio web}, s.f.
+\newblock URL: \url{https://github.com/NLnetLabs/domain/tree/main/}.
+
+\bibitem{PowerDNS}
+{PowerDNS}.
+\newblock Powerdns.
+\newblock {\em Sitio web}, s.f.
+\newblock URL: \url{https://www.powerdns.com/}.
+
+\bibitem{Tokio}
+{Tokio Project}.
+\newblock Tokio runtime.
+\newblock {\em Sitio web}, s.f.
+\newblock URL: \url{https://tokio.rs/}.
+
+\bibitem{VulnerabilidadBind}
+{Zero Day Initiative}.
+\newblock Cve-2020-8625: Rce en bind.
+\newblock {\em Sitio web}, 2021.
+\newblock URL:
+  \url{https://www.zerodayinitiative.com/blog/2021/2/24/cve-2020-8625-a-fifteen-year-old-rce-bug-returns-in-isc-bind-server}.
 
 \end{thebibliography}

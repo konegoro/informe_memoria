@@ -1,1 +1,299 @@
-\chapter{Discusiones}
+\chapter{Discusiones y Resultados}
+
+\section{Uso del lenguaje Rust y sus desventajas}
+
+La librería \texttt{dns-rust} está escrita en Rust, por lo que el desarrollo del proyecto se realizó íntegramente en este lenguaje. Rust es un lenguaje de programación de sistemas que destaca por su 
+seguridad de memoria, su modelo de concurrencia libre de condiciones de carrera y su alto rendimiento sin necesidad de un recolector de basura. Estas características lo convierten en una opción 
+atractiva para la implementación de software de bajo nivel, como servidores de nombres DNS.
+
+No obstante, Rust también presenta ciertos desafíos importantes que se hicieron evidentes durante el desarrollo. En particular, el modelo de \textit{ownership} y \textit{borrowing} —uno de sus pilares 
+seguridad— introduce restricciones estrictas sobre cómo se gestionan las referencias y la mutabilidad. Si bien estas reglas previenen errores comunes como \textit{use-after-free} o accesos 
+concurrentes no seguros, también complican significativamente el diseño de estructuras de datos complejas.
+
+Este problema se manifestó de forma especialmente clara al intentar implementar una estructura jerárquica de zonas DNS basada en árboles, tal como sugieren los estándares. La necesidad de mantener 
+eferencias mutables hacia nodos padres e hijos, junto con los largos ciclos de vida asociados a estas referencias, generó importantes dificultades para cumplir simultáneamente con las garantías del 
+compilador. Debido a estas limitaciones, la implementación final debió abandonar el enfoque basado en árboles y optar por una estructura alternativa compuesta por \textit{hash maps} anidados, que 
+resulta más compatible con el modelo de propiedad de Rust y evita los problemas asociados a referencias cíclicas.
+
+\section{Uso de mapas anidados en lugar de árboles}
+
+Como se mencionó en la sección anterior, la implementación inicial del servidor de nombres DNS buscaba modelar la jerarquía natural de las zonas mediante una estructura de árbol, donde cada nodo 
+representaba un \texttt{RRSet} y contenía referencias hacia sus nodos descendientes. Sin embargo, debido a las limitaciones impuestas por el sistema, se optó finalmente por 
+reemplazar esta estructura por una basada en mapas (\texttt{HashMap}) anidados.
+
+Esto plantea la pregunta: ¿afecta este cambio el rendimiento del servidor?
+
+En términos de eficiencia, la respuesta breve es que los mapas anidados suelen ser más rápidos para las operaciones típicas de un servidor DNS. Dado un nombre de dominio y un tipo de registro, 
+acceder al \texttt{RRSet} correspondiente es una operación de complejidad O(1) en el caso de mapas anidados, mientras que en una estructura de árbol sería O(h), donde 
+$h$ corresponde a la altura del árbol. En otras palabras, los mapas ofrecen tiempos de acceso constantes, mientras que los árboles implican recorrer la jerarquía nodo por nodo.
+
+La verdadera desventaja de abandonar una estructura arbórea es la pérdida de la representación explícita de la jerarquía de dominios. Esta organización jerárquica podría facilitar ciertas operaciones
+ conceptualmente dependientes de la estructura DNS (por ejemplo, recorridos ascendentes o búsquedas basadas en prefijos de dominio). Sin embargo, en la práctica, y considerando el conjunto de RFC 
+ analizandos durante este proyecto, ninguna de las operaciones implementadas requirió dicha jerarquía explícita. No obstante, no puede descartarse que futuras extensiones o características avanzadas 
+ de un servidor DNS puedan beneficiarse de una estructura de árbol.
+
+Es importante destacar, además, que el uso de una estructura jerárquica es una recomendación de los estándares —una sugerencia (\textit{SHOULD})— y no un requisito obligatorio. Por lo tanto, 
+la decisión de utilizar mapas anidados en lugar de árboles no compromete el cumplimiento de las especificaciones, y ofrece una alternativa más eficiente y más compatible con las restricciones 
+del lenguaje Rust.
+
+\section{Limitaciones y errores encontrados en la librería dns-rust}
+
+Como se vió a lo largo del desarrollo del proyecto, la librería \texttt{dns-rust} presenta varias limitaciones y errores que afectan la implementación de un servidor de nombres DNS completo 
+basado en los estándares. A continuación, se detallan algunos de los problemas más relevantes encontrados:
+
+\subsection{Funciones de parsing}
+
+En DNS, los mensajes se transmiten mediante los protocolos UDP o TCP utilizando un formato en bytes. Esto implica que debe existir un mecanismo para transformar esos bytes en estructuras de datos 
+utilizables (\texttt{from\_bytes}) y, en sentido inverso, convertir dichas estructuras nuevamente a su representación binaria (\texttt{to\_bytes}).
+
+El principal problema surge porque estas funciones implementan compresión de nombres de dominio, una técnica estándar en DNS que permite representar nombres repetidos de manera más eficiente dentro 
+de un mismo mensaje. Sin embargo, esta compresión también introduce complejidad adicional en el proceso de \textit{parsing}. En particular, cuando un mensaje contiene al menos un \texttt{Resource Record} 
+en cualquiera de sus secciones (\texttt{Answer}, \texttt{Authority} o \texttt{Additional}), la función \texttt{to\_bytes} intenta aplicar compresión a los nombres incluidos dentro del 
+campo \texttt{Rdata}. El problema es que dicha compresión está implementada incorrectamente, lo que provoca que, al intentar reconstruir luego el mensaje mediante \texttt{from\_bytes}, 
+el proceso falle con un error de análisis.
+
+Se intentó corregir este comportamiento modificando directamente el código fuente de la librería; sin embargo, debido a la gran extensión del código, la ausencia de documentación y la complejidad 
+de su estructura interna, no fue posible localizar ni resolver la causa exacta del problema. También se exploró la posibilidad de implementar versiones alternativas de \texttt{from\_bytes} y 
+\texttt{to\_bytes} sin compresión, pero estos intentos tampoco tuvieron éxito.
+
+\subsection{Falta de implementación de \texttt{to\_canonical\_bytes} para los Rdata}
+
+Otra limitación relevante es que ninguno de los tipos de \texttt{Rdata} incluidos en la librería implementa la función \texttt{to\_canonical\_bytes}, la cual es fundamental para la validación DNSSEC. 
+Esta función debe producir la representación canónica en bytes del \texttt{Rdata}, siguiendo estrictamente las reglas de canonicalización definidas en los RFC, y es indispensable para el cálculo y 
+la verificación de las firmas digitales (\texttt{RRSIG}).
+
+Debido a esta ausencia, fue necesario implementar manualmente \texttt{to\_canonical\_bytes} para cada tipo de \texttt{Rdata} usado en el proyecto, basándose directamente en las especificaciones 
+formales de los RFC correspondientes y asegurando que cada uno cumpliera con el formato requerido por DNSSEC.
+
+\subsection{Bug en la función de inserción en la sección \texttt{Authority}}
+
+La función \texttt{add\_authorities} está diseñada para incorporar registros en la sección \texttt{Authority} de un mensaje DNS. Sin embargo, su implementación presenta un error crítico: 
+aunque la función obtiene correctamente los registros de la sección \texttt{Authority} y actualiza el contador correspondiente, en la última línea invoca \texttt{set\_answer} en lugar de 
+\texttt{set\_authority}.\\
+
+\begin{lstlisting}
+     pub fn add_authorities(&mut self, mut authorities: Vec<ResourceRecord>) {
+        let mut msg_authorities = self.get_authority();
+
+        msg_authorities.append(&mut authorities);
+        self.header.set_nscount(msg_authorities.len() as u16);
+        self.set_answer(msg_authorities);
+    }
+\end{lstlisting}
+
+Como consecuencia, todos los \texttt{ResourceRecord} que deberían ser añadidos a \texttt{Authority} terminan siendo escritos erróneamente en la sección \texttt{Answer}. Este comportamiento altera 
+la estructura del mensaje DNS y genera inconsistencias graves, especialmente en contextos donde la sección \texttt{Authority} es fundamental, como en respuestas delegadas o en validaciones DNSSEC.
+
+Para corregir el problema, basta con reemplazar la llamada final por \texttt{set\_authority}, lo que garantiza que los registros se almacenen en la sección adecuada.
+
+Este bug es especialmente severo, ya que afecta a cualquier implementación que emplee esta función para construir mensajes DNS y podría provocar respuestas incorrectas o inválidas. 
+Resulta llamativo que un error de esta magnitud haya pasado desapercibido en la librería original.
+
+\section{Testing del proyecto}
+
+Para probar el funcionamiento de este proyecto, primero es necesario clonar el repositorio \texttt{name-server-rust} desde GitHub, disponible 
+\href{https://github.com/niclabs/nameserver-rust/}{acá}.
+
+Dentro de este repositorio se encuentra el archivo \texttt{main.rs}, el cual reúne múltiples casos de uso del servidor: pruebas completamente locales 
+(como visualización de las bases de datos internas, los \texttt{RRSet DS} y el catálogo) y pruebas cliente-servidor, permitiendo inicializar el servidor en modo UDP o en un modo híbrido 
+(UDP y TCP simultáneamente).
+
+Además, en la carpeta \texttt{bin} se incluye un archivo \texttt{client.rs}, que implementa un cliente DNS simple capaz de enviar consultas al servidor para facilitar las pruebas.
+
+A continuación se describen los principales casos de uso disponibles para testear el sistema:
+
+\subsection{Servidor UDP con soporte para consultas paralelas}
+
+Una de las características más relevantes del servidor es su capacidad para manejar múltiples consultas concurrentes.
+Este comportamiento puede verificarse ejecutando el servidor en modo UDP y enviando varias consultas en paralelo desde el cliente, utilizando tareas asincrónicas provistas por la 
+librería \texttt{tokio}.
+
+Para probar este caso de uso:
+
+\subsubsection{1) Inicie el servidor en modo UDP ejecutando en una terminal:}
+
+\begin{lstlisting}
+cargo run --bin nameserver-rust -- 1
+\end{lstlisting}
+
+\subsubsection{2) Envíe consultas paralelas desde el cliente ejecutando en otra terminal:}
+
+\begin{lstlisting}
+cargo run --bin client -- 1
+\end{lstlisting}
+
+Este comando hace que el cliente envíe dos consultas DNS en paralelo.
+
+Al observar la salida de la consola del servidor, podrá ver que ambas consultas son recibidas y procesadas de forma concurrente. Cada una se atiende de manera independiente, 
+generando finalmente dos respuestas DNS, lo que demuestra la capacidad del servidor para manejar múltiples solicitudes simultáneas sin bloquear su ejecución.
+
+
+\subsection{Servidor híbrido: manejo de truncamiento (TC) y consultas paralelas en TCP}
+
+El proyecto también permite ejecutar el servidor en un modo híbrido, en el cual se levantan simultáneamente dos instancias del servicio DNS: una escuchando consultas mediante UDP y otra mediante TCP.
+
+\subsubsection{1) Ejecute el servidor en modo híbrid con :}
+
+\begin{lstlisting}
+cargo run --bin nameserver-rust -- 2
+\end{lstlisting}
+
+Este comando inicia dos listeners en paralelo:
+
+\begin{itemize}
+    \item Un servidor UDP, encargado de manejar consultas rápidas y de pequeño tamaño
+    \item Un servidor TCP, necesario para consultas grandes o cuando se requiere confiabilidad adicional.
+\end{itemize}
+
+\subsubsection{2) Envíe una consulta grande desde el cliente con:}
+
+\begin{lstlisting}
+cargo run --bin client -- 2
+\end{lstlisting}
+
+En este caso de uso, el cliente primero envía una consulta DNS cuyo tamaño supera los 512 bytes, que es el máximo permitido por defecto para recibir mensajes UDP en el servidor 
+(es decir, el UDP payload size configurado por el propio servidor). Debido a que la consulta excede este límite, la instancia UDP del servidor no puede procesarla completamente y responde con 
+un mensaje marcado con el bit TC (Truncated) activado.
+
+Al recibir esta respuesta truncada, el cliente detecta correctamente la condición TC y vuelve a enviar la misma consulta, pero ahora utilizando TCP, tal como exige la especificación DNS para manejar 
+mensajes que no caben en un paquete UDP.
+
+Para demostrar que la implementación TCP también soporta concurrencia, el cliente no solo reenvía la consulta por TCP, sino que clona la consulta y envía dos solicitudes simultáneas. 
+Ambas llegan al servidor TCP, el cual las procesa paralelamente y retorna las respuestas correspondientes.
+
+Este flujo permite verificar tres características clave del servidor híbrido:
+
+\begin{itemize}
+    \item La correcta señalización del bit TC ante respuestas demasiado grandes en UDP.
+    \item La capacidad del cliente para detectar respuestas truncadas y reenviar consultas por TCP.
+    \item La capacidad del servidor TCP para manejar múltiples consultas concurrentes sin bloquearse.
+\end{itemize}
+
+
+\subsection{Manejo de consultas mal formadas (FORMERR)}
+
+Este caso de uso permite evaluar la capacidad del servidor para identificar consultas DNS con errores de formato. En el caso 3 del servidor, este se ejecuta en un modo que espera una única consulta UDP con 
+el propósito de verificar el manejo de errores según lo definido por el estándar DNS.
+
+Cuando el servidor recibe una consulta, el proceso de validación no lo realiza directamente el código del servidor, sino la función \texttt{from\_bytes} provista por la librería \texttt{dns-rust}, 
+la encargada de transformar una secuencia de bytes en una estructura interna \texttt{DnsMessage}.
+Es precisamente esta función la que determina si la consulta cumple la sintaxis del protocolo DNS. Si detecta una violación (por ejemplo, una etiqueta cuyo tamaño excede los 63 bytes permitidos)
+la función devuelve un error. Ante este escenario, el servidor construye una respuesta válida a nivel de encabezado e incluye el código de retorno \texttt{RCODE = FORMERR}, indicando un error de 
+formato en la consulta original.
+
+Es importante aclarar que este mecanismo depende completamente del correcto funcionamiento de \texttt{from\_bytes}. Existen otros tipos de consultas mal formadas que, de acuerdo con los RFC, 
+también deberían producir un \texttt{FORMERR}, pero que la implementación actual de dicha función no detecta correctamente. En esos casos, el servidor no puede señalar el error a pesar de que la 
+consulta sea inválida. Este punto es relevante para interpretar los resultados de este caso de prueba y comprender las limitaciones actuales de la librería utilizada.
+
+
+\subsubsection{Cliente enviando una consulta DNS mal formada}
+
+En el caso 3 del cliente, se construye explícitamente una consulta DNS con un encabezado válido pero con un error crítico en el nombre de dominio: la primera etiqueta declara una longitud de 64 bytes, 
+superando el máximo permitido de 63. Esta inconsistencia constituye un error de formato según el RFC 1035, por lo que el servidor responde con \texttt{FORMERR}.
+
+El cliente envía esta consulta al servidor mediante UDP y, al recibir la respuesta, reconstruye su encabezado para verificar que el código de error incluido sea efectivamente \texttt{FORMERR}. 
+Esto permite constatar que el servidor (a través de \texttt{from\_bytes}) identificó correctamente este caso puntual como una violación sintáctica del protocolo.
+
+\subsection{Manejo de consultas DNSSEC en UDP y TCP}
+
+Cuando el cliente opera en los modos 4 (UDP) y 5 (TCP), construye consultas DNS compatibles con DNSSEC utilizando EDNS(0) mediante la inclusión de un registro OPT en la sección \texttt{Additional}. 
+Este registro OPT es lo que permite extender el protocolo DNS clásico e indicar explícitamente que el cliente quiere recibir datos DNSSEC.
+
+\subsubsection{Cómo el cliente indica que quiere DNSSEC}
+
+El cliente agrega un registro OPT con tres elementos clave:
+
+\begin{itemize}
+    \item \textbf{UDP Payload Size ampliado (ej. 4096 bytes):} Permite que las respuestas DNSSEC (que incluyen firmas criptográficas y por lo tanto son más grandes)
+          puedan transmitirse sin truncamiento innecesario.
+    \item \textbf{Versión EDNS = 0: } Es la versión estándar requerida para que el servidor sepa que el mensaje usa EDNS(0).  
+    \item \textbf{DO bit activado (DNSSEC OK): } Le dice explícitamente al servidor que el cliente quiere una respuesta con información DNSSEC, es decir, 
+          \texttt{RRsets} firmados, con sus registros \texttt{RRSIG} correspondientes.   
+\end{itemize}
+
+El cliente construye exactamente la misma consulta tanto para UDP como para TCP; la única diferencia es el transporte.
+
+\subsubsection{Como el server maneja las consultas DNSSEC}
+
+Cuando el servidor recibe una consulta que incluye un registro OPT con el bit DO activado, interpreta que el cliente está solicitando datos DNSSEC.
+Así que por lo tanto responde incluyendo los registros \texttt{RRSIG} correspondientes junto con los \texttt{RRSet} solicitados.
+
+
+\subsection{Verificación local de estructuras de datos y RRsets DNSSEC}
+
+Para asegurar la correcta construcción y consistencia de las estructuras internas del servidor DNS, se implementaron varios casos de prueba cuyo propósito es inspeccionar y validar visualmente el 
+contenido de los componentes críticos del sistema. Cada caso imprime en consola el estado actual de las estructuras relevantes, permitiendo confirmar su correcta inicialización antes de utilizarlas en 
+las respuestas del servidor o incluirlas en los \textit{master files}.
+
+\subsubsection{Revisión del Catálogo}
+
+El catálogo mantiene referencias a todas las zonas administradas por el servidor.  
+En estas pruebas se extrae la estructura interna asociada a una zona específica (por ejemplo, \texttt{niclabs.cl}) y se imprime su contenido completo. Esto permite verificar:
+
+\begin{itemize}
+    \item Los nombres de dominio registrados.
+    \item Los tipos de RRsets presentes en cada dominio.
+    \item El contenido de cada \texttt{Rdata} almacenado.
+\end{itemize}
+
+Esta revisión asegura que la carga de zonas y la organización general del catálogo son correctas.
+
+\subsubsection{Revisión de todas las estructuras de datos de zonas}
+
+El servidor mantiene múltiples estructuras internas que representan zonas completas:  
+\texttt{DATA\_STRUCTURE\_ROOT}, \texttt{DATA\_STRUCTURE\_COM}, \texttt{DATA\_STRUCTURE\_CL}, \texttt{DATA\_STRUCTURE\_NICLABS}, \texttt{DATA\_STRUCTURE\_EXAMPLE}.
+
+Cada una puede imprimirse íntegramente en consola para validar:
+
+\begin{itemize}
+    \item Los RRsets almacenados y sus owner names.
+    \item La presencia y consistencia de los registros \texttt{RRSIG}.
+    \item La correcta estructura interna de cada zona.
+    \item La coherencia entre zonas relacionadas (por ejemplo, \texttt{com} y \texttt{example.com}).
+\end{itemize}
+
+Estas impresiones funcionan como una auditoría detallada de la información autoritativa mantenida por cada zona.
+
+\subsubsection{Verificación de los DS generados}
+
+Como parte del proceso DNSSEC, se implementaron rutinas para construir los registros \texttt{DS} de las zonas hijas. Los casos de prueba imprimen los \texttt{DS} generados para:
+
+\begin{itemize}
+    \item \texttt{example.com.}
+    \item \texttt{com.}
+    \item \texttt{cl.}
+    \item \texttt{niclabs.cl.}
+\end{itemize}
+
+La impresión de estos registros es fundamental, ya que deben copiarse manualmente e insertarse posteriormente en los \textit{master files} de las zonas superiores.  
+
+\subsubsection{Verificación de claves DNSSEC}
+
+Otro caso imprime las claves almacenadas en \texttt{GLOBAL\_ZONE\_KEY\_STORE}.  
+Esto permite revisar:
+
+\begin{itemize}
+    \item Las claves ZSK y KSK asociadas a cada zona.
+    \item Que cada conjunto de claves está correctamente vinculado a su zona correspondiente.
+\end{itemize}
+
+Estas verificaciones proporcionan una validación final del estado interno del sistema antes de realizar pruebas más complejas en el servidor.
+
+\subsection{Casos de autentificación criptográfica DNSSEC}
+
+Del caso 16 al caso 22 es posible ejecutar distintas autenticaciones criptográficas DNSSEC de manera local utilizando la función \texttt{dnssec\_authentification}.
+Estos casos corresponden exactamente a los mismos escenarios analizados previamente en el Capítulo 7.
+
+Al ejecutar cualquiera de estos casos, la consola mostrará el detalle completo de cada etapa del proceso de verificación DNSSEC, incluyendo la validación de firmas, 
+la comprobación de los \texttt{RRSIG}, la verificación de los \texttt{DS}, y la reconstrucción de la cadena de confianza, hasta llegar al resultado final.
+
+Si la autenticación se realiza correctamente, siempre se imprimirá el siguiente mensaje al final del proceso:
+
+\begin{lstlisting}
+    Reached root full chain verified.
+    the DS chain was verify with : true
+    the authentification is true
+\end{lstlisting}
+
+
+Este mensaje confirma que toda la cadena de validación, desde la zona consultada hasta la raíz, fue verificada con éxito.

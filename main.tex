@@ -19,7 +19,7 @@
 
 %\cotutela{Nombre Institución} % incluir en caso de cotutela
 
-\comision{Nombre Completo Uno,Nombre Completo Dos,Nombre Completo Tres}
+\comision{Javier Bustos, Piquer, José Urzúa}
 
 %\auspicio{Nombre Institución} % incluir en caso de recibir financiamiento
 
@@ -40,6 +40,7 @@
 \usepackage{caption}
 \usepackage{fancyhdr}
 \usepackage{graphicx}
+\usepackage{hyperref}
 
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
@@ -136,11 +137,6 @@
 
 \frontmatter
 \maketitle
-
-\begin{resumen}
-\lipsum[1-4]
-\end{resumen}
-
 % opcional: incluir para tesis en inglés;
 %  en este caso hay que tener el resumen y abstract
 %   en ambos idiomas
@@ -149,11 +145,16 @@
 %\end{abstract}
 
 \begin{dedicatoria}
-Una dedicatoria corta.
+Esto va para mi queridisma familia, mis amigos y mis perritos que tanto amo
 \end{dedicatoria}
 
 \begin{thanks}
-\lipsum[1-2]
+Dedicarle esta memoria a mi familia, a mi mamá, papá, hermano que los amo mucho y que siempre me han apoyado en todo el proceso y la carrera.
+Agradecer también a mis amigos de la facultdad y a los que no son de ahí, ya que siempre han sido un pilar en mi vida, haciendola chistosa, entretenida y acompañando
+tanto en los momentos malos como los buenos. También agradecer al NIC Labs por aceptarme como uno más del grupo, por ser tan flexibles conmigo y por confiar,
+especialmente a mi profe guía que nunca me exigió mucho pero siempre confió en que yo podía por mi cuenta y que cada vez que le preguntaba algo por telegram
+respondía de manera inmediata.
+
 \end{thanks}
 
 \tableofcontents
@@ -170,6 +171,7 @@ Una dedicatoria corta.
 \input{6edns0}
 \input{7dnssec}
 \input{8discusiones}
+\input{9conclusiones.tex}
 % If you do not have a bibliografia.bib or prefer an inline bibliography,
 % provide entries here to avoid BibTeX errors ("I found no \citation", etc.).
 \begin{thebibliography}{9}
@@ -182,12 +184,9 @@ Autor, Título del trabajo, Editorial o Conferencia, Año.
 % \input{glosario.tex} % opcional
 
 \nocite{*}
-\bibliographystyle{plain}
+% \printbibliography
+\bibliographystyle{plainurl}
 \bibliography{bibliografia}
 
-% opcional ...
-\begin{appendices}
-\input{anexoA.tex}
-\end{appendices}
 % Close any unclosed itemize environments from included files
 \end{document}

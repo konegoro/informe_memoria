@@ -1,1 +1,30 @@
 \chapter{Conclusiones}
+
+El objetivo general de este proyecto de memoria fue desarrollar un servidor de nombres DNS iterativo en el lenguaje Rust, utilizando la librería \texttt{dns-rust}, y que cumpliera 
+rigurosamente con el estándar de DNSSEC, siguiendo las especificaciones establecidas en los RFC 1034, 1035, 4033, 4034 y 4035. Se puede afirmar que dicho objetivo fue alcanzado de manera 
+íntegra. El resultado final consistió en un proyecto de más de 3000 líneas de código puro, capaz de manejar consultas simultáneas tanto en UDP como en TCP, con soporte completo para EDNS0 y 
+DNSSEC, y con la capacidad de gestionar múltiples zonas para emular adecuadamente la cadena de autenticación requerida por el modelo de seguridad DNSSEC.
+
+Asimismo, se diseñó e implementó un algoritmo de búsqueda que responde de manera correcta y consistente para cada uno de los casos evaluados, siguiendo las reglas definidas por los estándares. 
+El sistema incorpora firmas criptográficas reales que fueron generadas, insertadas y validadas correctamente durante el proceso de verificación. Además, cuenta con manejo explícito de errores, 
+detección de loops y un desempeño estable incluso al procesar múltiples consultas en paralelo.
+
+Durante el desarrollo también se obtuvieron conclusiones relevantes respecto a la estructura interna de los datos. En particular, se determinó que no es estrictamente necesario utilizar la 
+estructura jerárquica de árbol sugerida por los RFC, y que incluso si hubiese sido deseable implementarla, Rust dificulta considerablemente este enfoque debido a su modelo de propiedad y los 
+problemas que surgen al intentar crear estructuras de árboles mutables y compartidas. En consecuencia, se optó por un enfoque distinto, más adecuado para el lenguaje, que permitió avanzar sin 
+comprometer el rendimiento ni la corrección del sistema.
+
+Además, durante la implementación se identificaron varios problemas en la librería \texttt{dns-rust}, la cual se publicita como una librería lista y funcional. En concreto, se descubrieron 
+dos bugs importantes: uno en las funciones de parsing y otro asociado al manejo de la sección \texttt{Additional}. También se evidenció la ausencia de funcionalidades fundamentales para un 
+sistema DNSSEC, como la conversión de los distintos tipos \texttt{Rdata} a sus representaciones canónicas, lo que obligó a extender la librería para cumplir con los requisitos del protocolo.
+
+A pesar de los avances, aún queda trabajo por realizar. No se logró implementar un sistema formal de testing utilizando herramientas especializadas, por lo que el proyecto actualmente carece 
+de tests unitarios y de integración que permitan garantizar más exhaustivamente su correcto funcionamiento. Adicionalmente, el servidor está todavía lejos de ser una solución preparada para 
+entornos reales, ya que faltan numerosos RFC por implementar, mecanismos de comunicación real con servidores externos, herramientas de seguridad como firewalls DNS para mitigar ataques, entre 
+muchas otras funcionalidades necesarias para una operación a nivel productivo.
+
+Sin embargo, a pesar de estas limitaciones, el proyecto constituye una base sólida y extensible para continuar el desarrollo de un servidor DNS iterativo con soporte DNSSEC completamente 
+funcional. Se espera que esta implementación pueda servir como punto de partida para que el laboratorio \texttt{NIC Labs} continúe profundizando y expandiendo este trabajo en el futuro, 
+si así lo estima conveniente.
+
+

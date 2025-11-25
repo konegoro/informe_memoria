@@ -2,9 +2,9 @@
 
 \section{Masterfile}
 
-Un masterfile es un archivo de texto que contiene los registros DNS de una zona en un formato estandarizado. Se trata de la representación más básica y tradicional para almacenar la información de una zona.
-Cada línea del archivo corresponde a un Resource Record, cuyos campos están separados por espacios o tabulaciones. Además, el formato admite directivas especiales que permiten definir 
-parámetros globales para la zona, como el valor predeterminado del TTL (Time To Live) o el servidor de nombres autoritativo.
+Un masterfile es un archivo de texto que contiene los registros DNS de una zona en un formato estandarizado. Se trata de la representación más básica y tradicional para almacenar la 
+información de una zona. Cada línea del archivo corresponde a un Resource Record, cuyos campos están separados por espacios o tabulaciones. Además, el formato admite directivas especiales 
+que permiten definir parámetros globales para la zona, como el valor predeterminado del TTL (Time To Live) o el servidor de nombres autoritativo.
 
 A continuación se muestra un ejemplo con datos ficticios para la zona example.com:
 
@@ -34,7 +34,7 @@ En resumen, un masterfile almacena la información en texto plano, de manera sen
 directamente, por lo que es necesario procesarlo y transformarlo en estructuras de datos internas más adecuadas. A continuación, se describe cómo se realiza este procesamiento y las 
 estructuras utilizadas para representar la información de la zona en memoria.
 
-\section{Catalogo}
+\section{Catalogo}\label{sec:catalogo}
 Estructura que contiene un \texttt{Hashmap} donde cada llave es un string con el nombre de la zona y el valor es un puntero a la estructura con los datos reales.
 Es basicamente un índice que permite acceder rápidamente a los datos de cada zona, y es especialmente útil cuando el servidor maneja múltiples zonas DNS. También
 es útil para saber si una consulta pertenece a una zona manejada por el servidor o no, ya que si el dominio consultado no es parte de ninguna
@@ -53,13 +53,15 @@ A continuación se muestra la definición de la estructura \texttt{Catalog}:\\
 
 \newpage
 
-\section{Hash anidado de Resource Records Set (RRset)}
+\section{Hash anidado de Resource Records Set (RRset)}\label{sec:hash-anidado-rrset}
 
-Estructura de datos global accesible por el algoritmo de búsqueda para la obtención de los \texttt{Resource Record Set}. En un principio 
-la estructura de datos iba a ser un árbol n-ario jerarquico, pero al momento de implementarlo hubieron muchos problemas, esto se verá con más detalle en la sección (REDACTED)
+Estructura de datos global accesible por el algoritmo de búsqueda para la obtención de los \texttt{RRSet}. En un principio 
+la estructura de datos iba a ser un árbol n-ario jerarquico, pero al momento de implementarlo hubieron muchos problemas, 
+esto se verá con más detalle en la sección~\ref{main-sec:descarte-arbol}
 
 
-Esta estructura contiene el nombre de la zona (por ejemplo \texttt{'niclabs.cl'}) y todos los datos asociados organizados en un \texttt{HashMap} anidado. 
+
+Esta estructura contiene el nombre de la zona (por ejemplo \texttt{niclabs.cl}) y todos los datos asociados organizados en un \texttt{HashMap} anidado. 
 La primera llave corresponde al \texttt{nombre de dominio}, y la segunda al \texttt{Rrtype} (tipo de registro). Esta organización responde al hecho de que el algoritmo de 
 búsqueda debe obtener un \texttt{RRset}, el cual está definido como el conjunto de todos los registros (\texttt{RR}) que comparten el mismo nombre de dominio, 
 tipo (\texttt{Rrtype}) y clase. En esta implementación se asume que la clase es siempre \texttt{IN} (Internet), por lo que no se incluye como parte de las llaves del hashmap.
@@ -159,34 +161,25 @@ Su diagrama de flujo es el siguiente:
 \newpage 
 
 Como se ve en el diagrama, esta función llama a otra función auxiliar llamada \texttt{rr\_from\_string}, la cual se encarga de convertir un string específico en un \texttt{ResourceRecord}. 
-Basicamente esta función hace un match y según el tipo del RR, se llama recursivamente a funciones especializadas para cada tipo de \texttt{RR}. Esto se hizo así
-ya que en la librería \texttt{dns-rust} ya existía ésta función para el caso de tipo A, pero no estaba para los demás, así que se tuvo que implementar para los siguientes tipos:\\
+Basicamente esta función hace un match y según el tipo del RR, llama recursivamente a una funcion llamada \texttt{rr\_from\_master\_file} para cada tipo de \texttt{RR}. Esto se hizo así
+ya que en la librería \texttt{dns-rust} ya existía ésta función para la gran mayoría de casos, pero faltaba la implementación para los siguientes dos tipos:
 
 \begin{itemize}
-    \item A
     \item AAAA
-    \item CNAME
-    \item MX
-    \item NS
-    \item SOA
-    \item TXT
     \item DS
 \end{itemize}
 
-En este caso el parametro \texttt{rdata\_values} corresponde a los datos del Rdata divididos en palabras, es decir, un iterador que permite recorrer cada palabra de los datos del \texttt{Rdata}.
+Estos casos fueron implementados manuelamente siguiendo la misma lógica que las funciones ya existentes en la librería.
 
 Aclarar también que no se muestra cada función especializada para cada tipo de \texttt{RR} por cuestiones de espacio, pero todas siguen la misma lógica: reciben el nombre, TTL, clase y el iterador de datos,
 y retornan un \texttt{ResourceRecord} con los campos correspondientes llenados.
 
-\newpage
-
-
 \subsection{group\_rrs\_into\_rrsets}
 Esta función recibe el vector de \texttt{ResourceRecord} generado previamente y los agrupa en conjuntos \texttt{RRset} utilizando una estructura de varios \texttt{HashMap} anidados.
 En primer lugar, la función recorre todos los registros y obtiene, para cada uno, su owner name y su tipo (\texttt{Rrtype}). Con ambos valores se construye una llave compuesta que se usa para poblar un 
-primer \texttt{HashMap}.Este mapa inicial permite agrupar los registros de acuerdo con la definición de un RRset (mismo nombre y mismo tipo), aunque su estructura no es todavía la más conveniente.
-Por ello, en un segundo paso, se recorre nuevamente este mapa y se genera una nueva estructura jerárquica: el primer nivel corresponde al owner name, el segundo al Rrtype, y finalmente, 
-como valor asociado, se almacena un \texttt{RRset}.En esta etapa, cada vector de \texttt{ResourceRecord} se transforma explícitamente en un objeto \texttt{RRset}, ya que, estrictamente 
+primer \texttt{HashMap}. Este mapa inicial permite agrupar los registros de acuerdo con la definición de un \texttt{RRset} (mismo nombre y mismo tipo), aunque su estructura no es todavía la más conveniente.
+Por ello, en un segundo paso, se recorre nuevamente este mapa y se genera una nueva estructura jerárquica: el primer nivel corresponde al owner name, el segundo al \texttt{Rrtype}, y finalmente, 
+como valor asociado, se almacena un \texttt{RRset}. En esta etapa, cada vector de \texttt{ResourceRecord} se transforma explícitamente en un objeto \texttt{RRset}, ya que, estrictamente 
 hablando, un RRset no es simplemente una colección de \texttt{RR's}, sino una estructura que encapsula dichos registros junto con metadatos adicionales asociados.
 
 La definición de RRset de la librería \texttt{dns-rust} es la siguiente:\\
@@ -205,31 +198,23 @@ Como se ve en la estructura, un \texttt{RRset} contiene los valores que definen 
 un vector con tuplas que contienen la longitud del \texttt{Rdata} y el \texttt{Rdata} en sí. ¿Por qué se guarda el \texttt{Rdata} en vez del \texttt{ResourceRecord} completo? Porque sería redundante, 
 ya que los valores comunes a todos los \texttt{RR's} del conjunto ya están almacenados en los campos superiores del \texttt{RRset}.
 
-El diagrama de flujo se encuentra en anexos (REDACTED).
 
-\newpage 
+\section{Descarte del árbol jerárquico}\label{sec:descarte-arbol}
 
-\section{Descarte del árbol jerárquico}
-
-Como se vió en la sección Hash anidado de Resource Records Set (RRset) se intentó implementar un árbol n-ario jerárquico para almacenar los datos de la zona DNS. Sin embargo, 
+Como se vió en la sección~\ref{main-sec:hash-anidado-rrset} se intentó implementar un árbol n-ario jerárquico para almacenar los datos de la zona DNS. Sin embargo, 
 esta implementación presentó múltiples dificultades y problemas que finalmente llevaron a descartarla en favor de una estructura basada en \texttt{HashMap} anidados. Primero se 
 explicará que RFC recomienda esta estructura y luego se detallarán los problemas encontrados.
 
 \subsection{RFC 1035}
 
-El RFC 1035, que define el estándar para el sistema de nombres de dominio, \textbf{sugiere} que los servidores DNS deberían utilizar una estructura de datos jerárquica para almacenar
+El RFC 1035~\cite{RFC1035}, que define el estándar para el sistema de nombres de dominio, \textbf{sugiere} que los servidores DNS deberían utilizar una estructura de datos jerárquica para almacenar
 los registros de recursos (\texttt{RR}) de una zona DNS, pero también dice explicitamente que el manejo de estructuras internas es completamente libre. Citando textualmente la sección 6.1.2 del RFC 1035:
 
 \begin{quote}
    ``While name server implementations are \textbf{free} to use any internal data
     structures they choose, the suggested structure consists of three major
     parts:\\
-    \dots
-
-    All of these data structures can be implemented an identical \textbf{tree
-    structure format}''
 \end{quote}
-
 
 De esta manera no se está rompiendo con ninguna norma o estándar al optar por una estructura diferente a la sugerida en el RFC.
 

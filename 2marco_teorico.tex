@@ -43,14 +43,20 @@ este proyecto:
 \end{itemize}
 
 \section{Estado del Arte}
-En el contexto actual existen distintos software para crear un Name Server, algunos comerciales como Bind9~\cite{Bind9} que está escrito en C y que es Open Source y otros como PowerDNS~\cite{PowerDNS} que es de código privado. Estas son herramientas útiles, pero no es posible verificar si cumplen estrictamente con las especificaciones de los RFC, lo que resulta especialmente importante para NIC Labs. Además, estos programas no están escritos en Rust, lenguaje de programación muy valorado por su alto nivel de seguridad en accesos a memoria~\cite{SafeRust}.
+En el contexto actual existen distintos software para crear un Name Server, algunos comerciales como Bind9~\cite{Bind9} que está escrito en C y que es Open Source y otros como 
+PowerDNS~\cite{PowerDNS} que es de código privado. Estas son herramientas útiles, pero no es posible verificar si cumplen estrictamente con las especificaciones de los RFC, 
+lo que resulta especialmente importante para NIC Labs. Además, estos programas no están escritos en Rust, lenguaje de programación muy valorado por su alto nivel de seguridad en accesos a 
+memoria~\cite{SafeRust}.
 
-Es importante tener seguridad en el acceso a memoria, ya que previamente se han encontrado o aprovechado vulnerabilidades de Name Servers escritos en otros lenguajes. A continuación se verán algunos ejemplos:
+Es importante tener seguridad en el acceso a memoria, ya que previamente se han encontrado o aprovechado vulnerabilidades de Name Servers escritos en otros lenguajes. 
+A continuación se verán algunos ejemplos:
 
 \subsection{ISC BIND server heap overflow de 4 bytes}
-Como se vio previamente Bind9 es uno de los software más usados para crear Name Servers, pero a pesar de esto en febrero de 2021 se reportó y se parchó una vulnerabilidad que se mantuvo por 15 años sin ser explotada, y que fue descubierta por un investigador anónimo ~\cite{VulnerabilidadBind}.
+Como se vio previamente Bind9 es uno de los software más usados para crear Name Servers, pero a pesar de esto en febrero de 2021 se reportó y se parchó una vulnerabilidad que se mantuvo 
+por 15 años sin ser explotada, y que fue descubierta por un investigador anónimo ~\cite{VulnerabilidadBind}.
 
-La vulnerabilidad permite de manera remota y sin autentificación envenenar el caché del server (Poisoned Cache Attack), provocando así que el caché guarde y responda IPs a sitios inseguros a consultas legítimas, afectando gravemente a todos los usuarios que consulten a este Name Server.
+La vulnerabilidad permite de manera remota y sin autentificación envenenar el caché del server (Poisoned Cache Attack), provocando así que el caché guarde y responda IPs a sitios 
+inseguros a consultas legítimas, afectando gravemente a todos los usuarios que consulten a este Name Server.
 
 
 La vulnerabilidad nace por el siguiente código escrito en C:
@@ -116,7 +122,7 @@ A continuación se verán vulnerabilidades descubiertas en Name Servers que no s
 
 \subsubsection{Falta de validaciones en los nombres de dominio}
 
-Según el RFC 1035 ~\cite{RFC1035} los nombres de dominio deben seguir un estándar y cumplir ciertas reglas, en específico deben cumplir lo siguiente:
+Según el RFC 1035~\cite{RFC1035} los nombres de dominio deben seguir un estándar y cumplir ciertas reglas, en específico deben cumplir lo siguiente:
 
 \begin{itemize}
 \item Tener un largo de máximo 255 bytes en total.
@@ -125,9 +131,9 @@ Según el RFC 1035 ~\cite{RFC1035} los nombres de dominio deben seguir un están
 \end{itemize}
 
 Todas esas condiciones deben ser verificadas, de lo contrario pueden ocurrir diversos ataques de buffer overflow, ataques de Denegación de 
-Servicio (DDoS) y ejecución de código remoto ~\cite{AtaquesRFC}.
+Servicio (DDoS) y ejecución de código remoto~\cite{AtaquesRFC}.
 
-En concreto se descubrió una vulnerabilidad ~\cite{Ethernut} consecuencia de la falta de validación del largo de un nombre de dominio dentro de l
+En concreto se descubrió una vulnerabilidad~\cite{Ethernut} consecuencia de la falta de validación del largo de un nombre de dominio dentro de l
 a implementación de DNS en Nut/OS en un dispositivo Ethernut (dispositivo de IoT). Solamente con esta falla se podría ejecutar código remoto y/o 
 un ataque DDoS.
 
@@ -137,7 +143,7 @@ nombre de dominio ~\cite{LabelsIOT}.
 \subsection{Otras implementaciones de Name Servers en Rust}
 
 Existen otras librerías de DNS (en específico con el módulo de Name Server) que están siendo desarrolladas por otras organizaciones, como 
-HickoryDNS \cite{HickoryDNS} y domain\cite{NLnetLabs} de NLnetLabs. Estas librerías están en un punto muy alto de desarrollo, pero es 
+\textbf{HickoryDNS} \cite{HickoryDNS} y \textbf{domain}\cite{NLnetLabs} de NLnetLabs. Estas librerías están en un punto muy alto de desarrollo, pero es 
 importante conocer y comprender cuáles han sido sus errores. A continuación se verán algunos ejemplos:
 
 \subsubsection{Hickory vulnerabilidad DNSSEC por verificación de un solo DNSKEY}
@@ -150,11 +156,11 @@ RRSet~\cite{HickoryBug}, lo cual es incorrecto, ya que cada uno de estos debe se
 
 \subsubsection{Error al firmar la zona debido a glue records}
 
-Para firmar una zona (aplicando DNSSEC) se necesita encontrar el SOA RR, el cual permite verificar que la zona es legítima, y este RR siempre 
+Para firmar una zona (aplicando DNSSEC) se necesita encontrar el RR \texttt{SOA}, el cual permite verificar que la zona es legítima, y este RR siempre 
 debe estar en el Apex Zone (en la zona más alta de la estructura de datos jerárquica), pero si hay algún glue RR 
-(los cuales tienen las IP de otros Name Servers) estos pueden anteceder al SOA debido al ordenamiento canónico (por bytes).
+(los cuales tienen las IP de otros Name Servers) estos pueden anteceder al \texttt{SOA} debido al ordenamiento canónico (por bytes).
 
-Este reordenamiento provocaba que el proceso de firma no encontrara el SOA RR y por lo tanto no firmara una zona válida ~\cite{NLnetLabsBug}.
+Este reordenamiento provocaba que el proceso de firma no encontrara el \texttt{SOA} RR y por lo tanto no firmara una zona válida ~\cite{NLnetLabsBug}.
 
 
 
