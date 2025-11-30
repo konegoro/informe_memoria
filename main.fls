@@ -458,7 +458,6 @@ INPUT .\diagramas\add_glue_records_and_wildcard.png
 INPUT .\diagramas\add_glue_records_and_wildcard.png
 INPUT .\diagramas\add_glue_records_and_wildcard.png
 INPUT .\diagramas\add_glue_records_and_wildcard.png
-INPUT C:\Users\bastian\AppData\Local\Programs\MiKTeX\fonts\tfm\jknappen\ec\ectt1440.tfm
 INPUT .\6edns0.tex
 INPUT .\6edns0.tex
 INPUT .\6edns0.tex
@@ -502,6 +501,7 @@ INPUT .\8discusiones.tex
 INPUT .\8discusiones.tex
 INPUT .\8discusiones.tex
 INPUT 8discusiones.tex
+INPUT C:\Users\bastian\AppData\Local\Programs\MiKTeX\fonts\tfm\jknappen\ec\ectt1440.tfm
 INPUT .\9conclusiones.tex
 INPUT .\9conclusiones.tex
 INPUT 9conclusiones.tex

@@ -62,7 +62,7 @@ La funcion \texttt{receive\_and\_response} sigue los siguientes pasos:
     \item Entra en un bucle infinito donde se espera recibir consultas DNS.
     \item Crea threads con \texttt{tokio} para manejar cada consulta de forma concurrente.
     \item En cada thread, si el tamaño de la consulta es mayor al \texttt{payload\_size}, se usa la función \texttt{handle\_dns\_message\_udp\_with\_timeout}
-          con \texttt{tc\_case} en true, de lo contrario se llama a la misma función con \texttt{tc\_case} en false. \texttt{tc\_case} indica si se debe manejar el caso de truncamiento (TC).
+          con \texttt{tc\_case} en verdadero, de lo contrario se llama a la misma función con \texttt{tc\_case} en false. \texttt{tc\_case} indica si se debe manejar el caso de truncamiento (TC).
 \end{itemize}
 
 %Imagen del diagrama de flujo desde la carpeta diagramas, con 

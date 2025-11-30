@@ -1,9 +1,10 @@
 \chapter{Conclusiones}
 
 El objetivo general de este proyecto de memoria fue desarrollar un servidor de nombres DNS iterativo en el lenguaje Rust, utilizando la librería \texttt{dns-rust}, y que cumpliera 
-rigurosamente con el estándar de DNSSEC, siguiendo las especificaciones establecidas en los RFC 1034, 1035, 4033, 4034 y 4035. Se puede afirmar que dicho objetivo fue alcanzado de manera 
-íntegra. El resultado final consistió en un proyecto de más de 3000 líneas de código puro, capaz de manejar consultas simultáneas tanto en UDP como en TCP, con soporte completo para EDNS0 y 
-DNSSEC, y con la capacidad de gestionar múltiples zonas para emular adecuadamente la cadena de autenticación requerida por el modelo de seguridad DNSSEC.
+rigurosamente con el estándar de DNSSEC, siguiendo las especificaciones establecidas en los RFC 1034~\cite{RFC1034}, 1035~\cite{RFC1035}, 4033~\cite{RFC4033}, 4034~\cite{RFC4034} y 4035~\cite{RFC4035}. 
+Se puede afirmar que dicho objetivo fue alcanzado de manera íntegra. El resultado final consistió en un proyecto de más de 3000 líneas de código puro, capaz de manejar consultas 
+simultáneas tanto en UDP como en TCP, con soporte completo para EDNS0 y DNSSEC, y con la capacidad de gestionar múltiples zonas para emular adecuadamente la cadena de autenticación requerida 
+por el modelo de seguridad DNSSEC.
 
 Asimismo, se diseñó e implementó un algoritmo de búsqueda que responde de manera correcta y consistente para cada uno de los casos evaluados, siguiendo las reglas definidas por los estándares. 
 El sistema incorpora firmas criptográficas reales que fueron generadas, insertadas y validadas correctamente durante el proceso de verificación. Además, cuenta con manejo explícito de errores, 

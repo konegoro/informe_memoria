@@ -6,12 +6,12 @@ La librería \texttt{dns-rust} está escrita en Rust, por lo que el desarrollo d
 seguridad de memoria, su modelo de concurrencia libre de condiciones de carrera y su alto rendimiento sin necesidad de un recolector de basura. Estas características lo convierten en una opción 
 atractiva para la implementación de software de bajo nivel, como servidores de nombres DNS.
 
-No obstante, Rust también presenta ciertos desafíos importantes que se hicieron evidentes durante el desarrollo. En particular, el modelo de \textit{ownership} y \textit{borrowing} —uno de sus pilares 
-seguridad— introduce restricciones estrictas sobre cómo se gestionan las referencias y la mutabilidad. Si bien estas reglas previenen errores comunes como \textit{use-after-free} o accesos 
+No obstante, Rust también presenta ciertos desafíos importantes que se hicieron evidentes durante el desarrollo. En particular, el modelo de \textit{ownership} y \textit{borrowing} (uno de sus pilares 
+seguridad) introduce restricciones estrictas sobre cómo se gestionan las referencias y la mutabilidad. Si bien estas reglas previenen errores comunes como \textit{use-after-free} o accesos 
 concurrentes no seguros, también complican significativamente el diseño de estructuras de datos complejas.
 
 Este problema se manifestó de forma especialmente clara al intentar implementar una estructura jerárquica de zonas DNS basada en árboles, tal como sugieren los estándares. La necesidad de mantener 
-eferencias mutables hacia nodos padres e hijos, junto con los largos ciclos de vida asociados a estas referencias, generó importantes dificultades para cumplir simultáneamente con las garantías del 
+referencias mutables hacia nodos padres e hijos, junto con los largos ciclos de vida asociados a estas referencias, generó importantes dificultades para cumplir simultáneamente con las garantías del 
 compilador. Debido a estas limitaciones, la implementación final debió abandonar el enfoque basado en árboles y optar por una estructura alternativa compuesta por \textit{hash maps} anidados, que 
 resulta más compatible con el modelo de propiedad de Rust y evita los problemas asociados a referencias cíclicas.
 
@@ -21,7 +21,7 @@ Como se mencionó en la sección anterior, la implementación inicial del servid
 representaba un \texttt{RRSet} y contenía referencias hacia sus nodos descendientes. Sin embargo, debido a las limitaciones impuestas por el sistema, se optó finalmente por 
 reemplazar esta estructura por una basada en mapas (\texttt{HashMap}) anidados.
 
-Esto plantea la pregunta: ¿afecta este cambio el rendimiento del servidor?
+Esto plantea la pregunta: ¿Afecta este cambio el rendimiento del servidor?
 
 En términos de eficiencia, la respuesta breve es que los mapas anidados suelen ser más rápidos para las operaciones típicas de un servidor DNS. Dado un nombre de dominio y un tipo de registro, 
 acceder al \texttt{RRSet} correspondiente es una operación de complejidad O(1) en el caso de mapas anidados, mientras que en una estructura de árbol sería O(h), donde 
@@ -32,7 +32,7 @@ La verdadera desventaja de abandonar una estructura arbórea es la pérdida de l
  analizandos durante este proyecto, ninguna de las operaciones implementadas requirió dicha jerarquía explícita. No obstante, no puede descartarse que futuras extensiones o características avanzadas 
  de un servidor DNS puedan beneficiarse de una estructura de árbol.
 
-Es importante destacar, además, que el uso de una estructura jerárquica es una recomendación de los estándares —una sugerencia (\textit{SHOULD})— y no un requisito obligatorio. Por lo tanto, 
+Es importante destacar, además, que el uso de una estructura jerárquica es una recomendación de los estándares (una sugerencia (\textit{SHOULD})) y no un requisito obligatorio. Por lo tanto, 
 la decisión de utilizar mapas anidados en lugar de árboles no compromete el cumplimiento de las especificaciones, y ofrece una alternativa más eficiente y más compatible con las restricciones 
 del lenguaje Rust.
 
@@ -41,7 +41,7 @@ del lenguaje Rust.
 Como se vió a lo largo del desarrollo del proyecto, la librería \texttt{dns-rust} presenta varias limitaciones y errores que afectan la implementación de un servidor de nombres DNS completo 
 basado en los estándares. A continuación, se detallan algunos de los problemas más relevantes encontrados:
 
-\subsection{Funciones de parsing}
+\subsection{Funciones de parsing}\label{sec:funciones-parsing}
 
 En DNS, los mensajes se transmiten mediante los protocolos UDP o TCP utilizando un formato en bytes. Esto implica que debe existir un mecanismo para transformar esos bytes en estructuras de datos 
 utilizables (\texttt{from\_bytes}) y, en sentido inverso, convertir dichas estructuras nuevamente a su representación binaria (\texttt{to\_bytes}).
@@ -50,7 +50,7 @@ El principal problema surge porque estas funciones implementan compresión de no
 de un mismo mensaje. Sin embargo, esta compresión también introduce complejidad adicional en el proceso de \textit{parsing}. En particular, cuando un mensaje contiene al menos un \texttt{Resource Record} 
 en cualquiera de sus secciones (\texttt{Answer}, \texttt{Authority} o \texttt{Additional}), la función \texttt{to\_bytes} intenta aplicar compresión a los nombres incluidos dentro del 
 campo \texttt{Rdata}. El problema es que dicha compresión está implementada incorrectamente, lo que provoca que, al intentar reconstruir luego el mensaje mediante \texttt{from\_bytes}, 
-el proceso falle con un error de análisis.
+el proceso falle con un error.
 
 Se intentó corregir este comportamiento modificando directamente el código fuente de la librería; sin embargo, debido a la gran extensión del código, la ausencia de documentación y la complejidad 
 de su estructura interna, no fue posible localizar ni resolver la causa exacta del problema. También se exploró la posibilidad de implementar versiones alternativas de \texttt{from\_bytes} y 
@@ -91,8 +91,7 @@ Resulta llamativo que un error de esta magnitud haya pasado desapercibido en la 
 
 \section{Testing del proyecto}
 
-Para probar el funcionamiento de este proyecto, primero es necesario clonar el repositorio \texttt{name-server-rust} desde GitHub, disponible 
-\href{https://github.com/niclabs/nameserver-rust/}{acá}.
+Para probar el funcionamiento de este proyecto, primero es necesario clonar el repositorio \texttt{name-server-rust}~\cite{nameserver-rust} desde GitHub.
 
 Dentro de este repositorio se encuentra el archivo \texttt{main.rs}, el cual reúne múltiples casos de uso del servidor: pruebas completamente locales 
 (como visualización de las bases de datos internas, los \texttt{RRSet DS} y el catálogo) y pruebas cliente-servidor, permitiendo inicializar el servidor en modo UDP o en un modo híbrido 
@@ -189,7 +188,7 @@ consulta sea inválida. Este punto es relevante para interpretar los resultados 
 \subsubsection{Cliente enviando una consulta DNS mal formada}
 
 En el caso 3 del cliente, se construye explícitamente una consulta DNS con un encabezado válido pero con un error crítico en el nombre de dominio: la primera etiqueta declara una longitud de 64 bytes, 
-superando el máximo permitido de 63. Esta inconsistencia constituye un error de formato según el RFC 1035, por lo que el servidor responde con \texttt{FORMERR}.
+superando el máximo permitido de 63. Esta inconsistencia constituye un error de formato según el RFC 1035~\cite{RFC1035}, por lo que el servidor responde con \texttt{FORMERR}.
 
 El cliente envía esta consulta al servidor mediante UDP y, al recibir la respuesta, reconstruye su encabezado para verificar que el código de error incluido sea efectivamente \texttt{FORMERR}. 
 Esto permite constatar que el servidor (a través de \texttt{from\_bytes}) identificó correctamente este caso puntual como una violación sintáctica del protocolo.
@@ -215,7 +214,7 @@ El cliente construye exactamente la misma consulta tanto para UDP como para TCP;
 
 \subsubsection{Como el server maneja las consultas DNSSEC}
 
-Cuando el servidor recibe una consulta que incluye un registro OPT con el bit DO activado, interpreta que el cliente está solicitando datos DNSSEC.
+Cuando el servidor recibe una consulta (en el modo híbrido, que se instancia con el caso numero 2) que incluye un registro OPT con el bit DO activado, interpreta que el cliente está solicitando datos DNSSEC.
 Así que por lo tanto responde incluyendo los registros \texttt{RRSIG} correspondientes junto con los \texttt{RRSet} solicitados.
 
 
@@ -223,7 +222,7 @@ Así que por lo tanto responde incluyendo los registros \texttt{RRSIG} correspon
 
 Para asegurar la correcta construcción y consistencia de las estructuras internas del servidor DNS, se implementaron varios casos de prueba cuyo propósito es inspeccionar y validar visualmente el 
 contenido de los componentes críticos del sistema. Cada caso imprime en consola el estado actual de las estructuras relevantes, permitiendo confirmar su correcta inicialización antes de utilizarlas en 
-las respuestas del servidor o incluirlas en los \textit{master files}.
+las respuestas del servidor o incluirlas en los \texttt{master files}.
 
 \subsubsection{Revisión del Catálogo}
 
@@ -232,7 +231,7 @@ En estas pruebas se extrae la estructura interna asociada a una zona específica
 
 \begin{itemize}
     \item Los nombres de dominio registrados.
-    \item Los tipos de RRsets presentes en cada dominio.
+    \item Los tipos de \texttt{RRsets} presentes en cada dominio.
     \item El contenido de cada \texttt{Rdata} almacenado.
 \end{itemize}
 
@@ -246,7 +245,7 @@ El servidor mantiene múltiples estructuras internas que representan zonas compl
 Cada una puede imprimirse íntegramente en consola para validar:
 
 \begin{itemize}
-    \item Los RRsets almacenados y sus owner names.
+    \item Los \texttt{RRsets} almacenados y sus owner names.
     \item La presencia y consistencia de los registros \texttt{RRSIG}.
     \item La correcta estructura interna de cada zona.
     \item La coherencia entre zonas relacionadas (por ejemplo, \texttt{com} y \texttt{example.com}).
@@ -256,7 +255,7 @@ Estas impresiones funcionan como una auditoría detallada de la información aut
 
 \subsubsection{Verificación de los DS generados}
 
-Como parte del proceso DNSSEC, se implementaron rutinas para construir los registros \texttt{DS} de las zonas hijas. Los casos de prueba imprimen los \texttt{DS} generados para:
+Como parte del proceso DNSSEC, se implementaron funciones para construir los registros \texttt{DS} de las zonas hijas. Los casos de prueba imprimen los \texttt{DS} generados para:
 
 \begin{itemize}
     \item \texttt{example.com.}
@@ -265,7 +264,7 @@ Como parte del proceso DNSSEC, se implementaron rutinas para construir los regis
     \item \texttt{niclabs.cl.}
 \end{itemize}
 
-La impresión de estos registros es fundamental, ya que deben copiarse manualmente e insertarse posteriormente en los \textit{master files} de las zonas superiores.  
+La impresión de estos registros es fundamental, ya que deben copiarse manualmente e insertarse posteriormente en los \texttt{master files} de las zonas superiores.  
 
 \subsubsection{Verificación de claves DNSSEC}
 
@@ -281,8 +280,8 @@ Estas verificaciones proporcionan una validación final del estado interno del s
 
 \subsection{Casos de autentificación criptográfica DNSSEC}
 
-Del caso 16 al caso 22 es posible ejecutar distintas autenticaciones criptográficas DNSSEC de manera local utilizando la función \texttt{dnssec\_authentification}.
-Estos casos corresponden exactamente a los mismos escenarios analizados previamente en el Capítulo 7.
+Del caso 16 al caso 22 en el archivo \texttt{main.rs} es posible ejecutar distintas autenticaciones criptográficas DNSSEC de manera local utilizando la función \texttt{dnssec\_authentification}.
+Estos casos corresponden exactamente a los mismos escenarios analizados previamente en la sección \ref{main-sec:ejemplos-validacion}.
 
 Al ejecutar cualquiera de estos casos, la consola mostrará el detalle completo de cada etapa del proceso de verificación DNSSEC, incluyendo la validación de firmas, 
 la comprobación de los \texttt{RRSIG}, la verificación de los \texttt{DS}, y la reconstrucción de la cadena de confianza, hasta llegar al resultado final.

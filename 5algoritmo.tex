@@ -58,7 +58,7 @@ Finalmente, se actualizan los contadores y tamaños de las secciones en el encab
 
 A continuación se explican cada una de las funciones auxiliares que componen el algoritmo de búsqueda.
 
-\subsection{find\_zone\_in\_catalog}
+\subsection{find\_zone\_in\_catalog}\label{sec:find-zone}
 
 Esta función recibe el nombre de dominio consultado y el tipo de registro y busca por cada subdomoinio del domino original si existe una zona en el catálogo que maneje ese dominio.
 Por ejemplo si el dominio consultado es \texttt{a.niclabs.cl}, la función buscará en el catálogo las zonas \texttt{a.niclabs.cl}, \texttt{niclabs.cl}, \texttt{cl} y \texttt{root}. 
@@ -163,7 +163,7 @@ El diagrama de flujo de la función descrita es el siguiente:
 
 
 
-\subsection{\texttt{add\_rrsigs\_for\_delegation}}
+\subsection{add\_rrsigs\_for\_delegation}\label{sec:rrsigs-delegation}
 
 Esta función se encarga de añadir los registros \texttt{DS} y sus correspondientes firmas \texttt{RRSIG} a la sección de autoridad del mensaje DNS (\texttt{response}) cuando se 
 genera una respuesta de delegación en un servidor DNSSEC.
@@ -172,9 +172,8 @@ En términos simples, cuando el servidor responde indicando que un dominio está
 servidor autoritativo de una subzona), esta función busca si en su base de datos también existen los registros \texttt{DS} y sus firmas digitales (\texttt{RRSIG}) correspondientes, y 
 los incluye en la respuesta.
 
-El envío de los registros \texttt{DS} junto con una delegación está descrito en el RFC 4035, sección 2.3 (“Response Generation: Including DS and NSEC Records”).
-Aclarar también que esta función se ejecuta siempre independientemente de si la hubo o no un referral, ya que si no hay \texttt{DS}  simplemente se omite su adición. Este aspecto podría
-ser mejorado en el futuro para evitar llamadas innecesarias a la función.
+El envío de los registros \texttt{DS} junto con una delegación está descrito en el RFC 4035~\cite{RFC4035}, sección 2.4. Aclarar también que esta función se ejecuta siempre independientemente 
+de si la hubo o no un referral, ya que si no hay \texttt{DS}  simplemente se omite su adición. Este aspecto podría ser mejorado en el futuro para evitar llamadas innecesarias a la función.
 
 
 \subsection{add\_rrsigs\_for\_answer}
@@ -182,20 +181,16 @@ ser mejorado en el futuro para evitar llamadas innecesarias a la función.
 Esta función se encarga de añadir los registros \texttt{RRSIG} correspondientes a un conjunto de registros de respuesta en la sección \texttt{Answer} del mensaje DNS (\texttt{response}).
 
 En el contexto de DNSSEC, cada conjunto de registros (\texttt{RRset}) debe estar acompañado por su firma digital
-(\texttt{RRSIG}), que permite a los resolvers validar criptográficamente que los datos no han sido alterados.
+(\texttt{RRSIG}), que permite a los resolvers validar criptográficamente que los datos no han sido alterados. La función solo añade los \texttt{RRSIG} correspondiente al tipo de consulta original, 
+es decir, si la consulta fue por registros \texttt{A}, solo se añadirán los \texttt{RRSIG} que firman los registros \texttt{A}. 
 
-La función solo añade los RRSIG correspondiente al tipo de consulta original, es decir, si la consulta fue por registros \texttt{A}, 
-solo se añadirán los \texttt{RRSIG} que firman los registros \texttt{A}. 
-
-El comportamiento descrito está definido en el RFC 4035, sección 2.2 (“Response Generation: Including RRSIG Records”).
-
-\newpage
+El comportamiento descrito está definido en el RFC 4035~\cite{RFC4035}, sección 2.2.
 
 \subsection{add\_nsecs\_proofs}
 
 Esta función se encarga de añadir las pruebas criptográficas de inexistencia (\texttt{NSEC} y \texttt{RRSIG(NSEC)})
-a la sección Authority del mensaje DNS (\texttt{response}) cuando el servidor genera una respuesta
-de tipo \texttt{NODATA} o \texttt{NXDOMAIN} bajo DNSSEC.
+a la sección \texttt{Authority} del mensaje DNS (\texttt{response}) cuando el servidor genera una respuesta
+de tipo \texttt{NO\_DATA} o \texttt{NXDOMAIN} bajo DNSSEC.
 
 Para dar contexto, los registros \texttt{NSEC} son registros especiales en DNSSEC que indican qué nombres de dominio y tipos de registros existen dentro de una zona firmada.
 Para hacer esto, cada registro \texttt{NSEC} enlaza un nombre de dominio con el siguiente en orden canónico, y contiene un mapa de bits que indica qué tipos de registros están presentes para ese dominio.
@@ -207,9 +202,9 @@ esto significa que \texttt{example.com} existe y tiene esos tipos de registros, 
 
 La función maneja los siguientes dos casos principales:
 
-\subsubsection{Caso 1: el dominio existe, pero el tipo de registro no (respuesta \texttt{NODATA})}
+\subsubsection{Caso 1: el dominio existe, pero el tipo de registro no (respuesta \texttt{NO\_DATA})}
 Si el dominio consultado está presente en la base de datos, pero no tiene registros del tipo solicitado (\texttt{qtype}),
-entonces se deben incluir los registros \texttt{NSEC} y \texttt{RRSIG(NSEC)} asociados a ese mismo dominio en la sección Authority.
+entonces se deben incluir los registros \texttt{NSEC} y \texttt{RRSIG(NSEC)} asociados a ese mismo dominio en la sección \texttt{Authority}.
 
 Estos registros demuestran que, aunque el nombre existe, no hay ningún registro del tipo solicitado (por ejemplo, no existe un \texttt{MX} para ese dominio).
 Esto se hace a través del mapa de tipos de registro contenidos en el registro \texttt{NSEC}, que indica qué tipos de registros están presentes para ese dominio.
@@ -229,22 +224,18 @@ Para ello, se realiza una búsqueda binaria en la lista de nombres \texttt{NSEC}
 Aclarar que la comparación entre dominios se realiza en su forma canónica.
 
 Luego, se insertan en la respuesta los registros \texttt{NSEC} y \texttt{RRSIG(NSEC)} del propietario determinado. El uso de los registros \texttt{NSEC} para demostrar la 
-inexistencia de nombres o tipos de registros está definido en el RFC 4035, sección 3.1.3 (“Authenticated Denial of Existence”).
+inexistencia de nombres o tipos de registros está definido en el RFC 4035~\cite{RFC4035}, sección 3.1.3
 
-Está sería la última función explicada del algoritmo de búsqueda. Con esto se cierra el capítulo.
-
-A continuación se mostrarán respuestas del algoritmo para distintos casos de prueba en la sección [REDACTED].
-
-\newpage
+A continuación se mostrarán respuestas del algoritmo para distintos casos de prueba.
 
 \section{Resultados según cada caso de consulta}
 
-A continuación se muestran ejemplos de respuestas generadas por el algoritmo de búsqueda para distintos casos de consulta. Cada ejemplo incluye los records presentes en la base de datos, 
+A continuación se muestran ejemplos de respuestas generadas por el algoritmo de búsqueda para distintos casos de consulta. Cada ejemplo incluye los registros presentes en la base de datos, 
 la consulta realizada y la respuesta generada en el formato del comando \texttt{dig}.
 
-Aclarar que la sección Additional no se añadirá en los ejemplos a menos que contenga registros, para simplificar la visualización.
+Aclarar que la sección \texttt{Additional} no se añadirá en los ejemplos a menos que contenga registros, para simplificar la visualización.
 
-\subsection{Consulta con coincidencia exacta con rtype y el nombre de dominio}
+\subsection{Consulta con coincidencia exacta con nombre de dominio y tipo}
 
 \begin{table}[h!]
 \centering
@@ -284,8 +275,10 @@ www.example.com.   3600    IN      RRSIG   A 8 3 3600 0 0 12786 www.example.com.
 \end{tabular}
 \end{table}
 
-Al consultar por \textbf{blog.example.com} el algoritmo encuentra un registro de tipo CNAME y lo guarda en la sección \texttt{Answer}. Luego, 
-ejecuta nuevamente el algoritmo utilizando el nombre de dominio especificado en el CNAME, logrando así encontrar el registro con la dirección IP correspondiente.\\
+Al consultar por \textbf{blog.example.com} el algoritmo encuentra un registro de tipo \texttt{CNAME} y lo guarda en la sección \texttt{Answer}. Luego, 
+ejecuta nuevamente el algoritmo utilizando el nombre de dominio especificado en el \texttt{CNAME}, logrando así encontrar el registro con la dirección IP correspondiente.\\
+
+\newpage
 
 \begin{lstlisting}
 ;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 4660
@@ -302,7 +295,7 @@ blog2.example.com.  3600    IN      RRSIG   A 8 3 3600 0 0 12786 blog2.example.c
 
 \end{lstlisting}
 
-\subsection{Consulta que sale de la zona autoritativa : Referral con Glue Records}
+\subsection{Consulta que sale de la zona autoritativa : Delgation con Glue Records}
 
 \begin{table}[h!]
 \centering
@@ -314,12 +307,14 @@ blog2.example.com.  3600    IN      RRSIG   A 8 3 3600 0 0 12786 blog2.example.c
 \end{tabular}
 \end{table}
 
-Al consultar por la IP de \textbf{b.example.com}, se encuentra un registro de tipo \texttt{NS}. Al comprobar que no existe ningún registro \texttt{SOA} en ese dominio 
-(lo que indica que el servidor no es autoritativo en este caso), se debe guardar el registro \texttt{NS} en la sección \texttt{Authority}. Además, se debe verificar si 
-existe un registro \texttt{glue} correspondiente y, de ser así, añadirlo en la sección \texttt{Additional}.\\
+Al consultar por la IP (por el tipo \texttt{A}) de \textbf{b.example.com}, se encuentra un registro de tipo \texttt{NS}. Al comprobar que no existe ningún registro \texttt{SOA} en ese dominio 
+(lo que indica que el servidor no es autoritativo en este caso), se debe guardar el registro \texttt{NS} en la sección \texttt{Authority}. Además, se verifica si 
+existe un registro \texttt{glue} correspondiente y, de ser así, se añade en la sección \texttt{Additional}.\\
 
-Además se añade el registro \texttt{DS} y su firma \texttt{RRSIG} correspondiente en la sección \texttt{Authority}, esto ya que se está delegando
-a una subzona. También se añade el registro \texttt{NSEC} para confirmar la inexistencia del registro \texttt{A} solicitado a través del mapa de bits.\\
+También se añaden los registros \texttt{DS} y sus firmas \texttt{RRSIG} correspondientes en la sección \texttt{Authority}, esto ya que se está delegando
+a una subzona. Asimismo se añade el registro \texttt{NSEC} y su firma para confirmar la inexistencia del registro \texttt{A} solicitado a través del mapa de bits.\\
+
+\newpage
 
 \begin{lstlisting}
 ;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 4660
@@ -336,7 +331,6 @@ b.example.com.     3600    IN      NSEC    ns1.example.com. NS DS NSEC
 b.example.com.     3600    IN      RRSIG   NSEC 8 3 3600 0 0 12786 example.com. ( keydata ... )
 
 ;; ADDITIONAL SECTION:
-.                  32768   IN      OPT     4096
 ns.a.b.example.com. 3600   IN      A       4.3.2.1
 \end{lstlisting}
 
@@ -354,8 +348,10 @@ ns.a.b.example.com. 3600   IN      A       4.3.2.1
 
 
 Al consultar por cualquier dominio que no exista en los datos pero sea subdominio de \textbf{example.com}, como por ejemplo \textbf{unknown.example.com}, se 
-usará el wildcard y se guardará la respuesta en la sección \texttt{Answer}. Además se añaden los registros \texttt{NSEC} y \texttt{RRSIG(NSEC)} correspondientes en la sección \texttt{Authority} para
-probar la inexistencia del nombre consultado.\\
+usará el \texttt{wildcard} y se guardará la respuesta en la sección \texttt{Answer}. Además se añaden los registros \texttt{NSEC} y \texttt{RRSIG(NSEC)} correspondientes en la sección 
+\texttt{Authority} para probar la inexistencia del nombre consultado.\\
+
+\newpage
 
 \begin{lstlisting}
 ;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 4660
@@ -375,8 +371,8 @@ unknown.example.com.  3600    IN      RRSIG   A 8 2 3600 0 0 12786 example.com. 
 
 \subsection{Consulta sin coincidencia en nombre de dominio y sin wildcard: NXDOMAIN}
 
-Acá no se muestra lo que hay en la base de datos, ya que el cliente consultará por la IP de un dominio que no existe (\texttt{unknown.example.com}) y no hay wildcard que aplique. 
-Para lograr esta respuesta se borró temporalmente el wildcard de los datos.\\
+Acá no se muestra lo que hay en la base de datos, ya que el cliente consultará por la IP de un dominio que no existe (\texttt{unknown.example.com}) y no hay \texttt{wildcard} que aplique. 
+Para lograr esta respuesta se borró temporalmente el \texttt{wildcard} de los datos.\\
 
 \begin{lstlisting}
 ;; ->>HEADER<<- opcode: QUERY, status: NXDOMAIN, id: 4660
@@ -390,9 +386,7 @@ example.com.         3600    IN      NSEC    b.example.com. NS SOA RRSIG NSEC DN
 example.com.         3600    IN      RRSIG   NSEC 8 2 3600 0 0 12786 example.com. ( keydata ... )
 \end{lstlisting}
 
-En la respuesta en formato DIG no se ve pero el rcode es \texttt{NXDOMAIN}.
-
-\subsection{Consulta sin coincidencia en el tipo y sin wilcard: NODATA}
+\subsection{Consulta sin coincidencia en el tipo: NO\_DATA}
 
 \begin{table}[h!]
 \centering
@@ -403,9 +397,9 @@ En la respuesta en formato DIG no se ve pero el rcode es \texttt{NXDOMAIN}.
 \end{tabular}
 \end{table}
 
-Al consultar por un tipo que no existe para un dominio que sí existe, como por ejemplo pedir un registro \texttt{MX} para \textbf{www.example.com},
-se responde con \texttt{NODATA} y se añaden los registros \texttt{NSEC} y \texttt{RRSIG(NSEC)} correspondientes en la sección \texttt{Authority} para
-probar la inexistencia del tipo solicitado a través del mapa de tipos.\\
+Al consultar por un dominio que sí existe, pero que no posee registros del tipo solicitado, por ejemplo, un \texttt{MX} para \textbf{www.example.com}, la respuesta correspondiente es 
+\texttt{NO\_DATA}. En este caso, se incluyen en la sección \texttt{Authority} los registros \texttt{NSEC} y \texttt{RRSIG(NSEC)}, los cuales permiten demostrar criptográficamente la 
+inexistencia del tipo consultado mediante el mapa de tipos contenido en el \texttt{NSEC}.\\
 
 \begin{lstlisting}
 ;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 4660
@@ -419,7 +413,7 @@ www.example.com.     3600    IN      NSEC    blog.example.com. A RRSIG NSEC
 www.example.com.     3600    IN      RRSIG   NSEC 8 3 3600 0 0 12786 example.com. ( keydata ... )
 \end{lstlisting}
 
-El codigo de respuesta es \texttt{NOERROR} pero no hay registros en la sección \texttt{Answer}, siendo esto equivalente a un caso de \texttt{NO\_DATA}.
+El codigo de respuesta es \texttt{NO\_ERROR} pero no hay registros en la sección \texttt{Answer}, siendo esto equivalente a un caso de \texttt{NO\_DATA}.
     
 
 
